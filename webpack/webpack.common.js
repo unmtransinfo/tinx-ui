@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const Path = require('path');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -21,6 +22,10 @@ module.exports = {
     ]),
     new HtmlWebpackPlugin({
       template: Path.resolve(__dirname, '../src/index.pug')
+    }),
+    new webpack.ProvidePlugin({
+      'jQuery': 'jquery',
+      '$': 'jquery',
     })
   ],
   resolve: {

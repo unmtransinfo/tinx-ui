@@ -8,8 +8,11 @@ html(lang='en')
   body
     +navbar
 
-    #tree-view-container
-      | Foobar
+    #tree-view-container.typeahead(autocomplete="off")
+      .container
+        input#tree-view-search
+
+        ul#tree-view
 
     #plot-container
       | Hi!
