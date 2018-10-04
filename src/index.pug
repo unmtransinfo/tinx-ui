@@ -1,0 +1,16 @@
+include ./mixins/test
+doctype html
+html(lang='en')
+  head
+    title TIN-X
+    meta(charset="UTF-8")
+  body
+    .container
+      h1 Pug Examples
+      .row
+        .col.md-6
+          | Foobar!
+        .col-md-6
+          | Bye
+
+    +test
