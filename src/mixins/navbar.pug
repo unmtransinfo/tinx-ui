@@ -1,0 +1,18 @@
+mixin navbar
+  nav.navbar.navbar-expand-lg.navbar-light.bg-light.fixed-top
+    a.navbar-brand TIN-X
+
+    button.navbar-toggler( type="button", data-toggle="collapse", data-target="#navbarSupportedContent", aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation")
+      span.navbar-toggler-icon
+
+    #navbarSupportedContent.collapse.navbar-collapse
+      ul.navbar-nav.mr-auto
+        li.nav-item.active
+          a.nav-link(href="#") Browse Diseases
+        li.nav-item
+          a.nav-link(href="#") Browse Targets
+        li.nav-item
+          a.nav-link(href="#") About
+
+      a(target="_blank", href="http://medicine.unm.edu/academic-divisions/translational-informatics/index.html")
+        img(src="./public/som-logo2.png", height="30px")

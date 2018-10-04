@@ -1,7 +1,35 @@
 @import "~bootstrap/dist/css/bootstrap.css";
 
-$body-color: blue;
+body,html,#content-row {
+  height: 100%;
+}
 
-body {
-  color: $body-color;
-}  
+#tree-view-container {
+  background-color: rgba(238,245,248,1.0);
+  width: 500px;
+  margin-top: 56px;
+  min-height: 100%;
+}
+
+#plot-container {
+  height: 100%;
+  overflow-y: hidden;
+  position: fixed;
+  top: 56px;
+  left: 500px;
+}
+
+#footer {
+  height: 20px;
+  color: #777;
+  background: white;
+
+  .navbar-brand{
+    font-size: 10px;
+  }
+
+  .dot {
+    padding: 5px;
+    color: black;
+  }
+}
