@@ -5,12 +5,12 @@ html(lang='en')
   head
     title TIN-X
     meta(charset="UTF-8")
-  body
+  body(style="display: none;")
     +navbar
 
     #tree-view-container.typeahead(autocomplete="off")
       .container
-        input#tree-view-search
+        input#tree-view-search(placeholder="Search for a disease...")
 
         ul#tree-view
 

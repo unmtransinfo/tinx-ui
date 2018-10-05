@@ -1,23 +1,20 @@
+import ApiHelper from './apihelper';
+
 // Singleton
 class Typeaheads {
-  init() {
-    this.initTreeViewSearch();
+  init(treeView) {
+    this.initTreeViewSearch(treeView);
   }
 
-  initTreeViewSearch() {
+  initTreeViewSearch(treeView) {
     $('#tree-view-search').typeahead({
       source: (query, callback) => {
-        const ret = $.ajax({
-          url: 'http://127.0.0.1:8000/diseases',
-          data: {
-            search: query
-          },
-          success: (data) => {
-            callback(data.results);
-          }
-        });
+        ApiHelper.findDisease(query)
+          .then((x) => x.results)
+          .then(callback);
       },
-      displayText: (x) => `${x.name}`
+      displayText: (x) => `${x.name.charAt(0).toLocaleUpperCase() + x.name.slice(1)}`,
+      afterSelect: (x) => treeView.expandToNode(x.id)
     });
   }
 }

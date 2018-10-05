@@ -1,0 +1,47 @@
+@import 'colors';
+
+#tree-view {
+  list-style: none;
+  padding-left: 0px;
+
+  & > li.tree-node {
+    padding-left: 0 !important;
+
+  }
+
+  li.tree-node {
+    padding: 6px 0 0 16px;
+
+    /* Selected node item */
+    &.selected > span.btn {
+      background: #337ab7;
+      border-color: #2e6da4;
+      color: white;
+
+      &:hover {
+        background: darken(#337ab7, 10%);
+        border-color: darken(#236da4, 10%);
+      }
+    }
+
+    span.btn {
+      width: 100%;
+      text-align: left;
+      font-size: 14px;
+
+      background: white;
+      border: 1px solid $alto-grey;
+
+      &:hover {
+        background: $alto-grey;
+      }
+
+    }
+  }
+
+  ul {
+    list-style: none;
+    padding-left: 0px;
+  }
+
+}
