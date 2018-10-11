@@ -1,0 +1,143 @@
+@import 'colors.scss';
+
+svg.scatterplot {
+  &.tooltip-visible {
+    circle.datapoint {
+      &:not(.selected) {
+        opacity: 0.2;
+        transition: opacity 0.5s;
+      }
+
+      &.selected {
+        opacity: 1.0;
+        transition-delay: 0s;
+        transition: opacity 0s;
+      }
+    }
+  }
+
+  circle.datapoint {
+    stroke: blue;
+    stroke-width: 2px;
+    fill: blue;
+    fill-opacity: 0.6;
+    r: 6;
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    &:not(.selected) {
+      transition: opacity 0.5s;
+      transition-delay: 1s;
+    }
+
+    &.tdl-Tdark { @include stroke-and-fill($color-Tdark); }
+    &.tdl-Tbio { @include stroke-and-fill($color-Tbio); }
+    &.tdl-Tchem { @include stroke-and-fill($color-Tchem); }
+    &.tdl-Tclin { @include stroke-and-fill($color-Tclin); }
+  }
+
+  text.label {
+    fill: #0056b3;
+    font-size: 14px;
+
+    &:hover {
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
+}
+
+#scatterplot-tooltip {
+  max-width: inherit;
+  position: absolute;
+  pointer-events: none;
+
+  .arrow {
+    top: 50%;
+  }
+  .popover-header {
+    text-align: center;
+  }
+
+  .popover-body {
+    width: 550px;
+    .main-row {
+      height: 130px;
+    }
+  }
+
+  .details-col {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+
+    .row {
+      flex: 1 1 0;
+      width: 100%;
+
+      .label, .value {
+        margin-top: auto;
+        margin-bottom: auto;
+      }
+
+      .label {
+        font-weight: bold;
+        padding-right: 0;
+        padding-left: 0;
+        text-align: right;
+      }
+
+      .value {
+        padding-left: 5px;
+      }
+    }
+  }
+
+  .badge-col {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .badge {
+    flex: 1 1 0;
+    width: 100%;
+    display: flex;
+    border: 1px solid black;
+    margin-bottom: 10px;
+
+    span {
+      margin: auto;
+      font-size: 18px;
+      text-align: center;
+      width: 100%;
+    }
+
+    /* TDL badges. TODO: Centralize this. */
+    &.badge-tdl {
+      &[data-tdl="Tdark"] {
+        background-color: $color-Tdark;
+        span { color: white; }
+      }
+      &[data-tdl="Tbio"] { background-color: $color-Tbio; }
+      &[data-tdl="Tchem"] { background-color: $color-Tchem; }
+      &[data-tdl="Tclin"] { background-color: $color-Tclin; }
+    }
+
+    /* IDG Family badges. TODO: Centralize this. */
+    &.badge-idgfam {
+      &[data-idgfam="GPCR"] { background-color: $color-GPCR; }
+      &[data-idgfam="NR"] { background-color: $color-NR; }
+      &[data-idgfam="ION"] { background-color: $color-ION; }
+      &[data-idgfam="KINASE"] { background-color: $color-KINASE; }
+      &[data-idgfam=""] {
+        background-color: $bolder-grey;
+        span { color: white; }
+      }
+
+    }
+  }
+}

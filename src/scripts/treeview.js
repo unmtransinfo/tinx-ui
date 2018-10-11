@@ -71,7 +71,7 @@ class TreeView {
 
           // If it's the node to which we're expanding, mark it selected
           if ($node.data('nodeId') === nodeId)
-            $node.addClass('selected');
+            this._select($node);
 
           // Expand the node
           return this._toggleNodeCollapse($node);
@@ -80,6 +80,14 @@ class TreeView {
 
       return promise;
     });
+  }
+
+  /**
+   * Specifies the function to execute when the selection changes.
+   * @param func
+   */
+  onSelectionChange(func) {
+    this.selectionChangeHandler = func;
   }
 
   /**
@@ -119,7 +127,7 @@ class TreeView {
       const $target = $(event.currentTarget);
       this._toggleNodeCollapse($target);
       this.$elem.find('li.tree-node.selected').removeClass('selected');
-      $target.addClass('selected');
+      this._select($target);
     };
 
     // Capitalize the first letter of the object's name
@@ -183,6 +191,11 @@ class TreeView {
     }
 
     return Promise.resolve();
+  }
+
+  _select($node) {
+    $node.addClass('selected');
+    this.selectionChangeHandler($node.data());
   }
 }
 

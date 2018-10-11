@@ -78,7 +78,15 @@ class ApiHelper {
       endpoint: '/diseases/:diseaseId/parent/',
       params: { diseaseId: diseaseId }
     });
+  }
 
+  getDiseaseTargets(diseaseId, limit = 100, offset = 0) {
+    return this.makeRequest({
+      method: 'GET',
+      endpoint: '/diseases/:diseaseId/targets/',
+      params: { diseaseId: diseaseId },
+      data: { limit: limit, offset: offset }
+    });
   }
 }
 

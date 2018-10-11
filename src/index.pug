@@ -1,21 +1,25 @@
 include ./mixins/navbar
 include ./mixins/footer
+include ./mixins/scatterplot-tooltip
 doctype html
 html(lang='en')
   head
-    title TIN-X
+    title TIN-X: Target Importance and Novelty Explorer
     meta(charset="UTF-8")
-  body(style="display: none;")
+    meta(name="Description", content="TIN-X is an interactive visualization tool for discovering interesting associations between diseases and potential drug targets. We used natural language processing to identify disease and protein mentions in the text of PubMed abstracts. Using this data, we derived two metrics: novelty and importance. Novelty measures the relative scarcity of specific publications about a given concept (such as a target or a disease), while importance measures the relative strength of the association between two concepts. We then built this web tool, which enables users to explore the relationships between the novelty of potential drug targets and their importance to diseases.")
+    meta(name="viewport", content="width=device-width, initial-scale=1")
+  body(style="visibility: hidden;")
+    +scatterplot-tooltip
     +navbar
 
-    #tree-view-container.typeahead(autocomplete="off")
+    #tree-view-container
       .container
-        input#tree-view-search(placeholder="Search for a disease...")
+        input.typeahead(autocomplete="off")#tree-view-search(placeholder="Search for a disease...", aria-label="Search for a disease.")
 
         ul#tree-view
 
-    #plot-container
-      | Hi!
+    #main-plot-area
+      #plot-container
 
     +footer
 

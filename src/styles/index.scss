@@ -1,22 +1,31 @@
 @import "~bootstrap/dist/css/bootstrap.css";
 @import 'treeview';
 @import 'colors';
+@import 'scatterplot';
+
 
 .hide {
   display: none !important;
 }
 
-body,html,#content-row {
+html {
   height: 100%;
+}
+
+body {
+  // TODO: Lift to mixin
+  height: calc(100% - 56px);
+  width: 100%;
 }
 
 #tree-view-container {
   background-color: $faint-blue;
   color: rgb(0, 0, 0);
-  width: 500px;
   margin-top: 56px;
-  min-height: 100%;
+  width: 20%;
   padding-top: 16px;
+  // TODO: Lift to mixin
+  min-height: calc(100% - 20px);
 
   input#tree-view-search {
     width: 100%;
@@ -35,12 +44,19 @@ body,html,#content-row {
   }
 }
 
-#plot-container {
-  height: 100%;
+#main-plot-area {
+  // TODO: Lift to mixin
+  height: calc(100% - 56px - 20px);
+  width: 80%;
+  left: 20%;
+  top: 56px;
   overflow-y: hidden;
   position: fixed;
-  top: 56px;
-  left: 500px;
+
+  #plot-container {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 #footer {

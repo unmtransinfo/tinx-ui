@@ -1,3 +1,20 @@
 $bolder-grey:  #777;
 $alto-grey:    #DDD;
 $faint-blue:   #EEF5F8;
+
+
+$color-Tdark: #000;
+$color-Tbio:  #808080;
+$color-Tchem: #AFD8F8;
+$color-Tclin: #4DA84D;
+
+$color-GPCR:   #EDC240;
+$color-NR:     #AFD8F8;
+$color-ION:    #CB4B4B;
+$color-KINASE: #4FA74D;
+
+
+@mixin stroke-and-fill($color) {
+  stroke: $color;
+  fill: $color;
+}
