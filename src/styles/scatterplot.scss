@@ -2,33 +2,40 @@
 
 svg.scatterplot {
   &.tooltip-visible {
-    circle.datapoint {
-      &:not(.selected) {
-        opacity: 0.2;
+    .datapoint {
+      &:not(.selected), &.previously-selected {
+        opacity: 0.2 ;
+      }
+
+      &:not(.selected):not(.previously-selected) {
         transition: opacity 0.5s;
+      }
+
+      &.previously-selected {
+        transition: none;
       }
 
       &.selected {
         opacity: 1.0;
-        transition-delay: 0s;
-        transition: opacity 0s;
+        transition: none;
       }
+
+
     }
   }
 
-  circle.datapoint {
+  .datapoint {
     stroke: blue;
     stroke-width: 2px;
     fill: blue;
     fill-opacity: 0.6;
-    r: 6;
 
     &:hover {
       cursor: pointer;
     }
 
     &:not(.selected) {
-      transition: opacity 0.5s;
+      transition: opacity 0.2s;
       transition-delay: 1s;
     }
 
@@ -139,5 +146,63 @@ svg.scatterplot {
       }
 
     }
+  }
+}
+
+#plot-legend {
+  .card {
+
+    .card-body {
+      padding: 0.5rem;
+    }
+
+    h5 {
+      font-size: 14px;
+      font-weight: bold;
+      padding-bottom: 5px;
+    }
+
+    .legend-items {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
+    .legend-item {
+      .marker-border {
+        border: 1px solid $alto-grey;
+        padding: 1px;
+        width: 16px;
+        max-height: 16px;
+        display: inline-block;
+
+        .marker-color-box {
+          width: 12px;
+          height: 12px;
+
+          &.Tclin { background: $color-Tclin; }
+          &.Tchem { background: $color-Tchem; }
+          &.Tbio { background: $color-Tbio; }
+          &.Tdark { background: $color-Tdark; }
+        }
+      }
+
+      .legend-label {
+        margin-left: 5px;
+        vertical-align: top;
+        font-size: 14px;
+      }
+
+      svg.shape-icon {
+        vertical-align: top;
+        stroke: $color-legend-shape;
+        stroke-width: 2px;
+        fill: $color-legend-shape;
+        fill-opacity: 0.5;
+      }
+
+    }
+
+
   }
 }

@@ -25,6 +25,7 @@ class Scatterplot {
     this.datapoints = [];
     window.addEventListener('resize', this.redraw.bind(this));
     this.redraw();
+    this._initLegend();
   }
 
   /**
@@ -106,14 +107,14 @@ class Scatterplot {
     const points = plot.selectAll('.datapoint')
       .data(this.datapoints)
       .enter()
-      .append('circle')
+      .append('path')
       .attr('class', (d) =>
         'datapoint ' + (d.target ? `tdl-${d.target.tdl} ` : '')
       )
-      .attr('cx', (d) => x(d.x))
-      .attr('cy', (d) => y(d.y))
+      .attr('d', (d) => d3.symbol().size([60]).type(this._pointShape(d))())
+      .attr('transform', (d) => `translate(${x(d.x)}, ${y(d.y)})`)
       .on('mouseover', function(d) { that.showTooltip(d, d3.select(this)); })
-      .on('mouseout', this.clearTooltip.bind(this));
+      .on('mouseout', function() { that.clearTooltip(false); });
 
     const zoom = d3.zoom()
       .scaleExtent([.5, 20])
@@ -133,9 +134,16 @@ class Scatterplot {
   /**
    * Clears the tooltip.
    */
-  clearTooltip() {
-    this.svg.classed('tooltip-visible', false);
-    this.svg.select('.selected').classed('selected', false);
+  clearTooltip(triggeredByMouseEnter) {
+    this.svg.classed('tooltip-visible', triggeredByMouseEnter);
+
+    if (!triggeredByMouseEnter)
+      this.svg.select('.previously-selected').classed('previously-selected', false);
+
+    this.svg.select('.selected')
+      .classed('selected', false)
+      .classed('previously-selected', true);
+
     d3.select('#scatterplot-tooltip')
       .transition()
       .delay(1000)
@@ -152,7 +160,7 @@ class Scatterplot {
   showTooltip(d, elem) {
     const {target} = d;
 
-    this.clearTooltip();
+    this.clearTooltip(true);
     this.svg.classed('tooltip-visible', true);
     elem.classed('selected', true);
 
@@ -197,6 +205,50 @@ class Scatterplot {
       .transition()
       .delay(100)
       .style('opacity', 1.0);
+  }
+
+  /**
+   * Renders shapes inside of the legend.
+   *
+   * @private
+   */
+  _initLegend() {
+    const that = this;
+    d3.selectAll('#plot-legend svg.shape-icon')
+      .each(function() {
+        const elem = d3.select(this);
+
+        elem.append('path')
+          .attr('d', (d) => d3.symbol()
+            .size([70])
+            .type(that._pointShape(elem.attr('data-label')))()
+          )
+          .attr('transform', `translate(8, 8.5)`);
+      });
+
+  }
+
+  /**
+   * Determins the shape to render for the point d.
+   * @param {{}|string} d - A target object or a string indicating the IDG family.
+   * @returns {*} A d3 symbol.
+   * @private
+   */
+  _pointShape(d) {
+    let fam = null;
+    if (typeof d === "string") fam = d;
+    else if (!d.target || !d.target.fam) return d3.symbolCircle;
+    else  fam = d.target.fam;
+
+    const famShapes = {
+      'gpcr'   : d3.symbolSquare,
+      'ogpcr'  : d3.symbolWye,
+      'ion'    : d3.symbolDiamond,
+      'kinase' : d3.symbolTriangle,
+      'nr'     : d3.symbolCross
+    };
+
+    return famShapes[fam.toLocaleLowerCase()] || d3.symbolCircle;
   }
 }
 

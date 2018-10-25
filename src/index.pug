@@ -1,6 +1,7 @@
 include ./mixins/navbar
 include ./mixins/footer
 include ./mixins/scatterplot-tooltip
+include ./mixins/target-legend
 doctype html
 html(lang='en')
   head
@@ -14,12 +15,14 @@ html(lang='en')
 
     #tree-view-container
       .container
-        input.typeahead(autocomplete="off")#tree-view-search(placeholder="Search for a disease...", aria-label="Search for a disease.")
+        input#tree-view-search.typeahead(autocomplete="off", placeholder="Search for a disease...", aria-label="Search for a disease.")
 
         ul#tree-view
 
     #main-plot-area
       #plot-container
+      #plot-legend
+        +target-legend
 
     +footer
 

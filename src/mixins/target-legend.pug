@@ -1,0 +1,39 @@
+mixin color-legend-item(label, classname)
+  .legend-item
+    .marker-border
+      .marker-color-box(class=classname)
+    span.legend-label
+      =label
+
+mixin shape-legend-item(label)
+  .legend-item
+    svg.shape-icon(data-label=label, width="16px", height="16px")
+    span.legend-label
+      =label
+
+mixin target-legend
+  .container
+    .row
+      .col-sm-6
+        .card
+          .card-body
+            h5
+              | Colors Indicate Target Development Level (TDL)
+            .legend-items
+              +color-legend-item("Tclin", "Tclin")
+              +color-legend-item("Tchem", "Tchem")
+              +color-legend-item("Tbio",  "Tbio")
+              +color-legend-item("Tdark", "Tdark")
+
+      .col-sm-6
+        .card
+          .card-body
+            h5
+              | Shapes Indicate IDG Family
+            .legend-items
+              +shape-legend-item("GPCR")
+              +shape-legend-item("OGPCR")
+              +shape-legend-item("ION")
+              +shape-legend-item("KINASE")
+              +shape-legend-item("NR")
+              +shape-legend-item("Other")
