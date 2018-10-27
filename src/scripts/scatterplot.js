@@ -1,6 +1,7 @@
 import * as d3 from 'd3v4';
 import { TreeViewModes } from "./treeview";
 import ApiHelper from './apihelper';
+import xss from 'xss';
 
 /* Plot margins. */
 const margin = {
@@ -22,7 +23,16 @@ class Scatterplot {
     this.container = d3.select(selector);
     this.container.html('').selectAll('*').remove();
     this.svg = this.container.append('svg');
+    this.subjectDetails = {
+      name: 'a given disease'
+    };
     this.datapoints = [];
+
+    this.axisTooltips = {
+      importance: 'A <b>greater</b> importance score implies that <b>more</b> has been published about the association between the given target and %%disease_name%%.',
+      novelty:    'A <b>greater</b> novelty score implies that <b>less</b> has been published about the given target.'
+    };
+
     window.addEventListener('resize', this.redraw.bind(this));
     this.redraw();
     this._initLegend();
@@ -34,7 +44,9 @@ class Scatterplot {
    * @param mode - Disease or target
    * @param id - The ID of the disease or target for which to display associated datapoints
    */
-  loadPlot(mode, id) {
+  loadPlot(mode, id, details) {
+    this.subjectDetails = details;
+
     if (mode === TreeViewModes.DISEASE) {
       ApiHelper.getDiseaseTargets(id, 1000).then((data) => {
         this.datapoints = data.results .map((d) =>
@@ -86,23 +98,34 @@ class Scatterplot {
       .attr('class', 'x axis')
       .attr('transform', `translate(0, ${height})`)
       .call(xAxis);
+
     gX.append('text')
       .attr('class', 'label')
       .attr('x', width)
       .attr('y', -6)
       .style('text-anchor', 'end')
-      .text('Novelty');
+      .text('Novelty')
+      .attr('data-placement', 'left')
+      .attr('title', this.axisTooltips.novelty)
+      .on('mouseover', function(d) { that.showAxisTooltip(d3.select(this)); })
+      .on('mouseout', () => that.clearTooltip(false));
 
     const gY = plot.append('g')
       .attr('class', 'y axis')
       .call(yAxis);
+
     gY.append('text')
-        .attr('class', 'label')
-        .attr('transform', 'rotate(-90)')
-        .attr('y', 6)
-        .attr('dy', '.71em')
-        .style('text-anchor', 'end')
-        .text('Importance');
+      .attr('class', 'label')
+      .attr('transform', 'rotate(-90)')
+      .attr('y', 6)
+      .attr('dy', '.71em')
+      .style('text-anchor', 'end')
+      .text('Importance')
+      .attr('data-placement', 'right')
+      .attr('title', this.axisTooltips.importance
+        .replace(/%%disease_name%%/g, this.subjectDetails.name))
+      .on('mouseover', function(d) { that.showAxisTooltip(d3.select(this)); })
+      .on('mouseout', () => that.clearTooltip(false));
 
     const points = plot.selectAll('.datapoint')
       .data(this.datapoints)
@@ -125,8 +148,7 @@ class Scatterplot {
         gX.call(xAxis.scale(newX));
         gY.call(yAxis.scale(newY));
         points.data(this.datapoints)
-          .attr('cx', (d) => newX(d.x))
-          .attr('cy', (d) => newY(d.y));
+          .attr('transform', (d) => `translate(${newX(d.x)}, ${newY(d.y)})`);
       });
     this.svg.call(zoom);
   }
@@ -145,6 +167,12 @@ class Scatterplot {
       .classed('previously-selected', true);
 
     d3.select('#scatterplot-tooltip')
+      .transition()
+      .delay(1000)
+      .duration(500)
+      .style('opacity', 0.0);
+
+    d3.select('#general-tooltip')
       .transition()
       .delay(1000)
       .duration(500)
@@ -199,6 +227,44 @@ class Scatterplot {
       .select('span')
       .text(target.fam || 'Uncategorized');
 
+    tooltipDiv
+      .style('left', `${left}px`)
+      .style('top', `${top}px`)
+      .transition()
+      .delay(100)
+      .style('opacity', 1.0);
+  }
+
+  /**
+   * Display the tooltip on an axis label when the user hovers over it.
+   *
+   * TODO: This has a lot of repitition with showTooltip. Can we DRY this up?
+   *
+   * @param elem The d3 element the user hovered over.
+   */
+  showAxisTooltip(elem) {
+    const tooltipDiv = d3.select('#general-tooltip');
+
+    // Update the tooltip's content. xss is used to sanitize
+    // Do this first so that geometry is right
+    tooltipDiv.select('.content')
+      .html(xss(elem.attr('title')));
+
+    const pointRect = elem.node().getBoundingClientRect();
+    const tooltipRect = tooltipDiv.node().getBoundingClientRect();
+    const top = (pointRect.y + pointRect.height / 2) - tooltipRect.height / 2;
+
+    // Determine left-right placement based upon value of data-placement
+    let left = 0;
+    if (elem.attr('data-placement') === 'right') {
+      left = pointRect.x + pointRect.width + 5;
+      tooltipDiv.classed('bs-popover-right', true).classed('bs-popover-left', false);
+    } else if (elem.attr('data-placement') === 'left' ) {
+      left = pointRect.x - pointRect.width / 2 - tooltipRect.width + 5;
+      tooltipDiv.classed('bs-popover-right', false).classed('bs-popover-left', true);
+    }
+
+    // Position the div
     tooltipDiv
       .style('left', `${left}px`)
       .style('top', `${top}px`)

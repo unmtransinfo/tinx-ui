@@ -1,6 +1,7 @@
 include ./mixins/navbar
 include ./mixins/footer
 include ./mixins/scatterplot-tooltip
+include ./mixins/general-tooltip
 include ./mixins/target-legend
 doctype html
 html(lang='en')
@@ -11,6 +12,7 @@ html(lang='en')
     meta(name="viewport", content="width=device-width, initial-scale=1")
   body(style="visibility: hidden;")
     +scatterplot-tooltip
+    +general-tooltip
     +navbar
 
     #tree-view-container

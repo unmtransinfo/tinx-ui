@@ -71,6 +71,7 @@
     "html-loader": "^0.5.5",
     "jquery": "^3.3.1",
     "popper.js": "^1.14.4",
-    "pug-html-loader": "^1.1.5"
+    "pug-html-loader": "^1.1.5",
+    "xss": "^1.0.3"
   }
 }

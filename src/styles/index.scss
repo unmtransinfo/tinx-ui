@@ -67,6 +67,16 @@ body {
   }
 }
 
+#general-tooltip {
+  position: absolute;
+  min-width: 350px;
+  pointer-events: none;
+
+  .arrow {
+    top: 30%;
+  }
+}
+
 #footer {
   height: 20px;
   color: $bolder-grey;
@@ -81,3 +91,4 @@ body {
     color: black;
   }
 }
+
