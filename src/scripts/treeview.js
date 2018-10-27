@@ -135,7 +135,7 @@ class TreeView {
 
     return $("<li>")
       .addClass("expandable tree-node")
-      .data({ nodeId: obj.id, mode: this.mode })
+      .data({ nodeId: obj.id, mode: this.mode, details: obj })
       .click(onClick.bind(this))
       .append( $("<span>").addClass("btn").text(capitalName) );
   }

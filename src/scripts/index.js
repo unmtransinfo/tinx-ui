@@ -17,6 +17,13 @@ $(window).on("load", () => {
 
   treeView.onSelectionChange((data) => {
     scatterplot.loadPlot(data.mode, data.nodeId);
+
+    if (data.mode === TreeViewModes.DISEASE) {
+      $('#plot-title span').text('Targets associated with ');
+      $('#plot-title a').text(data.details.name)
+        .attr('href',
+              `http://disease-ontology.org/term/${encodeURIComponent(data.details.doid)}`);
+    }
   });
 
   // Prevent FOUC issue

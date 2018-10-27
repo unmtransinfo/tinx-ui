@@ -55,7 +55,15 @@ body {
 
   #plot-container {
     width: 100%;
-    height: calc(100% - 72px);
+    height: calc(100% - 72px - 45px);
+  }
+
+  #plot-header {
+    padding-left: 40px;
+    margin-top: 10px;
+    h2 {
+      font-size: 20px;
+    }
   }
 }
 

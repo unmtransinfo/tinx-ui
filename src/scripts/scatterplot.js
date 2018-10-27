@@ -4,7 +4,7 @@ import ApiHelper from './apihelper';
 
 /* Plot margins. */
 const margin = {
-  top: 60,
+  top: 10,
   right: 20,
   bottom: 30,
   left: 40
