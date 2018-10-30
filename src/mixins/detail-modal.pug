@@ -1,0 +1,93 @@
+include ./loading-spinner
+
+mixin disease-details
+  .card.disease-details.border-info
+    .card-header.disease-name.text-white.bg-info
+      | Panel heading
+    .card-body
+      p
+        span.disease-summary | My content
+        a.read-more(href="#" target="#_blank")
+          | &nbsp;Read more...
+
+// TODO: Copy and paste from scatterplot-tooltip. Should we DRY this?
+mixin detail-row(label, classname)
+  .row
+    .col-3.label
+      =label+":"
+    .col-9.value(class=classname)
+
+mixin target-details
+  .card.target-details.border-info
+    .card-header.target-name.text-white.bg-info
+      | Panel heading
+    .card-body
+      .container
+        .row.main-row
+          .col-8.details-col
+            +detail-row("Full name", "full-name")
+            +detail-row("Family", "family")
+            +detail-row("Pharos", "pharos")
+            +detail-row("DrugCentral", "drug-central")
+            +detail-row("DTO ID", "dto-id")
+
+
+          .col-4.badge-col
+            .badge.badge-tdl(role="alert")
+              span Test
+            .badge.badge-idgfam(role="alert")
+              span Test
+
+mixin article-paginator
+  nav.article-paginator(aria-label="...")
+    ul.pagination.justify-content-between
+      li.page-item.disabled.previous
+        a.page-link(href="#" tabindex="-1")
+          | ← Previous
+      li.page-item.disabled
+        span.page-link.article-stats
+          span.first-in-page 1
+          span &nbsp;to&nbsp;
+          span.last-in-page 5
+          span &nbsp;of&nbsp;
+          span.total-count 5,319
+          span &nbsp;articles
+      li.page-item.next
+        a.page-link.next(href="#" tabindex="-1")
+          | Next →
+
+
+
+mixin detail-modal
+  #detail-modal.modal.fade(role="dialog" aria-labeledby="detail-modal-title" aria-hidden="true")
+    .modal-dialog(role="document").modal-lg
+      .modal-content
+        .modal-header
+          #detail-modal-title.modal-title
+            | Hello, world!
+          button.close(type="button" data-dismiss="modal" aria-label="close")
+            span(aria-hidden="true") &times;
+        .modal-body
+          +disease-details
+          +target-details
+          hr
+          +article-paginator
+          +loading-spinner
+
+          .accordion#article-list.hide
+
+          +article-paginator
+
+          .card.pubmed-article-template.hide
+            a.collapse-toggle.collapsed(data-toggle="collapse" data-target="#pubmed-abstract-1" href="#")
+              .card-header.bg-transparent
+                h3.article-title The title
+                p.article-authors Stiewe, Thorsten T and Haran, Tali E TE..
+                p.article-journal The journal
+            .abstract.collapse(data-parent="#article-list")
+              .card-body
+                p
+                  | Here is the very long text that I have to offer to you.
+                a.btn.btn-primary.btn-sm.pubmed-link(href="#" target="_blank")
+                  | View on PubMed
+

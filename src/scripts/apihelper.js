@@ -23,7 +23,9 @@ class ApiHelper {
     // Substitute any url params in endpoint
     let endpointWithParams = endpoint;
     Object.keys(params).forEach((k) =>
-      endpointWithParams = endpointWithParams.split(`:${k}`).join(params[k])
+      endpointWithParams = endpointWithParams
+        .split(`:${k}`)
+        .join(encodeURIComponent(params[k]))
     );
 
     // Create the final URL to request
@@ -50,7 +52,7 @@ class ApiHelper {
     return this.makeRequest({
       method: 'GET',
       endpoint: '/diseases/:diseaseId/children/',
-      params: { diseaseId: diseaseId }
+      params: { diseaseId }
     });
   }
 
@@ -76,7 +78,7 @@ class ApiHelper {
     return this.makeRequest({
       method: 'GET',
       endpoint: '/diseases/:diseaseId/parent/',
-      params: { diseaseId: diseaseId }
+      params: { diseaseId }
     });
   }
 
@@ -84,9 +86,19 @@ class ApiHelper {
     return this.makeRequest({
       method: 'GET',
       endpoint: '/diseases/:diseaseId/targets/',
-      params: { diseaseId: diseaseId },
-      data: { limit: limit, offset: offset }
+      params: { diseaseId },
+      data: { limit, offset }
     });
+  }
+
+  getDiseaseTargetArticles(diseaseId, targetId, offset = 0, limit=5) {
+    return this.makeRequest({
+      method: 'GET',
+      endpoint: '/diseases/:diseaseId/targets/:targetId/articles',
+      params: { diseaseId, targetId },
+      data: {limit, offset}
+    });
+
   }
 }
 

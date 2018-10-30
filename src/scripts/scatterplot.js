@@ -12,6 +12,34 @@ const margin = {
 };
 
 /**
+ * Updates the target details of the specified div. This is used both to update
+ * the target details in the tooltip and also in the modal.
+ *
+ * @param {(string|Selection)} div Either a d3 selection or a string selector for the div to update.
+ * @param {{}} target The target to use for updating the div.
+ */
+function updateTargetDetails(div, target) {
+  if (typeof div === "string") div = d3.select(div);
+
+  // Update values
+  div.select('.value.full-name').text('TODO');
+  div.select('.value.family').text(target.famext || target.fam || '');
+
+  // Update tdl badge
+  div.select('.badge-tdl')
+    .attr('data-tdl', target.tdl || '')
+    .select('span')
+    .text(target.tdl);
+
+  // Update idgdfam badge
+  div.select('.badge-idgfam')
+    .attr('data-idgfam', target.fam || '')
+    .select('span')
+    .text(target.fam || 'Uncategorized');
+
+}
+
+/**
  * A Scatterplot renders target-disease associations in a dynamic plot.
  */
 class Scatterplot {
@@ -27,6 +55,10 @@ class Scatterplot {
       name: 'a given disease'
     };
     this.datapoints = [];
+    this.subjectDetails = {
+      name: 'a given disease'
+    };
+    this.pointClickHandler = () => undefined;
 
     this.axisTooltips = {
       importance: 'A <b>greater</b> importance score implies that <b>more</b> has been published about the association between the given target and %%disease_name%%.',
@@ -47,6 +79,9 @@ class Scatterplot {
   loadPlot(mode, id, details) {
     this.subjectDetails = details;
 
+    this.startSpinner();
+    this.svg.selectAll('.datapoint').remove();
+
     if (mode === TreeViewModes.DISEASE) {
       ApiHelper.getDiseaseTargets(id, 1000).then((data) => {
         this.datapoints = data.results .map((d) =>
@@ -59,6 +94,26 @@ class Scatterplot {
         this.redraw();
       });
     }
+  }
+
+  /**
+   * Definition of the PointClickHandler data type. (JSDoc only)
+   *
+   * @name PointClickHandler
+   * @function
+   * @param {{}} d - The data payload of datapoint that was clicked.
+   * @param {{}} subjectDetails - Details about the subject (disease/target) of the current plot.
+   */
+
+  /**
+   * Register a point click handler, a function that is triggered when a
+   * datapoint in the scatterplot is clicked.
+   *
+   *
+   * @param {PointClickHandler} clickHandler
+   */
+  onPointClick(clickHandler) {
+    this.pointClickHandler = clickHandler;
   }
 
   /**
@@ -137,7 +192,8 @@ class Scatterplot {
       .attr('d', (d) => d3.symbol().size([60]).type(this._pointShape(d))())
       .attr('transform', (d) => `translate(${x(d.x)}, ${y(d.y)})`)
       .on('mouseover', function(d) { that.showTooltip(d, d3.select(this)); })
-      .on('mouseout', function() { that.clearTooltip(false); });
+      .on('mouseout', function() { that.clearTooltip(false); })
+      .on('click', function(d) { that.pointClickHandler(d, that.subjectDetails); });
 
     const zoom = d3.zoom()
       .scaleExtent([.5, 20])
@@ -150,7 +206,10 @@ class Scatterplot {
         points.data(this.datapoints)
           .attr('transform', (d) => `translate(${newX(d.x)}, ${newY(d.y)})`);
       });
+
     this.svg.call(zoom);
+
+    this.stopSpinner();
   }
 
   /**
@@ -210,22 +269,8 @@ class Scatterplot {
     // Absolute top of the tooltip
     const top = (pointRect.y - pointRect.height / 2) - tooltipRect.height / 2;
 
-    // Update values
     tooltipDiv.select('.popover-header').text(target.name);
-    tooltipDiv.select('.value.full-name').text('TODO');
-    tooltipDiv.select('.value.family').text(target.famext || target.fam || '');
-
-    // Update tdl badge
-    tooltipDiv.select('.badge-tdl')
-      .attr('data-tdl', target.tdl || '')
-      .select('span')
-      .text(target.tdl);
-
-    // Update idgdfam badge
-    tooltipDiv.select('.badge-idgfam')
-      .attr('data-idgfam', target.fam || '')
-      .select('span')
-      .text(target.fam || 'Uncategorized');
+    updateTargetDetails(tooltipDiv, target);
 
     tooltipDiv
       .style('left', `${left}px`)
@@ -274,6 +319,25 @@ class Scatterplot {
   }
 
   /**
+   * Shows the loading spinner.
+   */
+  startSpinner() {
+    const plotTitle = d3.select('#plot-title');
+    console.log(plotTitle);
+    plotTitle.select('.loading-spinner').classed('hide', false);
+    plotTitle.selectAll('span.title,a').classed('hide', true);
+  }
+
+  /**
+   * Hides the loading spinner.
+   */
+  stopSpinner() {
+    const plotTitle = d3.select('#plot-title');
+    plotTitle.select('.loading-spinner').classed('hide', true);
+    plotTitle.selectAll('span.title,a').classed('hide', false);
+  }
+
+  /**
    * Renders shapes inside of the legend.
    *
    * @private
@@ -319,4 +383,4 @@ class Scatterplot {
 }
 
 
-export default Scatterplot;
+export { Scatterplot, updateTargetDetails };

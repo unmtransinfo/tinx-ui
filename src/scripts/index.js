@@ -5,7 +5,8 @@ import 'bootstrap';
 import 'bootstrap-3-typeahead';
 import Typeaheads from "./typeaheads";
 import { TreeView, TreeViewModes } from "./treeview";
-import Scatterplot from './scatterplot';
+import { Scatterplot } from './scatterplot';
+import DetailModal from './detailmodal';
 
 $(window).on("load", () => {
   const scatterplot = new Scatterplot('#plot-container');
@@ -13,16 +14,28 @@ $(window).on("load", () => {
   const treeView = new TreeView('#tree-view', TreeViewModes.DISEASE);
   treeView.init();
 
+  const detailmodal = new DetailModal('#detail-modal');
+
   Typeaheads.init(treeView);
 
   treeView.onSelectionChange((data) => {
-    scatterplot.loadPlot(data.mode, data.nodeId);
+    scatterplot.loadPlot(data.mode, data.nodeId, data.details);
 
     if (data.mode === TreeViewModes.DISEASE) {
-      $('#plot-title span').text('Targets associated with ');
+      $('#plot-title span.title').text('Targets associated with ');
       $('#plot-title a').text(data.details.name)
         .attr('href',
-              `http://disease-ontology.org/term/${encodeURIComponent(data.details.doid)}`);
+          `http://disease-ontology.org/term/${encodeURIComponent(data.details.doid)}`);
+    }
+  });
+
+  scatterplot.onPointClick((d, subjectDetails) => {
+    // Immediately hide any tooltips that are open
+    $('#scatterplot-tooltip,#general-tooltip').css('opacity', '0');
+
+
+    if ("target" in d) {
+      detailmodal.show(d.target, subjectDetails);
     }
   });
 

@@ -181,8 +181,15 @@ class TreeView {
 
       // If the children haven't been loaded, load them
       if (!$target.find('ul').length) {
+        $target.append(
+          $('<ul class="spinner-container">')
+            .append($('<li class="tree-node">')
+              .append($('.loading-spinner').first().clone().removeClass('hide'))
+            )
+        );
         return this._getChildren(id).then((data) => {
           $target.append($("<ul>").append(data.map(this._makeListItem.bind(this))));
+          $target.find('ul.spinner-container').remove();
         });
       }
     } else if ($target.hasClass('collapsible')) {
