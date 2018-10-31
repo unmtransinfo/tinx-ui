@@ -137,7 +137,11 @@ class TreeView {
       .addClass("expandable tree-node")
       .data({ nodeId: obj.id, mode: this.mode, details: obj })
       .click(onClick.bind(this))
-      .append( $("<span>").addClass("btn").text(capitalName) );
+      .append(
+        $("<span>").addClass("btn").text(capitalName).append(
+          $("<span>").addClass("badge badge-light").text(obj.num_important_targets)
+        )
+      );
   }
 
   /**

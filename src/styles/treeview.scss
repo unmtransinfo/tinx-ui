@@ -35,9 +35,27 @@
 
       background: white;
       border: 1px solid $alto-grey;
+      padding-right: 0;
+
+      position: relative;
 
       &:hover {
         background: $alto-grey;
+      }
+
+      .badge {
+        position: absolute;
+        top: 50%;
+        transform: translate(0, -50%);
+        right: 5px;
+        padding-top: 4px;
+        padding-bottom: 3px;
+        text-align: center;
+        width: 40px;
+        background: #e9ecef;
+        font-weight: 600;
+        color: #555;
+        letter-spacing: 0.2px;
       }
 
     }
