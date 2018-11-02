@@ -53,14 +53,14 @@ class DetailModal {
     this.pageStart = 0;
     this.pageEnd = 0;
 
-    this.$elem.find('.modal-title').text(`${target.name} and ${disease.name}`);
+    this.$elem.find('.modal-title').text(`${target.sym} and ${disease.name}`);
 
     // Update disease fields
     this.$elem.find('.disease-name').text(this._upperFirst(disease.name));
     this.$elem.find('.disease-summary').text(disease.summary);
 
     // Update target fields
-    this.$elem.find('.target-name').text(target.name);
+    this.$elem.find('.target-name').text(target.sym);
 
     // Hide pagination while we wait to find out how many articles there are
     this.$elem.find('.pagination .article-stats').addClass('hide');

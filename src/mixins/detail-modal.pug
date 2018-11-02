@@ -10,12 +10,18 @@ mixin disease-details
         a.read-more(href="#" target="#_blank")
           | &nbsp;Read more...
 
-// TODO: Copy and paste from scatterplot-tooltip. Should we DRY this?
 mixin detail-row(label, classname)
   .row
     .col-3.label
       =label+":"
     .col-9.value(class=classname)
+
+mixin detail-row-link(label, classname)
+  .row
+    .col-3.label
+      =label+":"
+    .col-9.value(class=classname)
+      a(href="#" target="_blank")
 
 mixin target-details
   .card.target-details.border-info
@@ -27,9 +33,9 @@ mixin target-details
           .col-8.details-col
             +detail-row("Full name", "full-name")
             +detail-row("Family", "family")
-            +detail-row("Pharos", "pharos")
-            +detail-row("DrugCentral", "drug-central")
-            +detail-row("DTO ID", "dto-id")
+            +detail-row-link("Pharos", "pharos")
+            +detail-row-link("DrugCentral", "drug-central")
+            +detail-row-link("DTO ID", "dto-id")
 
 
           .col-4.badge-col

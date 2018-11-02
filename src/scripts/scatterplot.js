@@ -22,8 +22,24 @@ function updateTargetDetails(div, target) {
   if (typeof div === "string") div = d3.select(div);
 
   // Update values
-  div.select('.value.full-name').text('TODO');
-  div.select('.value.family').text(target.famext || target.fam || '');
+  div.select('.value.full-name').text(target.name);
+  div.select('.value.family').text(target.famext || target.fam || '(Unknown)');
+
+  const updateLink = (selector, text, url) => {
+    const elem = div.select(selector);
+    const anchor = elem.select('a');
+    if (anchor.size()) anchor.attr('href', url).text(text);
+    else elem.text(text);
+  };
+
+  updateLink('.value.pharos', target.uniprot, `https://pharos.nih.gov/idg/targets/${encodeURIComponent(target.uniprot)}`)
+  updateLink('.value.drug-central', target.uniprot, `http://drugcentral.org/?q=${encodeURIComponent(target.uniprot)}`)
+
+  const dtoid = target.dtoid
+    ? target.dtoid.replace(/_/g, ':')
+    : null;
+
+  updateLink('.value.dto-id', dtoid || "", `https://newdrugtargets.org/?target=${encodeURIComponent(dtoid)}`)
 
   // Update tdl badge
   div.select('.badge-tdl')
@@ -269,7 +285,7 @@ class Scatterplot {
     // Absolute top of the tooltip
     const top = (pointRect.y - pointRect.height / 2) - tooltipRect.height / 2;
 
-    tooltipDiv.select('.popover-header').text(target.name);
+    tooltipDiv.select('.popover-header').text(target.sym);
     updateTargetDetails(tooltipDiv, target);
 
     tooltipDiv
