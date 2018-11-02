@@ -24,13 +24,19 @@ html(lang='en')
         ul#tree-view
 
     #main-plot-area
-      #plot-header
-        h2#plot-title
-          span.loading-spinner.hide
-            i.fas.fa-sync.refresh-animation
-            span &nbsp;Loading...
-          span.title &nbsp;
-          a(target="_blank", href="#")
+      #plot-header.row
+        .col-lg-5.col-md-12.col-sm-12
+          h2#plot-title
+            span.loading-spinner.hide
+              i.fas.fa-sync.refresh-animation
+              span &nbsp;Loading...
+            span.title &nbsp;
+            a(target="_blank", href="#")
+        .col-lg-5
+        .col-lg-2
+          #threshold-slider-container
+            form
+              input#threshold-slider(max="2000" value="300" type="range" disabled="true")
       #plot-container
       #plot-legend
         +target-legend

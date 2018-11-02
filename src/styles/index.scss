@@ -66,6 +66,30 @@ body {
     h2 {
       font-size: 20px;
     }
+
+    #threshold-slider-container {
+      padding: 0 30px;
+
+      form {
+        text-align: center;
+        border: solid 1px #ddd;
+        border-radius: 3px;
+        padding: 5px 0;
+        height: 40px;
+        position: relative;
+
+        input#threshold-slider {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+
+          &[disabled="true"] {
+            opacity: 0.3;
+          }
+        }
+      }
+    }
   }
 }
 

@@ -67,6 +67,8 @@ class Scatterplot {
     this.container = d3.select(selector);
     this.container.html('').selectAll('*').remove();
     this.svg = this.container.append('svg');
+    this.currentMode = TreeViewModes.DISEASE;
+    this.subjectId = null;
     this.subjectDetails = {
       name: 'a given disease'
     };
@@ -74,7 +76,8 @@ class Scatterplot {
     this.subjectDetails = {
       name: 'a given disease'
     };
-    this.pointClickHandler = () => undefined;
+    this.pointClickHandler = null;
+    this.plotLoadedHandler = null;
 
     this.axisTooltips = {
       importance: 'A <b>greater</b> importance score implies that <b>more</b> has been published about the association between the given target and %%disease_name%%.',
@@ -89,17 +92,21 @@ class Scatterplot {
   /**
    * Load the plot for the given entity.
    *
-   * @param mode - Disease or target
-   * @param id - The ID of the disease or target for which to display associated datapoints
+   * @param {string} mode - Disease or target
+   * @param {int} id - The ID of the disease or target for which to display associated datapoints
+   * @param {{}} details - Details about the subject of the plot.
+   * @param {int} limit - Maximum number of points to retrieve.
    */
-  loadPlot(mode, id, details) {
+  loadPlot(mode, id, details, limit = 300) {
+    this.currentMode = mode;
+    this.subjectId = id;
     this.subjectDetails = details;
 
     this.startSpinner();
     this.svg.selectAll('.datapoint').remove();
 
     if (mode === TreeViewModes.DISEASE) {
-      ApiHelper.getDiseaseTargets(id, 1000).then((data) => {
+      ApiHelper.getDiseaseTargets(id, limit).then((data) => {
         this.datapoints = data.results .map((d) =>
           ({
             x: parseFloat(d.target.novelty),
@@ -108,7 +115,21 @@ class Scatterplot {
           })
         );
         this.redraw();
+
+        if (this.plotLoadedHandler)
+          this.plotLoadedHandler(this.datapoints, data.count);
       });
+    }
+  }
+
+  /**
+   * Update the maximum number of datapoints to retrieve, and redraw the plot.
+   *
+   * @param {int} newThreshold - Maximum number of datapoints to retreive and render.
+   */
+  changeThreshold(newThreshold) {
+    if (this.subjectId) {
+      this.loadPlot(this.currentMode, this.subjectId, this.subjectDetails, newThreshold);
     }
   }
 
@@ -125,11 +146,34 @@ class Scatterplot {
    * Register a point click handler, a function that is triggered when a
    * datapoint in the scatterplot is clicked.
    *
+   * TODO: Should we allow multiple handlers? Error if one has been set?
    *
    * @param {PointClickHandler} clickHandler
    */
   onPointClick(clickHandler) {
+    if (this.pointClickHandler !== null)
+      throw new Error("A handler for the pointClick event has already been registered.");
     this.pointClickHandler = clickHandler;
+  }
+
+  /**
+   * Definition of the PlotLoadedHandler data type. (JSDoc only)
+   *
+   * @name PlotLoadedHandler
+   * @function
+   * @param {[{}]} data - The datapoints that were retrieved and rendered.
+   * @param {{}} subjectDetails - Details about the subject (disease/target) of the current plot.
+   */
+
+  /**
+   * Register a function to be triggered when the plot finishes loading.
+   *
+   * @param {PlotLoadedHandler} plotLoadedHandler
+   */
+  onPlotLoaded(plotLoadedHandler) {
+    if (this.plotLoadedHandler !== null)
+      throw new Error("A handler for the plotLoaded event has already been registered.");
+    this.plotLoadedHandler = plotLoadedHandler;
   }
 
   /**
@@ -209,7 +253,10 @@ class Scatterplot {
       .attr('transform', (d) => `translate(${x(d.x)}, ${y(d.y)})`)
       .on('mouseover', function(d) { that.showTooltip(d, d3.select(this)); })
       .on('mouseout', function() { that.clearTooltip(false); })
-      .on('click', function(d) { that.pointClickHandler(d, that.subjectDetails); });
+      .on('click', function(d) {
+        if (that.pointClickHandler)
+          that.pointClickHandler(d, that.subjectDetails);
+      });
 
     const zoom = d3.zoom()
       .scaleExtent([.5, 20])
@@ -283,7 +330,7 @@ class Scatterplot {
     }
 
     // Absolute top of the tooltip
-    const top = (pointRect.y - pointRect.height / 2) - tooltipRect.height / 2;
+    const top = (pointRect.y - pointRect.height / 2) - tooltipRect.height / 2 + window.scrollY;
 
     tooltipDiv.select('.popover-header').text(target.sym);
     updateTargetDetails(tooltipDiv, target);
@@ -313,7 +360,7 @@ class Scatterplot {
 
     const pointRect = elem.node().getBoundingClientRect();
     const tooltipRect = tooltipDiv.node().getBoundingClientRect();
-    const top = (pointRect.y + pointRect.height / 2) - tooltipRect.height / 2;
+    const top = (pointRect.y + pointRect.height / 2) - tooltipRect.height / 2 + window.scrollY;
 
     // Determine left-right placement based upon value of data-placement
     let left = 0;
