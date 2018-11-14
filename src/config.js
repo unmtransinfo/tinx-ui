@@ -5,7 +5,7 @@ config.development = {
 };
 
 config.production = {
-  API_ROOT: 'http://api.newdrugtargets.org'
+  API_ROOT: 'https://api.newdrugtargets.org'
 };
 
 export default config[process.env.NODE_ENV];
