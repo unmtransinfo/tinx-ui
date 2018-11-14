@@ -7,6 +7,7 @@ import Typeaheads from "./typeaheads";
 import { TreeView, TreeViewModes } from "./treeview";
 import { Scatterplot } from './scatterplot';
 import DetailModal from './detailmodal';
+import Filters from './filters';
 
 $(window).on("load", () => {
   const scatterplot = new Scatterplot('#plot-container');
@@ -17,6 +18,10 @@ $(window).on("load", () => {
   const detailmodal = new DetailModal('#detail-modal');
 
   Typeaheads.init(treeView);
+
+  const filters = new Filters(filters => {
+    scatterplot.filterData(filters);
+  });
 
   // User selects something from the treeview
   treeView.onSelectionChange((data) => {
@@ -43,9 +48,13 @@ $(window).on("load", () => {
   });
 
   // The plot finishes loading
-  scatterplot.onPlotLoaded((datapoints, totalCount) =>
-    $('#threshold-slider').attr('max', totalCount < 2000 ? totalCount : 2000)
-  );
+  scatterplot.onPlotLoaded((datapoints, totalCount) => {
+    $('#threshold-slider').attr('max', totalCount < 2000 ? totalCount : 2000);
+    filters.reset();
+    Typeaheads.initDataSearch(datapoints, (selected) => {
+      scatterplot.selectAndShowTooltip(selected);
+    });
+  });
 
   // User changes the threshold slider
   $('#threshold-slider').change(function() {

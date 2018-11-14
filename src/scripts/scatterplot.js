@@ -2,6 +2,7 @@ import * as d3 from 'd3v4';
 import { TreeViewModes } from "./treeview";
 import ApiHelper from './apihelper';
 import xss from 'xss';
+import $ from 'jquery';
 
 /* Plot margins. */
 const margin = {
@@ -32,14 +33,14 @@ function updateTargetDetails(div, target) {
     else elem.text(text);
   };
 
-  updateLink('.value.pharos', target.uniprot, `https://pharos.nih.gov/idg/targets/${encodeURIComponent(target.uniprot)}`)
-  updateLink('.value.drug-central', target.uniprot, `http://drugcentral.org/?q=${encodeURIComponent(target.uniprot)}`)
+  updateLink('.value.pharos', target.uniprot, `https://pharos.nih.gov/idg/targets/${encodeURIComponent(target.uniprot)}`);
+  updateLink('.value.drug-central', target.uniprot, `http://drugcentral.org/?q=${encodeURIComponent(target.uniprot)}`);
 
   const dtoid = target.dtoid
     ? target.dtoid.replace(/_/g, ':')
     : null;
 
-  updateLink('.value.dto-id', dtoid || "", `https://newdrugtargets.org/?target=${encodeURIComponent(dtoid)}`)
+  updateLink('.value.dto-id', dtoid || "", `https://newdrugtargets.org/?target=${encodeURIComponent(dtoid)}`);
 
   // Update tdl badge
   div.select('.badge-tdl')
@@ -78,6 +79,7 @@ class Scatterplot {
     };
     this.pointClickHandler = null;
     this.plotLoadedHandler = null;
+    this.hoverTooltipEnabled = true;
 
     this.axisTooltips = {
       importance: 'A <b>greater</b> importance score implies that <b>more</b> has been published about the association between the given target and %%disease_name%%.',
@@ -131,6 +133,59 @@ class Scatterplot {
     if (this.subjectId) {
       this.loadPlot(this.currentMode, this.subjectId, this.subjectDetails, newThreshold);
     }
+  }
+
+  /**
+   * Selects and shows tooltip for specified datapoint. Invoked when user
+   * selects an options from the data search typeahead input
+   *
+   * @param {Object} selected:    item selected from the data search typeahead
+   */
+  selectAndShowTooltip(selected) {
+    const that = this;
+
+    const { target = {} } = selected;
+    const { id: selectedId } = target;
+
+    if (!selectedId) return;
+
+    const point = this.svg.selectAll('g .datapoint').filter(function(d) {
+      if (!d) return false;
+      const { target = {} } = d;
+      const { id: pointId } = target;
+      return pointId && selectedId === pointId;
+    }).filter((d, i) => i === 0);
+
+    point.each(function() {
+      that.showTooltip(selected, d3.select(this), true);
+    });
+
+    this.hoverTooltipEnabled = false;
+  }
+
+  /**
+   * Hides/shows datapoints based on filter status
+   *
+   * @param {Object} filters:   filter data
+   */
+  filterData(filters) {
+    if (!this.datapoints || !this.datapoints.length) return;
+
+    const { tdl: tdlFilters = [], idg: idgFilters = [] } = filters;
+
+    this.svg.selectAll('g .datapoint').each(function(d) {
+      const { target = {} } = d;
+      const { tdl } = target;
+      let { fam } = target;
+      if (!fam) fam = 'uncategorized';
+
+      let visibility = null;
+
+      if (!tdl || tdlFilters.indexOf(tdl.toLowerCase()) < 0) visibility = 'hidden';
+      if (idgFilters.indexOf(fam.toLowerCase()) < 0) visibility = 'hidden';
+
+      d3.select(this).style('visibility', visibility);
+    });
   }
 
   /**
@@ -251,8 +306,12 @@ class Scatterplot {
       )
       .attr('d', (d) => d3.symbol().size([60]).type(this._pointShape(d))())
       .attr('transform', (d) => `translate(${x(d.x)}, ${y(d.y)})`)
-      .on('mouseover', function(d) { that.showTooltip(d, d3.select(this)); })
-      .on('mouseout', function() { that.clearTooltip(false); })
+      .on('mouseover', function(d) {
+        if (that.hoverTooltipEnabled) that.showTooltip(d, d3.select(this));
+      })
+      .on('mouseout', function() {
+        if (that.hoverTooltipEnabled) that.clearTooltip(false);
+      })
       .on('click', function(d) {
         if (that.pointClickHandler)
           that.pointClickHandler(d, that.subjectDetails);
@@ -306,8 +365,11 @@ class Scatterplot {
    *
    * @param d - Data about the selected point
    * @param elem - A d3 selection containing the element next to which to display the tooltip.
+   * @param forSearchItem - Whether or not we are showing a tooltip for item selected from data
+   * search typeahead
    */
-  showTooltip(d, elem) {
+  showTooltip(d, elem, forSearchItem = false) {
+    const that = this;
     const {target} = d;
 
     this.clearTooltip(true);
@@ -341,6 +403,29 @@ class Scatterplot {
       .transition()
       .delay(100)
       .style('opacity', 1.0);
+
+    const tooltipActions = tooltipDiv.select('.actions-row');
+
+    if (forSearchItem) {
+      tooltipDiv.style('pointer-events', 'auto');
+      tooltipActions.style('visibility', 'visible');
+      const detailsButton = tooltipActions.select('#view-details-button');
+      const closeButton = tooltipActions.select('#close-modal-button');
+
+      detailsButton.on('click', null);
+      detailsButton.on('click', function() {
+        that.pointClickHandler(d, that.subjectDetails);
+        that.hoverTooltipEnabled = true;
+      });
+      closeButton.on('click', function() {
+        that.clearTooltip(false);
+        that.hoverTooltipEnabled = true;
+      });
+    }
+    else {
+      tooltipDiv.style('pointer-events', 'none');
+      tooltipActions.style('visibility', 'hidden');
+    }
   }
 
   /**

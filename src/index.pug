@@ -4,6 +4,9 @@ include ./mixins/scatterplot-tooltip
 include ./mixins/general-tooltip
 include ./mixins/target-legend
 include ./mixins/detail-modal
+include ./mixins/filters
+include ./mixins/dropdown-item
+
 doctype html
 html(lang='en')
   head
@@ -33,6 +36,9 @@ html(lang='en')
             span.title &nbsp;
             a(target="_blank", href="#")
         .col-lg-5
+          #filter-container
+            input#search-input(type="text" autocomplete="off")
+            +filters
         .col-lg-2
           #threshold-slider-container
             form

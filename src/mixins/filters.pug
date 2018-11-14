@@ -1,0 +1,22 @@
+mixin filters
+    .dropdown
+        a.btn.btn-secondary.dropdown-toggle(href="#" role="button" id="filter-dropdown-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Filters
+        #filter-menu.dropdown-menu(aria-labelledby="filter-dropdown-link")
+            h6.dropdown-header TDL
+            +dropdown-item('tdl', 'tclin', 'tclin-checkbox', 'Tclin')
+            +dropdown-item('tdl', 'tchem', 'tchem-checkbox', 'Tchem')
+            +dropdown-item('tdl', 'tbio', 'tbio-checkbox', 'Tbio')
+            +dropdown-item('tdl', 'tdark', 'tdark-checkbox', 'Tdark')
+            .dropdown-divider
+            h6.dropdown-header IDG Family
+            +dropdown-item('idg', 'gpcr', 'gpcr-checkbox', 'GPCR')
+            +dropdown-item('idg', 'ogpcr', 'ogpcr-checkbox', 'OGPCR')
+            +dropdown-item('idg', 'ion', 'ion-checkbox', 'ION')
+            +dropdown-item('idg', 'kinase', 'kinase-checkbox', 'KINASE')
+            +dropdown-item('idg', 'nr', 'nr-checkbox', 'NR')
+            +dropdown-item('idg', 'enzyme', 'enzyme-checkbox', 'Enzyme')
+            +dropdown-item('idg', 'epigenetic', 'epigenetic-checkbox', 'Epigenetic')
+            +dropdown-item('idg', 'tf', 'tf-checkbox', 'TF')
+            +dropdown-item('idg', 'tf; epigenetic', 'tf-epigenetic-checkbox', 'TF; Epigenetic')
+            +dropdown-item('idg', 'transporter', 'transporter-checkbox', 'Transporter')
+            +dropdown-item('idg', 'uncategorized', 'uncategorized-checkbox', 'Uncategorized')

@@ -74,6 +74,12 @@ svg.scatterplot {
     .main-row {
       height: 130px;
     }
+
+    .actions-row .col-12 {
+      margin-top: 2%;
+      display: flex;
+      justify-content: space-between;
+    }
   }
 
   @extend %target-details;

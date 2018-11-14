@@ -67,6 +67,27 @@ body {
       font-size: 20px;
     }
 
+    #filter-container {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+
+      input#search-input {
+        width: 50%;
+        font-size: 16px;
+        border-radius: 8px;
+        border: 2px solid #ccc;
+        padding: 6px 10px;
+
+        &:focus {
+          border: 2px solid #0097cf;
+          border-radius: 8px;
+          outline-offset: 0;
+          outline: none;
+        }
+      }
+    }
+
     #threshold-slider-container {
       padding: 0 30px;
 

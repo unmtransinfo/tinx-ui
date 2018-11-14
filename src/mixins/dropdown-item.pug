@@ -1,0 +1,4 @@
+mixin dropdown-item(type, value, id, label)
+    a.dropdown-item(href="#" data-type=type data-value=value)
+        input.form-check-input(type="checkbox" checked="true" id=id)
+        label.form-check-label(for=id)= label
