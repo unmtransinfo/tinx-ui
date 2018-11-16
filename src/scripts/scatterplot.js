@@ -122,6 +122,22 @@ class Scatterplot {
           this.plotLoadedHandler(this.datapoints, data.count);
       });
     }
+    else if (mode === TreeViewModes.TARGET) {
+      ApiHelper.getTargetDiseases(id, limit).then(data => {
+        this.datapoints = data.results.map((d) =>
+          ({
+            x: parseFloat(d.disease.novelty),
+            y: parseFloat(d.importance),
+            disease: d.disease
+          })
+        );
+
+        this.redraw();
+
+        if (this.plotLoadedHandler)
+          this.plotLoadedHandler(this.datapoints, data.count);
+      });
+    }
   }
 
   /**

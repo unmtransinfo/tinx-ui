@@ -3,20 +3,38 @@ import { TreeViewModes } from "./treeview";
 
 // Singleton
 class Typeaheads {
-  init(treeView) {
+  init(treeView, scatterplot) {
     this.mode = treeView.mode;
+    this.scatterplot = scatterplot;
     this.initTreeViewSearch(treeView);
+  }
+
+  setMode(mode) {
+    this.mode = mode;
   }
 
   initTreeViewSearch(treeView) {
     $('#tree-view-search').typeahead({
       source: (query, callback) => {
-        ApiHelper.findDisease(query)
-          .then((x) => x.results)
-          .then(callback);
+        if (this.mode === TreeViewModes.DISEASE) {
+          ApiHelper.findDisease(query)
+            .then((x) => x.results)
+            .then(callback);
+        }
+        else if (this.mode === TreeViewModes.TARGET) {
+          ApiHelper.findTarget(query, true)
+            .then(data => data.results)
+            .then(callback);
+        }
       },
       displayText: (x) => `${x.name.charAt(0).toLocaleUpperCase() + x.name.slice(1)}`,
-      afterSelect: (x) => treeView.expandToNode(x.id)
+      afterSelect: (x) => {
+        // start loading plot for selection
+        this.scatterplot.loadPlot(this.mode, x.id, x);
+        // expand the tree view to selected node
+        if (this.mode === TreeViewModes.DISEASE) treeView.expandToNode(x.id, true);
+        else ApiHelper.getDTO(x.dtoid).then(data => treeView.expandToNode(data, true));
+      }
     });
   }
 

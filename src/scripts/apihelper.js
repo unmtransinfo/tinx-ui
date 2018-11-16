@@ -31,6 +31,18 @@ class ApiHelper {
     // Create the final URL to request
     const url = `${config.API_ROOT}${endpointWithParams}`;
 
+    return this.makeSimpleRequest(url, method, data);
+  }
+
+  /**
+   * Makes a request to the TIN-X API and returns a Promise with the response.
+   *
+   * @param {string} url:     full URL of the endpoint to hit
+   * @param {string} method:  request method
+   * @param {Object} data:    payload data to submit as a post body or url parameters
+   * @returns {Promise<any>} The response
+   */
+  makeSimpleRequest(url, method, data = {}) {
     return new Promise((resolve, reject) =>
       $.ajax({
         url: url,
@@ -99,6 +111,55 @@ class ApiHelper {
       data: {limit, offset}
     });
 
+  }
+
+  getDTOs(hasParent = null) {
+    const data = hasParent ? {'has_parent': hasParent} : {};
+    return this.makeRequest({
+      method: 'GET',
+      endpoint: '/dto/',
+      data
+    });
+  }
+
+  getDTO(dtoId) {
+    return this.makeRequest({
+      method: 'GET',
+      endpoint: '/dto/:dtoId/',
+      params: { dtoId }
+    });
+  }
+
+  getDTOChildren(dtoId) {
+    return this.makeRequest({
+      method: 'GET',
+      endpoint: '/dto/:dtoId/children/',
+      params: { dtoId }
+    });
+  }
+
+  getTargetDiseases(targetId, limit = 100, offset = 0) {
+    return this.makeRequest({
+      method: 'GET',
+      endpoint: '/targets/:targetId/diseases/',
+      params: { targetId },
+      data: { limit, offset }
+    });
+  }
+
+  getDTOParent(parentUrl) {
+    return this.makeSimpleRequest(parentUrl, 'GET');
+  }
+
+  findTarget(query, inDto) {
+    const data = {search: query};
+    if (inDto) data['in_dto'] = 2;
+
+    return this.makeRequest({
+      method: 'GET',
+      endpoint: '/targets/',
+      data
+    });
   }
 }
 

@@ -8,11 +8,11 @@ mixin navbar
     #navbarSupportedContent.collapse.navbar-collapse
       ul.navbar-nav.mr-auto
         li.nav-item.active
-          a.nav-link(href="#") Browse Diseases
+          a.nav-link(href="#" data-value="disease") Browse Diseases
         li.nav-item
-          a.nav-link(href="#") Browse Targets
+          a.nav-link(href="#" data-value="target") Browse Targets
         li.nav-item
-          a.nav-link(href="#") About
+          a.nav-link(href="#" data-value="about") About
 
       a(target="_blank", href="http://medicine.unm.edu/academic-divisions/translational-informatics/index.html")
         img(src="./public/som-logo2.png", height="30px")

@@ -30,12 +30,25 @@ class TreeView {
    */
   init() {
     this.$elem.empty();
-    return this._getChildren(this._rootNodeId())
-      .then((data) => {
-        data.forEach((disease) =>
-          this.$elem.append(this._makeListItem(disease))
-        );
-      });
+
+    return this._getRootNodes().then(data => {
+      if (data && Array.isArray(data)) return this.appendTreeItems(data);
+
+      const { results = [] } = data;
+      this.appendTreeItems(results);
+    }).catch(e => {
+      console.error(e);
+    });
+  }
+
+  /**
+   * Updates the tree view mode ('disease' or 'target') and re-initializes
+   *
+   * @param {string} mode:    new mode
+   */
+  setMode(mode) {
+    this.mode = mode;
+    this.init();
   }
 
   /**
@@ -51,14 +64,20 @@ class TreeView {
    * Expand the TreeView to the node with a specific ID and mark that node as
    * selected.
    *
-   * @param nodeId The node to which to expand the TreeView.
+   * @param {Object|number} nodeData:  Data for the node to which to expand the TreeView. Will be
+   *                                   a number if in Disease mode, or an object if in Target mode
+   * @param {boolean?} plotLoaded:     Whether or not we have begun loading the plot for selected node
    */
-  expandToNode(nodeId) {
+  expandToNode(nodeData, plotLoaded = false) {
     this.collapseAll();
     this.$elem.find('li.tree-node.selected').removeClass('selected');
 
+    const getAncestors = this.mode === TreeViewModes.DISEASE ?
+      this._getDiseaseAncestorIds.bind(this) :
+      this._getDtoAncestorIds.bind(this);
+
     // Get the list of ancestors for this node. Then expand each one
-    this._getAncestorIds(nodeId).then((ids) => {
+    getAncestors(nodeData).then((ids) => {
       // We're going to continually add new tasks to the end of this promise
       let promise = Promise.resolve();
 
@@ -70,8 +89,9 @@ class TreeView {
           });
 
           // If it's the node to which we're expanding, mark it selected
+          const nodeId = this.mode === TreeViewModes.DISEASE ? nodeData : nodeData.id;
           if ($node.data('nodeId') === nodeId)
-            this._select($node);
+            this._select($node, plotLoaded);
 
           // Expand the node
           return this._toggleNodeCollapse($node);
@@ -90,6 +110,12 @@ class TreeView {
     this.selectionChangeHandler = func;
   }
 
+  appendTreeItems(data) {
+    data.forEach(item => {
+      this.$elem.append(this._makeListItem(item));
+    });
+  }
+
   /**
    * Retrieve the ID of the root node for the current mode.
    * @private
@@ -102,6 +128,16 @@ class TreeView {
     }
   }
 
+  _getRootNodes() {
+    switch (this.mode) {
+      case TreeViewModes.DISEASE:
+        return ApiHelper.getDiseaseChildren(this._rootNodeId());
+      case TreeViewModes.TARGET:
+        return ApiHelper.getDTOs(3);
+      default: throw `Unknown TreeViewMode: ${this.mode}`;
+    }
+  }
+
   /**
    * Retrieve the children of the given ID for the current mode.
    * @private
@@ -109,6 +145,7 @@ class TreeView {
   _getChildren(id) {
     switch (this.mode) {
       case TreeViewModes.DISEASE: return ApiHelper.getDiseaseChildren(id);
+      case TreeViewModes.TARGET: return ApiHelper.getDTOChildren(id);
       default: throw `Unknown TreeViewMode: ${this.mode}`;
     }
   }
@@ -146,26 +183,50 @@ class TreeView {
 
   /**
    * Retrieve an array containing the IDs of all ancestors (in order from top
-   * to bottom) of the given ID.
+   * to bottom) of the given disease ID.
    *
    * @param {int} id - The ID whose ancestors we want to find.
    * @returns {Promise} - A Promise of an array of IDs.
    * @private
    */
-  _getAncestorIds(id) {
-    const getParent = this.mode === TreeViewModes.DISEASE
-      ? ApiHelper.getDiseaseParent.bind(ApiHelper)
-      : undefined;
-
+  _getDiseaseAncestorIds(id) {
     const addParents = (id, ls) => {
       ls.unshift(id);
-      return getParent(id).then((parent) => {
-        if (parent.id && parent.id !== this._rootNodeId()) return addParents(parent.id, ls);
-        else return ls;
+      return ApiHelper.getDiseaseParent(id).then(parent => {
+        const { id } = parent;
+        if (id && id !== this._rootNodeId()) return addParents(id, ls);
+        return ls;
       });
     };
 
     return addParents(id, []);
+  }
+
+  /**
+   * Retrieve an array containing the IDs of all ancestors (in order from top
+   * to bottom) of the given DTO.
+   *
+   * @param {Object} dto - The  DTO whose ancestors we want to find.
+   * @param {number} dto.id - The DTO's ID
+   * @param {string} dto.parent - URL pointing to the DTO's parent
+   * @returns {Promise} - A Promise of an array of IDs.
+   * @private
+   */
+  _getDtoAncestorIds(dto) {
+    const addParents = (data, ls) => {
+      const { id, parent: parentUrl } = data;
+      ls.unshift(id);
+
+      return ApiHelper.getDTOParent(parentUrl).then(parentDto => {
+        const { parent: newParentUrl } = parentDto;
+        if (newParentUrl && newParentUrl.length) return addParents(parentDto, ls);
+
+        ls.unshift(parentDto.id);
+        return ls;
+      });
+    };
+
+    return addParents(dto, []);
   }
 
   /**
@@ -204,9 +265,9 @@ class TreeView {
     return Promise.resolve();
   }
 
-  _select($node) {
+  _select($node, plotLoaded = false) {
     $node.addClass('selected');
-    this.selectionChangeHandler($node.data());
+    this.selectionChangeHandler($node.data(), plotLoaded);
   }
 }
 
