@@ -19,7 +19,7 @@ $(window).on("load", () => {
 
   Typeaheads.init(treeView, scatterplot);
 
-  const filters = new Filters(filters => {
+  const filters = new Filters(TreeViewModes.DISEASE, filters => {
     scatterplot.filterData(filters);
   });
 
@@ -64,6 +64,10 @@ $(window).on("load", () => {
     if ("target" in d) {
       detailmodal.show(d.target, subjectDetails);
     }
+
+    if ("disease" in d) {
+      detailmodal.show(subjectDetails, d.disease);
+    }
   });
 
   // The plot finishes loading
@@ -91,6 +95,7 @@ $(window).on("load", () => {
     if (value !== 'about') {
       Typeaheads.setMode(value);
       treeView.setMode(value);
+      filters.setMode(value);
     }
   });
 

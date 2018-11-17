@@ -22,6 +22,9 @@ const margin = {
 function updateTargetDetails(div, target) {
   if (typeof div === "string") div = d3.select(div);
 
+  div.select('.main-row').style('display', null);
+  div.select('.summary-row').style('display', 'none');
+
   // Update values
   div.select('.value.full-name').text(target.name);
   div.select('.value.family').text(target.famext || target.fam || '(Unknown)');
@@ -54,6 +57,14 @@ function updateTargetDetails(div, target) {
     .select('span')
     .text(target.fam || 'Uncategorized');
 
+}
+
+function updateDiseaseDetails(div, disease) {
+  if (typeof div === "string") div = d3.select(div);
+  div.select('.main-row').style('display', 'none');
+  const summaryRow = div.select('.summary-row');
+  summaryRow.style('display', null);
+  summaryRow.select('p').text(disease.summary);
 }
 
 /**
@@ -160,15 +171,20 @@ class Scatterplot {
   selectAndShowTooltip(selected) {
     const that = this;
 
-    const { target = {} } = selected;
-    const { id: selectedId } = target;
+    const { target, disease }  = selected;
+    const selectedId = this.currentMode === TreeViewModes.DISEASE ? target.id : disease.id;
+    // const { id: selectedId } = target;
 
-    if (!selectedId) return;
+    if (!selectedId) {
+      console.error('Missing ID for selected data item', selected);
+      return;
+    }
 
     const point = this.svg.selectAll('g .datapoint').filter(function(d) {
       if (!d) return false;
-      const { target = {} } = d;
-      const { id: pointId } = target;
+      const { target, disease } = d;
+      // const { id: pointId } = target;
+      const pointId = that.currentMode === TreeViewModes.DISEASE ? target.id : disease.id;
       return pointId && selectedId === pointId;
     }).filter((d, i) => i === 0);
 
@@ -386,7 +402,7 @@ class Scatterplot {
    */
   showTooltip(d, elem, forSearchItem = false) {
     const that = this;
-    const {target} = d;
+    const { target, disease } = d;
 
     this.clearTooltip(true);
     this.svg.classed('tooltip-visible', true);
@@ -410,8 +426,9 @@ class Scatterplot {
     // Absolute top of the tooltip
     const top = (pointRect.y - pointRect.height / 2) - tooltipRect.height / 2 + window.scrollY;
 
-    tooltipDiv.select('.popover-header').text(target.sym);
-    updateTargetDetails(tooltipDiv, target);
+    const tooltipHeader = this.currentMode === TreeViewModes.DISEASE ? target.sym : disease.name;
+    tooltipDiv.select('.popover-header').text(tooltipHeader);
+    this.currentMode === TreeViewModes.DISEASE ? updateTargetDetails(tooltipDiv, target) : updateDiseaseDetails(tooltipDiv, disease);
 
     tooltipDiv
       .style('left', `${left}px`)
@@ -424,7 +441,7 @@ class Scatterplot {
 
     if (forSearchItem) {
       tooltipDiv.style('pointer-events', 'auto');
-      tooltipActions.style('visibility', 'visible');
+      tooltipActions.style('display', null);
       const detailsButton = tooltipActions.select('#view-details-button');
       const closeButton = tooltipActions.select('#close-modal-button');
 
@@ -440,7 +457,7 @@ class Scatterplot {
     }
     else {
       tooltipDiv.style('pointer-events', 'none');
-      tooltipActions.style('visibility', 'hidden');
+      tooltipActions.style('display', 'none');
     }
   }
 

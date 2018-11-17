@@ -1,10 +1,13 @@
+import {TreeViewModes} from "./treeview";
 import $ from 'jquery';
 
 class Filters {
-  constructor(onUpdate) {
+  constructor(mode, onUpdate) {
     this.reset();
     this.init();
     this.onUpdate = onUpdate;
+    this.mode = mode;
+    this.filterDropdown = $('#filter-dropdown');
   }
 
   init() {
@@ -45,6 +48,12 @@ class Filters {
     $.each($('#filter-menu').find('input'), function(idx, val) {
       $(val).prop('checked', true);
     });
+  }
+
+  setMode(mode) {
+    this.mode = mode;
+    if (this.mode === TreeViewModes.DISEASE) this.filterDropdown.show();
+    else this.filterDropdown.hide();
   }
 }
 
