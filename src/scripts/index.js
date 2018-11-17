@@ -8,16 +8,22 @@ import { TreeView, TreeViewModes } from "./treeview";
 import { Scatterplot } from './scatterplot';
 import DetailModal from './detailmodal';
 import Filters from './filters';
+import Helpers from './helpers';
+import ApiHelper from './apihelper';
+import ShareChart from "./share-chart";
+
 
 $(window).on("load", () => {
+  const defaultThreshold = 300;
+  const shareChart = new ShareChart();
   const scatterplot = new Scatterplot('#plot-container');
-
   const treeView = new TreeView('#tree-view', TreeViewModes.DISEASE);
-  treeView.init();
-
   const detailmodal = new DetailModal('#detail-modal');
 
+  treeView.init();
   Typeaheads.init(treeView, scatterplot);
+
+  checkUrlParams();
 
   const filters = new Filters(TreeViewModes.DISEASE, filters => {
     scatterplot.filterData(filters);
@@ -25,7 +31,7 @@ $(window).on("load", () => {
 
   // User selects something from the treeview
   treeView.onSelectionChange((data, plotLoaded = false) => {
-    const defaultThreshold = 300;
+    const { mode, nodeId, details } = data;
     $('#threshold-slider').attr('max', 2000).val(defaultThreshold).attr('disabled', false);
     if (!plotLoaded) {
       if (data.mode === TreeViewModes.DISEASE) scatterplot.loadPlot(data.mode, data.nodeId, data.details, defaultThreshold);
@@ -38,11 +44,16 @@ $(window).on("load", () => {
       }
     }
 
-    if (data.mode === TreeViewModes.DISEASE) {
+    if (nodeId && mode) {
+      shareChart.close();
+      shareChart.setUrl(nodeId, mode);
+    }
+
+    if (mode === TreeViewModes.DISEASE) {
       $('#plot-title span.title').text('Targets associated with ');
-      $('#plot-title a').text(data.details.name)
+      $('#plot-title a').text(details.name)
         .attr('href',
-          `http://disease-ontology.org/term/${encodeURIComponent(data.details.doid)}`);
+          `http://disease-ontology.org/term/${encodeURIComponent(details.doid)}`);
     }
     else if (data.mode === TreeViewModes.TARGET) {
       const { details } = data;
@@ -102,5 +113,20 @@ $(window).on("load", () => {
   // Prevent FOUC issue
   // TODO: Maybe present a spinner instead?
   $('body').css({visibility: 'inherit'});
+
+  /**
+   * Check for URL params and populate the chart with appropriate
+   * data if any are present
+   */
+  function checkUrlParams() {
+    const diseaseParam = Helpers.getUrlParam('disease');
+
+    if (diseaseParam) {
+      ApiHelper.getDisease(diseaseParam).then(data => {
+        scatterplot.loadPlot(TreeViewModes.DISEASE, data.id, data, defaultThreshold);
+        treeView.expandToNode(data.id);
+      }).catch(e => console.log(e));
+    }
+  }
 });
 

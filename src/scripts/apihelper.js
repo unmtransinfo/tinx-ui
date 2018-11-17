@@ -82,6 +82,20 @@ class ApiHelper {
   }
 
   /**
+   * Retrieves the specified disease
+   *
+   * @param {number} diseaseId:   target disease ID
+   * @returns {Promise<any>}
+   */
+  getDisease(diseaseId) {
+    return this.makeRequest({
+      method: 'GET',
+      endpoint: '/diseases/:diseaseId',
+      params: { diseaseId }
+    });
+  }
+
+  /**
    * Gets the parent of a disease.
    * @param diseaseId
    * @returns {Promise<any>}

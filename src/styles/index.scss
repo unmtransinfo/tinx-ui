@@ -46,9 +46,26 @@ body {
   }
 }
 
+.share-chart-popover {
+  .popover-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .share-chart-content {
+    display: flex;
+    flex-direction: column;
+    input {
+      margin-top: 5px;
+    }
+  }
+}
+
+
 #main-plot-area {
   // TODO: Lift to mixin
-  height: calc(100% - 56px - 20px);
+  height: calc(100% - 56px - 50px);
   width: 80%;
   left: 20%;
   top: 56px;
@@ -57,14 +74,24 @@ body {
 
   #plot-container {
     width: 100%;
-    height: calc(100% - 72px - 45px);
+    height: calc(100% - 72px - 60px);
   }
 
   #plot-header {
+    width: 100%;
     padding-left: 40px;
     margin-top: 10px;
     h2 {
       font-size: 20px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      width: 98%;
+      height: 40px;
+      i, span, a {
+        line-height: 40px;
+        vertical-align: middle;
+      }
     }
 
     #filter-container {
