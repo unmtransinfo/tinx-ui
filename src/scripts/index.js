@@ -11,7 +11,7 @@ import Filters from './filters';
 import Helpers from './helpers';
 import ApiHelper from './apihelper';
 import ShareChart from "./share-chart";
-
+import Exporter from "./exporter";
 
 $(window).on("load", () => {
   const defaultThreshold = 300;
@@ -19,6 +19,7 @@ $(window).on("load", () => {
   const scatterplot = new Scatterplot('#plot-container');
   const treeView = new TreeView('#tree-view', TreeViewModes.DISEASE);
   const detailmodal = new DetailModal('#detail-modal');
+  const exporter = new Exporter(TreeViewModes.DISEASE);
 
   treeView.init();
   Typeaheads.init(treeView, scatterplot);
@@ -82,7 +83,8 @@ $(window).on("load", () => {
   });
 
   // The plot finishes loading
-  scatterplot.onPlotLoaded((datapoints, totalCount) => {
+  scatterplot.onPlotLoaded((datapoints, totalCount, subjectDetails) => {
+    exporter.setData(datapoints, subjectDetails);
     $('#threshold-slider').attr('max', totalCount < 2000 ? totalCount : 2000);
     filters.reset();
     Typeaheads.initDataSearch(datapoints, (selected) => {
@@ -103,11 +105,7 @@ $(window).on("load", () => {
     const value = elem.find('.nav-link').data('value');
 
     //TODO: handle about section
-    if (value !== 'about') {
-      Typeaheads.setMode(value);
-      treeView.setMode(value);
-      filters.setMode(value);
-    }
+    if (value !== 'about') onModeUpdate(value);
   });
 
   // Prevent FOUC issue
@@ -127,6 +125,19 @@ $(window).on("load", () => {
         treeView.expandToNode(data.id);
       }).catch(e => console.log(e));
     }
+  }
+
+  /**
+   * Invoked when user switches between modes (target/disease).
+   * Updates modes in various components
+   *
+   * @param {string} value: new mode
+   */
+  function onModeUpdate(value) {
+    Typeaheads.setMode(value);
+    treeView.setMode(value);
+    filters.setMode(value);
+    exporter.setMode(value);
   }
 });
 

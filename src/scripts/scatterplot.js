@@ -130,7 +130,7 @@ class Scatterplot {
         this.redraw();
 
         if (this.plotLoadedHandler)
-          this.plotLoadedHandler(this.datapoints, data.count);
+          this.plotLoadedHandler(this.datapoints, data.count, this.subjectDetails);
       });
     }
     else if (mode === TreeViewModes.TARGET) {
@@ -146,7 +146,7 @@ class Scatterplot {
         this.redraw();
 
         if (this.plotLoadedHandler)
-          this.plotLoadedHandler(this.datapoints, data.count);
+          this.plotLoadedHandler(this.datapoints, data.count, this.subjectDetails);
       });
     }
   }
