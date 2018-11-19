@@ -170,13 +170,22 @@ class TreeView {
     // Capitalize the first letter of the object's name
     const capitalName = obj.name[0].toLocaleUpperCase() + obj.name.slice(1);
 
+    let childCount = null;
+    if (this.mode === TreeViewModes.DISEASE) {
+      childCount = obj.num_important_targets;
+    }
+    else if (this.mode === TreeViewModes.TARGET) {
+      const { target } = obj;
+      if (target && Array.isArray(target) && target.length) childCount = target[0].num_important_diseases;
+    }
+
     return $("<li>")
       .addClass("expandable tree-node")
       .data({ nodeId: obj.id, mode: this.mode, details: obj })
       .click(onClick.bind(this))
       .append(
         $("<span>").addClass("btn").text(capitalName).append(
-          $("<span>").addClass("badge badge-light").text(obj.num_important_targets)
+          $("<span>").addClass("badge badge-light").text(childCount)
         )
       );
   }
