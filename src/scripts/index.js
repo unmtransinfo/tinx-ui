@@ -20,6 +20,7 @@ $(window).on("load", () => {
   const treeView = new TreeView('#tree-view', TreeViewModes.DISEASE);
   const detailmodal = new DetailModal('#detail-modal');
   const exporter = new Exporter(TreeViewModes.DISEASE);
+  const aboutModal = $('#about-modal');
 
   treeView.init();
   Typeaheads.init(treeView, scatterplot);
@@ -104,8 +105,8 @@ $(window).on("load", () => {
 
     const value = elem.find('.nav-link').data('value');
 
-    //TODO: handle about section
     if (value !== 'about') onModeUpdate(value);
+    else aboutModal.modal({ show: true });
   });
 
   // Prevent FOUC issue
