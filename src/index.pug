@@ -16,6 +16,7 @@ html(lang='en')
     meta(name="Description", content="TIN-X is an interactive visualization tool for discovering interesting associations between diseases and potential drug targets. We used natural language processing to identify disease and protein mentions in the text of PubMed abstracts. Using this data, we derived two metrics: novelty and importance. Novelty measures the relative scarcity of specific publications about a given concept (such as a target or a disease), while importance measures the relative strength of the association between two concepts. We then built this web tool, which enables users to explore the relationships between the novelty of potential drug targets and their importance to diseases.")
     meta(name="viewport", content="width=device-width, initial-scale=1")
     link(rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous")
+    link(href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css')
   body(style="visibility: hidden;")
     +scatterplot-tooltip
     +general-tooltip
@@ -23,7 +24,10 @@ html(lang='en')
 
     #tree-view-container
       .container
-        input#tree-view-search.typeahead(autocomplete="off")
+        .input-container
+          .icon-container
+            i.fa.fa-search
+          input#tree-view-search.typeahead(autocomplete="off")
 
         ul#tree-view
 

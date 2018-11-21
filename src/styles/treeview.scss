@@ -14,13 +14,47 @@
 
     /* Selected node item */
     &.selected > span.btn {
-      background: #337ab7;
-      border-color: #2e6da4;
+      background: $turquoise;
       color: white;
 
+      .badge {
+        color: white;
+      }
+
       &:hover {
-        background: darken(#337ab7, 10%);
-        border-color: darken(#236da4, 10%);
+        background: darken($turquoise, 5%);
+        border-color: darken($turquoise, 5%);
+      }
+    }
+
+    & > ul > li.tree-node {
+
+      &.selected > span.btn {
+        background: $turquoise;
+        color: white;
+
+        .badge {
+          color: white;
+        }
+
+        &:hover {
+          background: darken($turquoise, 5%);
+          border-color: darken($turquoise, 5%);
+        }
+      }
+
+      span.btn {
+        background: $light-grey;
+
+        &:hover {
+          background: $turquoise;
+          border-color: $turquoise;
+          color: white;
+
+          .badge {
+            color: white;
+          }
+        }
       }
     }
 
@@ -28,19 +62,21 @@
       width: 100%;
       text-align: left;
       font-size: 14px;
+      font-weight: 600;
       white-space: nowrap;
       overflow: hidden;
       -ms-text-overflow: ellipsis;
       text-overflow: ellipsis;
 
-      background: white;
-      border: 1px solid $alto-grey;
+      background: $faint-blue;
+      border: 1px solid $turquoise;
+      color: $turquoise;
       padding-right: 0;
 
       position: relative;
 
       &:hover {
-        background: $alto-grey;
+        background: white;
       }
 
       .badge {
@@ -52,9 +88,9 @@
         padding-bottom: 3px;
         text-align: center;
         width: 40px;
-        background: #e9ecef;
-        font-weight: 600;
-        color: #555;
+        background: inherit;
+        color: $turquoise;
+        font-weight: 300;
         letter-spacing: 0.2px;
       }
 

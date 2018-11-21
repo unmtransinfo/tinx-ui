@@ -5,6 +5,8 @@
 @import 'loading-spinner';
 @import 'detail-modal';
 @import 'about-modal';
+@import 'fonts';
+@import url(https://fonts.googleapis.com/css?family=Roboto);
 
 
 .hide {
@@ -19,6 +21,7 @@ body {
   // TODO: Lift to mixin
   height: calc(100% - 56px);
   width: 100%;
+  font-family: $roboto;
 }
 
 #tree-view-container {
@@ -30,21 +33,46 @@ body {
   // TODO: Lift to mixin
   min-height: calc(100% - 20px);
 
-  input#tree-view-search {
-    width: 100%;
-    font-size: 18px;
+  .input-container {
+    display: flex;
     border-radius: 8px;
-    border: 2px solid #ccc;
-    padding: 8px 12px;
+    border: 2px solid $med-grey;
+    background: white;
     margin-bottom: 16px;
 
-    &:focus {
-      border: 2px solid #0097cf;
+    &:focus-within {
+      border-color: $turquoise;
+
+      .icon-container {
+        color: $turquoise;
+      }
+    }
+
+    input#tree-view-search {
+      flex: 1;
+      font-size: 18px;
       border-radius: 8px;
-      outline-offset: 0;
-      outline: none;
+      border: none;
+      color: $med-grey;
+      padding: 8px 12px;
+
+      &:focus {
+        border: none;
+        outline-offset: 0;
+        outline: none;
+      }
+    }
+
+    .icon-container {
+      flex: 0 0 10%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: $med-grey;
     }
   }
+
+
 }
 
 .share-chart-popover {
