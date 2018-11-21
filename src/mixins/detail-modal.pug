@@ -1,10 +1,10 @@
 include ./loading-spinner
 
 mixin disease-details
-  .card.disease-details.border-info
-    .card-header.disease-name.text-white.bg-info
+  section.disease-details
+    .section-header.disease-name
       | Panel heading
-    .card-body
+    .section-body
       p
         span.disease-summary | My content
         a.read-more(href="#" target="#_blank")
@@ -24,25 +24,24 @@ mixin detail-row-link(label, classname)
       a(href="#" target="_blank")
 
 mixin target-details
-  .card.target-details.border-info
-    .card-header.target-name.text-white.bg-info
+  section.target-details
+    .section-header.target-name
       | Panel heading
-    .card-body
-      .container
-        .row.main-row
-          .col-8.details-col
-            +detail-row("Full name", "full-name")
-            +detail-row("Family", "family")
-            +detail-row-link("Pharos", "pharos")
-            +detail-row-link("DrugCentral", "drug-central")
-            +detail-row-link("DTO ID", "dto-id")
+    .section-body
+      .row.main-row
+        .col-8.details-col
+          +detail-row("Full name", "full-name")
+          +detail-row("Family", "family")
+          +detail-row-link("Pharos", "pharos")
+          +detail-row-link("DrugCentral", "drug-central")
+          +detail-row-link("DTO ID", "dto-id")
 
 
-          .col-4.badge-col
-            .badge.badge-tdl(role="alert")
-              span Test
-            .badge.badge-idgfam(role="alert")
-              span Test
+        .col-4.badge-col
+          .badge.badge-tdl(role="alert")
+            span Test
+          .badge.badge-idgfam(role="alert")
+            span Test
 
 mixin article-paginator
   nav.article-paginator(aria-label="...")
@@ -76,7 +75,6 @@ mixin detail-modal
         .modal-body
           +disease-details
           +target-details
-          hr
           +article-paginator
           +loading-spinner
 
@@ -94,6 +92,6 @@ mixin detail-modal
               .card-body
                 p
                   | Here is the very long text that I have to offer to you.
-                a.btn.btn-primary.btn-sm.pubmed-link(href="#" target="_blank")
+                a.btn.btn-secondary.btn-sm.pubmed-link(href="#" target="_blank")
                   | View on PubMed
 

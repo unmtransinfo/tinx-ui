@@ -22,6 +22,41 @@ body {
   height: calc(100% - 56px);
   width: 100%;
   font-family: $roboto;
+
+  a {
+    color: $turquoise;
+
+    &:hover {
+      color: darken($turquoise, 10%);
+      text-decoration: none;
+    }
+  }
+}
+
+.modal {
+  section {
+    border-bottom: 1px solid #e9ecef;
+    color: $dark-grey;
+    margin-bottom: 20px;
+    padding: 10px 0;
+
+    .section-header {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .section-body {
+      font-size: 14px;
+    }
+  }
+
+  &#about-modal {
+    section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+  }
 }
 
 #tree-view-container {

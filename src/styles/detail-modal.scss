@@ -11,7 +11,6 @@
   }
 
   .target-details {
-    margin-top: 20px;
     @extend %target-details;
   }
 
@@ -20,12 +19,26 @@
     margin: 25px 0 25px 0;
   }
 
+  .article-paginator {
+    margin-top: 20px;
+
+    .page-item:not(.disabled) .page-link {
+      color: $turquoise;
+    }
+  }
+
   #article-list {
     margin-bottom: 20px;
 
     .card {
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid $turquoise;
+
       &:hover, &:hover .card-header {
         background: $alto-grey;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
       }
 
       .collapse-toggle:not(.collapsed):not(:hover) .card-header {
@@ -35,10 +48,13 @@
       a.collapse-toggle {
         text-decoration: none;
         color: black;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
       }
 
       .article-title {
-        font-size: 18px;
+        font-size: 16px;
+        color: $turquoise;
       }
 
       .article-authors, .article-journal {
@@ -52,6 +68,8 @@
         font-size: 14px;
         background: white;
         text-align: center;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
 
         .card-body { padding: 0; }
 

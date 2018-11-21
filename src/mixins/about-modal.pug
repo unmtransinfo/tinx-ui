@@ -1,8 +1,8 @@
 mixin overview-row
-    .card.overview.border-info
-        .card-header.text-white.bg-info
+    section.overview
+        .section-header
             | Overview
-        .card-body
+        .section-body
             p NewDrugTargets.org is an interactive visualization tool for discovering interesting associations between diseases and potential drug targets.
             p.
                 span We used natural language processing to identify disease and protein mentions in the text
@@ -20,10 +20,10 @@ mixin overview-row
             p For more details about how these scores are computed, please see <a href="static/poster.pdf" target="_blank">this poster</a>.
 
 mixin publications-row
-    .card.overview.border-info
-        .card-header.text-white.bg-info
+    section.publications
+        .section-header
             | Publications
-        .card-body
+        .section-body
             ul
                 li.
                     Cannon, D.C., Yang, J.J., Mathias, S.L., Ursu, O., Mani, S., Waller, A., Schürer, S.C., Jensen, L.J.,
@@ -31,19 +31,19 @@ mixin publications-row
                     href="https://doi.org/10.1093/bioinformatics/btx200">TIN-X: target importance and novelty explorer</a>. Bioinformatics.
 
 mixin feedback-row
-    .card.overview.border-info
-        .card-header.text-white.bg-info
+    section.feedback
+        .section-header
             | Feedback
-        .card-body
+        .section-body
             p.
                 Please report any bugs you find and send us suggestions for new features using our
                 <a href="https://bitbucket.org/dccannon/tin-x" target="_blank">Bitbucket Issue Tracker</a>.
 
 mixin team-row
-    .card.overview.border-info
-        .card-header.text-white.bg-info
+    section.team
+        .section-header
             | Our Team
-        .card-body
+        .section-body
             p.
                 NewDrugTargets.org was a collaborative effort involving many researchers from the University of New Mexico,
                 the University of Copenhagen, and the University of Miami. The main contributors are listed below:
@@ -60,20 +60,20 @@ mixin team-row
                     a(href="https://www.researchgate.net/profile/Stephan_Schurer" target="_blank") Stephan Schürer
 
 mixin funding-row
-    .card.overview.border-info
-        .card-header.text-white.bg-info
+    section.funding
+        .section-header
             | Funding
-        .card-body
+        .section-body
             p.
                 NewDrugTargets.org was funded by the
                 <a href="http://commonfund.nih.gov/idg/overview" target="_blank">Illuminating the Druggable Genome (IDG) Project</a>
                 (<a href="http://projectreporter.nih.gov/project_info_description.cfm?aid=8785271&icde=24069131&ddparam=&ddvalue=&ddsub=&cr=3&csb=default&cs=ASC" target="_blank">U54 CA189205-01</a>).
 
 mixin update-row
-    .card.overview.border-info
-        .card-header.text-white.bg-info
+    section.update
+        .section-header
             | Last Update
-        .card-body
+        .section-body
             p The data in this application was last updated on:
 
 mixin about-modal
