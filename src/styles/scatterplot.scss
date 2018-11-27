@@ -44,6 +44,16 @@ svg.scatterplot {
     &.tdl-Tbio { @include stroke-and-fill($color-Tbio); }
     &.tdl-Tchem { @include stroke-and-fill($color-Tchem); }
     &.tdl-Tclin { @include stroke-and-fill($color-Tclin); }
+
+    &.disease.disease-by-infectious-agent { @include stroke-and-fill($color-disease-by-infectious-agent); }
+    &.disease.disease-of-anatomical-entity { @include stroke-and-fill($color-disease-of-anatomical-entity); }
+    &.disease.disease-of-cellular-proliferation { @include stroke-and-fill($color-disease-of-cellular-proliferation); }
+    &.disease.disease-of-mental-health { @include stroke-and-fill($color-disease-of-mental-health); }
+    &.disease.disease-of-metabolism { @include stroke-and-fill($color-disease-of-metabolism); }
+    &.disease.genetic-disease { @include stroke-and-fill($color-genetic-disease); }
+    &.disease.physical-disorder { @include stroke-and-fill($color-physical-disorder); }
+    &.disease.syndrome { @include stroke-and-fill($color-syndrome); }
+    &.disease.unknown { @include stroke-and-fill($color-unknown); }
   }
 
   text.label {
@@ -129,6 +139,16 @@ svg.scatterplot {
           &.Tchem { background: $color-Tchem; }
           &.Tbio { background: $color-Tbio; }
           &.Tdark { background: $color-Tdark; }
+
+          &.disease-by-infectious-agent { background: $color-disease-by-infectious-agent; }
+          &.disease-of-anatomical-entity { background: $color-disease-of-anatomical-entity; }
+          &.disease-of-cellular-proliferation { background: $color-disease-of-cellular-proliferation; }
+          &.disease-of-mental-health { background: $color-disease-of-mental-health; }
+          &.disease-of-metabolism { background: $color-disease-of-metabolism; }
+          &.genetic-disease { background: $color-genetic-disease; }
+          &.physical-disorder { background: $color-physical-disorder; }
+          &.syndrome { background: $color-syndrome; }
+          &.unknown { background: $color-unknown; }
         }
       }
 

@@ -19,6 +19,16 @@ $color-NR:     #AFD8F8;
 $color-ION:    #CB4B4B;
 $color-KINASE: #4FA74D;
 
+$color-disease-by-infectious-agent: #d73027;
+$color-disease-of-anatomical-entity: #f46d43;
+$color-disease-of-cellular-proliferation: #fdae61;
+$color-disease-of-mental-health: #8c510a; // #fee090;
+$color-disease-of-metabolism: #9970ab; //#e0f3f8;
+$color-genetic-disease: #abd9e9;
+$color-physical-disorder: #74add1;
+$color-syndrome: #4575b4;
+$color-unknown: black;
+
 
 @mixin stroke-and-fill($color) {
   stroke: $color;

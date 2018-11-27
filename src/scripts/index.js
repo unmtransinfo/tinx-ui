@@ -105,6 +105,11 @@ $(window).on("load", () => {
 
     const value = elem.find('.nav-link').data('value');
 
+    $('body').attr('data-mode', value);
+    scatterplot.clear();
+    $('#plot-title span.title').text('');
+    $('#plot-title a').text('');
+
     if (value !== 'about') onModeUpdate(value);
     else aboutModal.modal({ show: true });
   });

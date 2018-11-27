@@ -12,7 +12,7 @@ mixin shape-legend-item(label)
       =label
 
 mixin target-legend
-  .row.legend-row
+  .row.legend-row.only-show-on-disease
     .col-sm-4
       .card
         .card-body
@@ -36,3 +36,20 @@ mixin target-legend
             +shape-legend-item("KINASE")
             +shape-legend-item("NR")
             +shape-legend-item("Other")
+
+mixin disease-legend
+  .row.legend-row.only-show-on-target
+    .col-sm-12
+      .card
+        .card-body
+          h5
+            | Colors Indicate Category of Disease
+          .legend-items
+            +color-legend-item("Infectious agent", "disease-by-infectious-agent")
+            +color-legend-item("Anatomical entity", "disease-of-anatomical-entity")
+            +color-legend-item("Cellular proliferation", "disease-of-cellular-proliferation")
+            +color-legend-item("Mental health", "disease-of-mental-health")
+            +color-legend-item("Metabolism", "disease-of-metabolism")
+            +color-legend-item("Genetic disease", "genetic-disease")
+            +color-legend-item("Physical disorder", "physical-disorder")
+            +color-legend-item("Syndrome", "syndrome")

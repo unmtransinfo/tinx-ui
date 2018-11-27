@@ -102,6 +102,11 @@ class Scatterplot {
     this._initLegend();
   }
 
+  clear() {
+    this.datapoints = [];
+    this.redraw();
+  }
+
   /**
    * Load the plot for the given entity.
    *
@@ -329,13 +334,27 @@ class Scatterplot {
       .on('mouseover', function(d) { that.showAxisTooltip(d3.select(this)); })
       .on('mouseout', () => that.clearTooltip(false));
 
+    /**
+     * Determines the class name for a datapoint.
+     * @param d
+     * @returns {string}
+     */
+    const className = (d) => {
+      if (d.target)
+        return `tdl-${d.target.tdl}`;
+      else if (d.disease && d.disease.category)
+        return `disease ${d.disease.category.replace(/\s/g, '-')}`;
+      else if (d.disease)
+        return `disease unknown`;
+      else
+        return '';
+    };
+
     const points = plot.selectAll('.datapoint')
       .data(this.datapoints)
       .enter()
       .append('path')
-      .attr('class', (d) =>
-        'datapoint ' + (d.target ? `tdl-${d.target.tdl} ` : '')
-      )
+      .attr('class', (d) => 'datapoint ' + className(d) )
       .attr('d', (d) => d3.symbol().size([60]).type(this._pointShape(d))())
       .attr('transform', (d) => `translate(${x(d.x)}, ${y(d.y)})`)
       .on('mouseover', function(d) {

@@ -21,6 +21,17 @@ body {
   // TODO: Lift to mixin
   height: calc(100% - 56px);
   width: 100%;
+
+  &[data-mode="target"] {
+    .only-show-on-disease { display: none; }
+  }
+
+  &[data-mode="disease"] {
+    .only-show-on-target {
+      display: none;
+    }
+  }
+
   font-family: $roboto;
 
   a {
