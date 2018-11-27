@@ -9,7 +9,7 @@ class ShareChart {
       container: 'body',
       content: this.popoverContent(),
       placement: 'bottom',
-      title: '<span>Share this chart</span><button id="close-btn">Close</button>',
+      title: '<span>Share this chart</span><i class="fa fa-times" id="close-btn"></i>',
       template: '<div class="popover share-chart-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
       html: true
     }).on('shown.bs.popover', function() {
@@ -29,9 +29,9 @@ class ShareChart {
    */
   popoverContent(url) {
     const elem = $('<div/>', {class: 'share-chart-content'}).append(
-      $('<span/>', {text: 'URL:'})
+      $('<span>', {text: 'URL'})
     ).append(
-      $('<input/>', {type: 'text', value: url, class: 'form-control'})
+      $('<input>', {type: 'text', value: url, class: 'form-control'})
     );
     return elem;
   }
@@ -44,9 +44,9 @@ class ShareChart {
    */
   setUrl(id, mode) {
     const origin = window.location.origin;
-    //TODO: can this just be mode?
-    const url = `${origin}?${mode === TreeViewModes.DISEASE ? TreeViewModes.DISEASE : TreeViewModes.TARGET}=${id}`;
-    this.shareChartBtn.attr('data-content', this.popoverContent(url).html()).data('bs.popover').setContent();
+    const url = `${origin}?${mode}=${id}`;
+    const wrappedContent = $('<div>').append(this.popoverContent(url));
+    this.shareChartBtn.attr('data-content', wrappedContent.html()).data('bs.popover').setContent();
   }
 
   close() {

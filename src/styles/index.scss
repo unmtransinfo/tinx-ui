@@ -59,6 +59,41 @@ body {
   }
 }
 
+.input-with-icon {
+  display: flex;
+  border-radius: 8px;
+  border: 2px solid $med-grey;
+  background: white;
+
+  &:focus-within {
+    border-color: $turquoise;
+
+    .icon-container {
+      color: $turquoise;
+    }
+  }
+
+  .icon-container {
+    flex: 0 0 10%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $med-grey;
+  }
+
+  input {
+    width: 100%;
+    border: none;
+    color: $med-grey;
+
+    &:focus {
+      border: none;
+      outline-offset: 0;
+      outline: none;
+    }
+  }
+}
+
 #tree-view-container {
   background-color: $faint-blue;
   color: rgb(0, 0, 0);
@@ -68,58 +103,45 @@ body {
   // TODO: Lift to mixin
   min-height: calc(100% - 20px);
 
-  .input-container {
-    display: flex;
-    border-radius: 8px;
-    border: 2px solid $med-grey;
-    background: white;
-    margin-bottom: 16px;
-
-    &:focus-within {
-      border-color: $turquoise;
-
-      .icon-container {
-        color: $turquoise;
-      }
-    }
+  .input-with-icon {
+    margin-bottom: 20px;
 
     input#tree-view-search {
       flex: 1;
       font-size: 18px;
       border-radius: 8px;
-      border: none;
-      color: $med-grey;
       padding: 8px 12px;
-
-      &:focus {
-        border: none;
-        outline-offset: 0;
-        outline: none;
-      }
-    }
-
-    .icon-container {
-      flex: 0 0 10%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: $med-grey;
     }
   }
-
-
 }
 
 .share-chart-popover {
+  color: $dark-grey;
+  font-family: $roboto;
+
   .popover-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    #close-btn {
+      color: $med-grey;
+
+      &:hover {
+        color: lighten($med-grey, 20%);
+        cursor: pointer;
+      }
+    }
   }
 
   .share-chart-content {
     display: flex;
     flex-direction: column;
+
+    span {
+      font-weight: 600;
+    }
+
     input {
       margin-top: 5px;
     }
@@ -139,6 +161,73 @@ body {
   #plot-container {
     width: 100%;
     height: calc(100% - 72px - 60px);
+    position: relative;
+
+    #threshold-slider-container {
+      padding: 0 30px;
+      position: absolute;
+      top: 80px;
+      right: 10px;
+      z-index: 999;
+
+      form {
+        text-align: center;
+        padding: 5px 0;
+        height: 40px;
+        transform: translate(40%, 0) rotate(270deg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 -5px;
+        color: #C1C1C1;
+
+        & > * {
+          margin: 0 5px;
+        }
+
+        i {
+          transform: rotate(90deg);
+        }
+
+        input#threshold-slider {
+          top: 50%;
+          left: 50%;
+          -webkit-appearance: none;
+          height: 5px;
+          background: #C1C1C1;
+          border-radius: 5px;
+
+          &:focus {
+            outline: none;
+          }
+
+
+          &[disabled="true"] {
+            opacity: 0.3;
+          }
+
+          &::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 1px solid #C1C1C1;
+            background: #F8F9FA;
+            cursor: pointer;
+          }
+
+          &::-moz-range-thumb {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 1px solid #C1C1C1;
+            background: #F8F9FA;
+            cursor: pointer;
+          }
+        }
+      }
+    }
   }
 
   #plot-header {
@@ -160,46 +249,29 @@ body {
 
     #filter-container {
       display: flex;
-      justify-content: space-around;
+      justify-content: space-between;
       align-items: center;
+      margin: auto;
 
-      input#search-input {
-        width: 50%;
-        font-size: 16px;
-        border-radius: 8px;
-        border: 2px solid #ccc;
-        padding: 6px 10px;
+      & > * {
+        margin-right: 10px;
+      }
 
-        &:focus {
-          border: 2px solid #0097cf;
-          border-radius: 8px;
-          outline-offset: 0;
-          outline: none;
+      .dropdown {
+        a {
+          width: 100%;
         }
       }
-    }
 
-    #threshold-slider-container {
-      padding: 0 30px;
+      & > *:not(.input-with-icon) {
+        flex: 1;
+      }
 
-      form {
-        text-align: center;
-        border: solid 1px #ddd;
-        border-radius: 3px;
-        padding: 5px 0;
-        height: 40px;
-        position: relative;
-
-        input#threshold-slider {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-
-          &[disabled="true"] {
-            opacity: 0.3;
-          }
-        }
+      input#search-input {
+        flex: 2;
+        font-size: 16px;
+        border-radius: 8px;
+        padding: 6px 10px;
       }
     }
   }

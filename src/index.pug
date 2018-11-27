@@ -24,7 +24,7 @@ html(lang='en')
 
     #tree-view-container
       .container
-        .input-container
+        .input-with-icon
           .icon-container
             i.fa.fa-search
           input#tree-view-search.typeahead(autocomplete="off")
@@ -40,17 +40,21 @@ html(lang='en')
               span &nbsp;Loading...
             span.title &nbsp;
             a(target="_blank", href="#")
-        .col-lg-5
+        .col-lg-6.offset-1
           #filter-container
-            input#search-input(type="text" autocomplete="off")
+            .input-with-icon
+              .icon-container
+                i.fa.fa-search
+              input#search-input(type="text" autocomplete="off")
             +filters
             button.btn.btn-secondary#share-chart-btn Share
             a.btn.btn-secondary#export-chart-btn Export
-        .col-lg-2
-          #threshold-slider-container
-            form
-              input#threshold-slider(max="2000" value="300" type="range" disabled="true")
       #plot-container
+        #threshold-slider-container
+          form
+            i.fa.fa-minus
+            input#threshold-slider(max="2000" value="300" type="range" disabled="true")
+            i.fa.fa-plus
       #plot-legend
         +target-legend
 

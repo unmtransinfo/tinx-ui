@@ -77,7 +77,7 @@ class Scatterplot {
    */
   constructor(selector) {
     this.container = d3.select(selector);
-    this.container.html('').selectAll('*').remove();
+    this.container.selectAll('.scatterplot').remove();
     this.svg = this.container.append('svg');
     this.currentMode = TreeViewModes.DISEASE;
     this.subjectId = null;

@@ -12,28 +12,27 @@ mixin shape-legend-item(label)
       =label
 
 mixin target-legend
-  .container
-    .row
-      .col-sm-6
-        .card
-          .card-body
-            h5
-              | Colors Indicate Target Development Level (TDL)
-            .legend-items
-              +color-legend-item("Tclin", "Tclin")
-              +color-legend-item("Tchem", "Tchem")
-              +color-legend-item("Tbio",  "Tbio")
-              +color-legend-item("Tdark", "Tdark")
+  .row.legend-row
+    .col-sm-4
+      .card
+        .card-body
+          h5
+            | Colors Indicate Target Development Level (TDL)
+          .legend-items
+            +color-legend-item("Tclin", "Tclin")
+            +color-legend-item("Tchem", "Tchem")
+            +color-legend-item("Tbio",  "Tbio")
+            +color-legend-item("Tdark", "Tdark")
 
-      .col-sm-6
-        .card
-          .card-body
-            h5
-              | Shapes Indicate IDG Family
-            .legend-items
-              +shape-legend-item("GPCR")
-              +shape-legend-item("OGPCR")
-              +shape-legend-item("ION")
-              +shape-legend-item("KINASE")
-              +shape-legend-item("NR")
-              +shape-legend-item("Other")
+    .col-sm-4.offset-md-2
+      .card
+        .card-body
+          h5
+            | Shapes Indicate IDG Family
+          .legend-items
+            +shape-legend-item("GPCR")
+            +shape-legend-item("OGPCR")
+            +shape-legend-item("ION")
+            +shape-legend-item("KINASE")
+            +shape-legend-item("NR")
+            +shape-legend-item("Other")

@@ -53,6 +53,11 @@ class DetailModal {
     this.pageStart = 0;
     this.pageEnd = 0;
 
+    const { doid } = disease;
+    if (doid && doid.length) {
+      this.$elem.find('.disease-details a.read-more').attr('href', `http://disease-ontology.org/term/${encodeURI(doid)}`);
+    }
+
     this.$elem.find('.modal-title').text(`${target.sym} and ${disease.name}`);
 
     // Update disease fields
