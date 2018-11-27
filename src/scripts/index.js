@@ -25,11 +25,11 @@ $(window).on("load", () => {
   treeView.init();
   Typeaheads.init(treeView, scatterplot);
 
-  checkUrlParams();
-
   const filters = new Filters(TreeViewModes.DISEASE, filters => {
     scatterplot.filterData(filters);
   });
+
+  checkUrlParams();
 
   // User selects something from the treeview
   treeView.onSelectionChange((data, plotLoaded = false) => {
@@ -119,12 +119,24 @@ $(window).on("load", () => {
    */
   function checkUrlParams() {
     const diseaseParam = Helpers.getUrlParam('disease');
+    const targetParam = Helpers.getUrlParam('target');
 
     if (diseaseParam) {
-      ApiHelper.getDisease(diseaseParam).then(data => {
+      onModeUpdate(TreeViewModes.DISEASE);
+      ApiHelper.getDisease(parseInt(diseaseParam)).then(data => {
         scatterplot.loadPlot(TreeViewModes.DISEASE, data.id, data, defaultThreshold);
         treeView.expandToNode(data.id);
-      }).catch(e => console.log(e));
+      }).catch(e => console.error(e));
+    }
+    else if (targetParam) {
+      onModeUpdate(TreeViewModes.TARGET);
+      ApiHelper.getDTO(targetParam).then(data => {
+        const { target } = data;
+        if (target && Array.isArray(target) && target.length) {
+          scatterplot.loadPlot(TreeViewModes.TARGET, target[0].id, target[0], defaultThreshold);
+          treeView.expandToNode(data, true);
+        }
+      }).catch(e => console.error(e));
     }
   }
 
