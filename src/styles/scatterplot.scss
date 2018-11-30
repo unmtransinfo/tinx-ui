@@ -40,6 +40,10 @@ svg.scatterplot {
       transition-delay: 1s;
     }
 
+    &.disease.unknown {
+      display: none;
+    }
+
     &.tdl-Tdark { @include stroke-and-fill($color-Tdark); }
     &.tdl-Tbio { @include stroke-and-fill($color-Tbio); }
     &.tdl-Tchem { @include stroke-and-fill($color-Tchem); }
