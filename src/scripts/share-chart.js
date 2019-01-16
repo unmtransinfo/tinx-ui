@@ -18,6 +18,13 @@ class ShareChart {
       const closeBtn = $('.share-chart-popover').find('#close-btn');
       closeBtn.on('click', null);
       closeBtn.on('click', () => elem.popover('hide'));
+
+      const copyBtn = $('.share-chart-popover').find('button[id="copy-link"]');
+      copyBtn.on('click', null);
+      copyBtn.on('click', () => {
+        $('.share-chart-content').find('input').select();
+        document.execCommand("copy");
+      });
     });
   }
 
@@ -32,6 +39,8 @@ class ShareChart {
       $('<span>', {text: 'URL'})
     ).append(
       $('<input>', {type: 'text', value: url, class: 'form-control'})
+    ).append(
+      $('<button>', {text: 'Copy Link', class: 'btn btn-secondary', id: 'copy-link'})
     );
     return elem;
   }
