@@ -12,6 +12,7 @@ import Helpers from './helpers';
 import ApiHelper from './apihelper';
 import ShareChart from "./share-chart";
 import Exporter from "./exporter";
+import { ROOT_NODE } from "./constants";
 
 $(window).on("load", () => {
   const defaultThreshold = 300;
@@ -32,10 +33,11 @@ $(window).on("load", () => {
   checkUrlParams();
 
   // User selects something from the treeview
-  treeView.onSelectionChange((data, plotLoaded = false) => {
+  treeView.onSelectionChange((data, node, plotLoaded = false) => {
     const { mode, nodeId, details } = data;
     $('#threshold-slider').attr('max', 2000).val(defaultThreshold).attr('disabled', false);
-    if (!plotLoaded) {
+
+    if (!plotLoaded && !node.hasClass(ROOT_NODE)) {
       if (data.mode === TreeViewModes.DISEASE) scatterplot.loadPlot(data.mode, data.nodeId, data.details, defaultThreshold);
       else {
         const { details = {} } = data;
@@ -50,6 +52,9 @@ $(window).on("load", () => {
       shareChart.close();
       shareChart.setUrl(nodeId, mode);
     }
+
+    // update plot title only if selected node is not a root
+    if (node.hasClass(ROOT_NODE)) return;
 
     if (mode === TreeViewModes.DISEASE) {
       $('#plot-title span.title').text('Targets associated with ');

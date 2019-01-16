@@ -1,4 +1,5 @@
 import ApiHelper from './apihelper';
+import { ROOT_NODE } from "./constants";
 
 /**
  * Possible modes for the TreeView.
@@ -32,10 +33,10 @@ class TreeView {
     this.$elem.empty();
 
     return this._getRootNodes().then(data => {
-      if (data && Array.isArray(data)) return this.appendTreeItems(data);
+      if (data && Array.isArray(data)) return this.appendTreeItems(data, ROOT_NODE);
 
       const { results = [] } = data;
-      this.appendTreeItems(results);
+      this.appendTreeItems(results, ROOT_NODE);
     }).catch(e => {
       console.error(e);
     });
@@ -110,9 +111,9 @@ class TreeView {
     this.selectionChangeHandler = func;
   }
 
-  appendTreeItems(data) {
+  appendTreeItems(data, itemClass = null) {
     data.forEach(item => {
-      this.$elem.append(this._makeListItem(item));
+      this.$elem.append(this._makeListItem(item, itemClass));
     });
   }
 
@@ -155,10 +156,11 @@ class TreeView {
    * must have a name and ID property.
    *
    * @param obj The object for which to create the list item.
+   * @param {string?} itemClass: optional class for this list item
    * @returns {*|jQuery} The node, as a jQuery element.
    * @private
    */
-  _makeListItem(obj) {
+  _makeListItem(obj, itemClass = null) {
     const onClick = (event) => {
       event.stopPropagation();
       const $target = $(event.currentTarget);
@@ -179,15 +181,24 @@ class TreeView {
       if (target && Array.isArray(target) && target.length) childCount = target[0].num_important_diseases;
     }
 
-    return $("<li>")
-      .addClass("expandable tree-node")
+    const listItem = $("<li>")
+      .addClass(`expandable tree-node`)
       .data({ nodeId: obj.id, mode: this.mode, details: obj })
       .click(onClick.bind(this))
       .append(
-        $("<span>").addClass("btn").text(capitalName).append(
-          $("<span>").addClass("badge badge-light").text(childCount)
-        )
+        $("<span>").addClass("btn").text(capitalName)
       );
+
+    // add child count to node if it is not a root node
+    if (itemClass !== ROOT_NODE) {
+      listItem.find('span.btn').append(
+        $("<span>").addClass("badge badge-light").text(childCount)
+      );
+    }
+
+    if (itemClass && itemClass.length) listItem.addClass(itemClass);
+
+    return listItem;
   }
 
   /**
@@ -276,7 +287,7 @@ class TreeView {
 
   _select($node, plotLoaded = false) {
     $node.addClass('selected');
-    this.selectionChangeHandler($node.data(), plotLoaded);
+    this.selectionChangeHandler($node.data(), $node, plotLoaded);
   }
 }
 
