@@ -553,7 +553,6 @@ class Scatterplot {
    */
   startSpinner() {
     const plotTitle = d3.select('#plot-title');
-    console.log(plotTitle);
     plotTitle.select('.loading-spinner').classed('hide', false);
     plotTitle.selectAll('span.title,a').classed('hide', true);
   }
