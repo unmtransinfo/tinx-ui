@@ -144,7 +144,7 @@ $(window).on("load", () => {
       ApiHelper.getDisease(parseInt(diseaseParam)).then(data => {
         scatterplot.loadPlot(TreeViewModes.DISEASE, data.id, data, defaultThreshold);
         treeView.expandToNode(data.id);
-      }).catch(e => console.error(e));
+      });
     }
     else if (targetParam) {
       onModeUpdate(TreeViewModes.TARGET);
@@ -154,7 +154,7 @@ $(window).on("load", () => {
           scatterplot.loadPlot(TreeViewModes.TARGET, target[0].id, target[0], defaultThreshold);
           treeView.expandToNode(data, true);
         }
-      }).catch(e => console.error(e));
+      });
     }
   }
 

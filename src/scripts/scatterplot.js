@@ -203,10 +203,8 @@ class Scatterplot {
 
     const { target, disease }  = selected;
     const selectedId = this.currentMode === TreeViewModes.DISEASE ? target.id : disease.id;
-    // const { id: selectedId } = target;
 
     if (!selectedId) {
-      console.error('Missing ID for selected data item', selected);
       return;
     }
 

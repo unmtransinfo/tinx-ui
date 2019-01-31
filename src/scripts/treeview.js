@@ -37,8 +37,6 @@ class TreeView {
 
       const { results = [] } = data;
       this.appendTreeItems(results, ROOT_NODE);
-    }).catch(e => {
-      console.error(e);
     });
   }
 
