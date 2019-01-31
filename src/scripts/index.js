@@ -22,6 +22,7 @@ $(window).on("load", () => {
   const detailmodal = new DetailModal('#detail-modal');
   const exporter = new Exporter(TreeViewModes.DISEASE);
   const aboutModal = $('#about-modal');
+  const $thresholdSlider = $('#threshold-slider');
 
   treeView.init();
   Typeaheads.init(treeView, scatterplot);
@@ -35,7 +36,7 @@ $(window).on("load", () => {
   // User selects something from the treeview
   treeView.onSelectionChange((data, node, plotLoaded = false) => {
     const { mode, nodeId, details } = data;
-    $('#threshold-slider').attr('max', 2000).val(defaultThreshold).attr('disabled', false);
+    $thresholdSlider.attr('max', 2000).val(defaultThreshold).attr('disabled', false);
 
     if (!plotLoaded && !node.hasClass(ROOT_NODE)) {
       if (data.mode === TreeViewModes.DISEASE) scatterplot.loadPlot(data.mode, data.nodeId, data.details, defaultThreshold);
@@ -91,17 +92,24 @@ $(window).on("load", () => {
   // The plot finishes loading
   scatterplot.onPlotLoaded((datapoints, totalCount, subjectDetails) => {
     exporter.setData(datapoints, subjectDetails);
-    $('#threshold-slider').attr('max', totalCount < 2000 ? totalCount : 2000);
+    $thresholdSlider.attr('max', totalCount < 2000 ? totalCount : 2000);
     filters.reset();
     Typeaheads.initDataSearch(datapoints, (selected) => {
       scatterplot.selectAndShowTooltip(selected);
     });
   });
 
-  // User changes the threshold slider
-  $('#threshold-slider').change(function() {
-    scatterplot.changeThreshold($(this).val());
-  });
+  // Threshold slider functionality
+  $thresholdSlider
+    .change(function() {
+      scatterplot.changeThreshold($(this).val(), $(this).attr('max'));
+    })
+    .mouseover(function() {
+      scatterplot.showSliderTooltip($(this).val(), $(this).attr('max'));
+    })
+    .mouseout(function() {
+      scatterplot.clearTooltip(false);
+    });
 
   $('.nav-item').click(function() {
     const elem = $(this);

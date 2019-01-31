@@ -97,6 +97,17 @@ class Scatterplot {
       novelty:    'A <b>greater</b> novelty score implies that <b>less</b> has been published about the given target.'
     };
 
+    this.sliderTooltipContent = (curr, total) => {
+      const diseaseMode = this.currentMode === TreeViewModes.DISEASE;
+      return `
+      <b>${diseaseMode ? 'Targets' : 'Diseases'} to Display</b><br>
+      Currently plotting only the most interesting ${curr} of ${total} 
+      ${diseaseMode ? 'targets' : 'diseases'} associated with this 
+      ${diseaseMode ? 'disease' : 'target'}
+      `;
+    };
+
+
     window.addEventListener('resize', this.redraw.bind(this));
     this.redraw();
     this._initLegend();
@@ -161,10 +172,24 @@ class Scatterplot {
    *
    * @param {int} newThreshold - Maximum number of datapoints to retreive and render.
    */
-  changeThreshold(newThreshold) {
+  changeThreshold(newThreshold, max) {
+    this.updateSliderTooltipContent(newThreshold, max);
     if (this.subjectId) {
       this.loadPlot(this.currentMode, this.subjectId, this.subjectDetails, newThreshold);
     }
+  }
+
+  updateSliderTooltipContent(value, total) {
+    const tooltipDiv = d3.select('#general-tooltip');
+    const content = this.sliderTooltipContent(value, total);
+    tooltipDiv.select('.content')
+      .html(xss(content));
+  }
+
+  showSliderTooltip(value, total) {
+    const elem = d3.select('#threshold-slider');
+    const content = this.sliderTooltipContent(value, total);
+    this.showGeneralTooltip(content, elem, -20);
   }
 
   /**
@@ -488,12 +513,17 @@ class Scatterplot {
    * @param elem The d3 element the user hovered over.
    */
   showAxisTooltip(elem) {
+    const content = elem.attr('title');
+    this.showGeneralTooltip(content, elem);
+  }
+
+  showGeneralTooltip(content, elem, customXOffset = 0) {
     const tooltipDiv = d3.select('#general-tooltip');
 
     // Update the tooltip's content. xss is used to sanitize
     // Do this first so that geometry is right
     tooltipDiv.select('.content')
-      .html(xss(elem.attr('title')));
+      .html(xss(content));
 
     const pointRect = elem.node().getBoundingClientRect();
     const tooltipRect = tooltipDiv.node().getBoundingClientRect();
@@ -502,10 +532,10 @@ class Scatterplot {
     // Determine left-right placement based upon value of data-placement
     let left = 0;
     if (elem.attr('data-placement') === 'right') {
-      left = pointRect.x + pointRect.width + 5;
+      left = pointRect.x + pointRect.width + 5 + customXOffset;
       tooltipDiv.classed('bs-popover-right', true).classed('bs-popover-left', false);
     } else if (elem.attr('data-placement') === 'left' ) {
-      left = pointRect.x - pointRect.width / 2 - tooltipRect.width + 5;
+      left = pointRect.x - pointRect.width / 2 - tooltipRect.width + 5 + customXOffset;
       tooltipDiv.classed('bs-popover-right', false).classed('bs-popover-left', true);
     }
 
