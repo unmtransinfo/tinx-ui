@@ -13,28 +13,25 @@ class Filters {
   init() {
     const that = this;
 
-    $('#filter-menu a').on('click', function(event) {
-      const target = $(event.currentTarget);
-
-      const value = target.data('value');
-      const type = target.data('type');
-      const input = target.find('input');
+    $('.dropdown-menu a').click(function(event) {
+      const $target = $(event.currentTarget),
+        value = $target.data('value'),
+        type = $target.data('type'),
+        $inp = $target.find('input');
 
       const selectedIdx = that.selected[type].indexOf(value);
-
       if (selectedIdx >= 0) {
         that.selected[type].splice(selectedIdx, 1);
-        input.prop('checked', false);
+        setTimeout(() => { $inp.prop('checked', false); }, 0);
       }
       else {
         that.selected[type].push(value);
-        input.prop('checked', true);
+        setTimeout(() => { $inp.prop('checked', true); }, 0);
       }
-
-      event.target.blur();
 
       if (that.onUpdate) that.onUpdate(that.selected);
 
+      $( event.target ).blur();
       return false;
     });
   }

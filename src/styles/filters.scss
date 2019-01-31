@@ -1,0 +1,23 @@
+@import 'colors';
+
+.dropdown-menu {
+  a {
+    display: flex;
+
+    &:hover {
+      background: $faint-blue;
+    }
+
+    input.form-check-input {
+      margin-left: 8%;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    span.form-check-label {
+      margin-left: 20%;
+    }
+  }
+}

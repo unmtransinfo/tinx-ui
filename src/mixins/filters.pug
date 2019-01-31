@@ -1,7 +1,7 @@
 mixin filters
     .dropdown#filter-dropdown
         a.btn.btn-secondary.dropdown-toggle(href="#" role="button" id="filter-dropdown-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Filters
-        #filter-menu.dropdown-menu(aria-labelledby="filter-dropdown-link")
+        ul#filter-menu.dropdown-menu(aria-labelledby="filter-dropdown-link")
             h6.dropdown-header TDL
             +dropdown-item('tdl', 'tclin', 'tclin-checkbox', 'Tclin')
             +dropdown-item('tdl', 'tchem', 'tchem-checkbox', 'Tchem')
