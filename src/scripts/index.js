@@ -118,13 +118,16 @@ $(window).on("load", () => {
 
     const value = elem.find('.nav-link').data('value');
 
+    if (value === 'about') {
+      return aboutModal.modal({ show: true });
+    }
+
     $('body').attr('data-mode', value);
     scatterplot.clear();
     $('#plot-title span.title').text('');
     $('#plot-title a').text('');
 
-    if (value !== 'about') onModeUpdate(value);
-    else aboutModal.modal({ show: true });
+    onModeUpdate(value);
   });
 
   // Prevent FOUC issue
@@ -169,6 +172,7 @@ $(window).on("load", () => {
     treeView.setMode(value);
     filters.setMode(value);
     exporter.setMode(value);
+    shareChart.close();
   }
 });
 

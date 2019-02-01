@@ -6,10 +6,6 @@
     pointer-events: none;
   }
 
-  .modal-dialog.modal-lg {
-    width: 40%;
-  }
-
   .target-details {
     @extend %target-details;
   }
@@ -21,6 +17,29 @@
 
   .article-paginator {
     margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+
+    .pagination {
+      width: 100%;
+    }
+
+    .page-item {
+      flex: 1;
+      margin: 0 10px;
+
+      .page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+    .article-count {
+      @media (max-width: 575px) {
+        display: none;
+      }
+    }
 
     .page-item:not(.disabled) .page-link {
       color: $turquoise;

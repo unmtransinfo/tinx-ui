@@ -91,6 +91,9 @@ class Scatterplot {
     this.pointClickHandler = null;
     this.plotLoadedHandler = null;
     this.hoverTooltipEnabled = true;
+    this.touchpoints = [];
+    this.keepMs = 1000;
+    this.plot = null;
 
     this.axisTooltips = {
       importance: 'A <b>greater</b> importance score implies that <b>more</b> has been published about the association between the given target and %%disease_name%%.',
@@ -217,10 +220,18 @@ class Scatterplot {
     }).filter((d, i) => i === 0);
 
     point.each(function() {
+      const elem = d3.select(this);
+      const pointRect = elem.node().getBoundingClientRect();
+      that.plot.transition()
+        .duration(750)
+        .call(that.zoom.transform, d3.zoomIdentity.translate(that.width / 2 - pointRect.x, that.height / 2 - pointRect.y));
+      console.log(pointRect);
       that.showTooltip(selected, d3.select(this), true);
     });
 
     this.hoverTooltipEnabled = false;
+
+
   }
 
   /**
@@ -299,6 +310,8 @@ class Scatterplot {
     const that = this;
     const width = this.container.node().clientWidth - margin.left - margin.right;
     const height = this.container.node().clientHeight - margin.top - margin.bottom;
+    this.width = width;
+    this.height = height;
 
     this.svg
       .attr('class', 'scatterplot')
@@ -311,11 +324,13 @@ class Scatterplot {
       .domain(d3.extent(this.datapoints, (d) => d.x))
       .nice()
       .range([0, width]);
+    this.x = x;
 
     const y = d3.scaleLog()
       .domain(d3.extent(this.datapoints, (d) => d.y))
       .nice()
       .range([height, 0]);
+    this.y = y;
 
     const xAxis = d3.axisBottom(x);
     const yAxis = d3.axisLeft(y);
@@ -323,6 +338,8 @@ class Scatterplot {
     const plot = this.svg
       .append('g')
       .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+    this.plot = plot;
 
     const gX = plot.append('g')
       .attr('class', 'x axis')
@@ -386,6 +403,13 @@ class Scatterplot {
       .on('mouseout', function() {
         if (that.hoverTooltipEnabled) that.clearTooltip(false);
       })
+      .on('touchstart', () => {
+        const e = d3.event;
+        const touch = e.touches[0] || e.changedTouches[0];
+        const point = {x: touch.pageX, y: touch.pageY};
+        that.touchpoints.push(point);
+        setTimeout(() => that.touchpoints.splice(that.touchpoints.indexOf(point), 1), that.keepMs);
+      })
       .on('click', function(d) {
         if (that.pointClickHandler)
           that.pointClickHandler(d, that.subjectDetails);
@@ -402,6 +426,8 @@ class Scatterplot {
         points.data(this.datapoints)
           .attr('transform', (d) => `translate(${newX(d.x)}, ${newY(d.y)})`);
       });
+
+    this.zoom = zoom;
 
     this.svg.call(zoom);
 
@@ -443,6 +469,23 @@ class Scatterplot {
    * search typeahead
    */
   showTooltip(d, elem, forSearchItem = false) {
+    // determine if this mouseover event was triggered by a touchstart
+    const e = d3.event;
+    if (e) {
+      const { pageX, pageY } = e;
+      for (let i in this.touchpoints) {
+        // cancel rendering of the tooltip if triggered by a touchstart
+        if (Math.abs(this.touchpoints[i].x - pageX) < 2 && Math.abs(this.touchpoints[i].y - pageY) < 2) {
+          e.cancel = true;
+          e.returnValue = false;
+          e.cancelBubble = true;
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
+      }
+    }
+
     const that = this;
     const { target, disease } = d;
 
@@ -456,17 +499,14 @@ class Scatterplot {
 
     // If tooltip will go over the right edge, display it on the left-side of
     // the point instead of right-side.
-    let left = 0;
     if (pointRect.x + pointRect.width + tooltipRect.width + 5 > window.innerWidth) {
       tooltipDiv.classed('bs-popover-right', false).classed('bs-popover-left', true);
-      left = pointRect.x - pointRect.width - tooltipRect.width - 5;
     } else {
       tooltipDiv.classed('bs-popover-right', true).classed('bs-popover-left', false);
-      left = pointRect.x + pointRect.width + 5;
     }
 
-    // Absolute top of the tooltip
-    const top = (pointRect.y - pointRect.height / 2) - tooltipRect.height / 2 + window.scrollY;
+    const left = this.tooltipLeft(tooltipDiv, pointRect, tooltipRect);
+    const top = this.tooltipTop(tooltipDiv, pointRect, tooltipRect);
 
     const tooltipHeader = this.currentMode === TreeViewModes.DISEASE ? target.sym : disease.name;
     tooltipDiv.select('.popover-header').text(tooltipHeader);
@@ -501,6 +541,40 @@ class Scatterplot {
       tooltipDiv.style('pointer-events', 'none');
       tooltipActions.style('display', 'none');
     }
+  }
+
+  tooltipLeft(tooltipDiv, pointRect, tooltipRect) {
+    let left = 0;
+
+    if (window.innerWidth < 576) {
+      left = pointRect.x - pointRect.width - (tooltipRect.width / 2) - 5;
+    }
+    else {
+      if (pointRect.x + pointRect.width + tooltipRect.width + 5 > window.innerWidth) {
+        tooltipDiv.classed('bs-popover-right', false).classed('bs-popover-top', false).classed('bs-popover-left', true);
+        left = pointRect.x - pointRect.width - tooltipRect.width - 5;
+      } else {
+        tooltipDiv.classed('bs-popover-right', true).classed('bs-popover-top', false).classed('bs-popover-left', false);
+        left = pointRect.x + pointRect.width + 5;
+      }
+    }
+
+    return left;
+  }
+
+  tooltipTop(tooltipDiv, pointRect, tooltipRect) {
+    let top = 0;
+
+    if (window.innerWidth < 576) {
+      top = (pointRect.y - pointRect.height / 2) - tooltipRect.height + window.scrollY;
+    }
+    else {
+      top = (pointRect.y - pointRect.height / 2) - tooltipRect.height / 2 + window.scrollY;
+    }
+
+    tooltipDiv.classed('bs-popover-right', false).classed('bs-popover-top', true).classed('bs-popover-left', false);
+
+    return top;
   }
 
   /**

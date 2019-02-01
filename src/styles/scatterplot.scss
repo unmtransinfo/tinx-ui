@@ -1,5 +1,9 @@
 @import 'colors.scss';
 @import 'target-details.scss';
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+@import 'mixins';
 
 svg.scatterplot {
   &.tooltip-visible {
@@ -72,15 +76,30 @@ svg.scatterplot {
   }
 }
 
+.popover {
+  &.bs-popover-left, &.bs-popover-right {
+    .arrow {
+      top: 50%;
+    }
+  }
+
+  &.bs-popover-top {
+    .arrow {
+      left: 50% !important;
+    }
+  }
+}
+
 #scatterplot-tooltip {
   max-width: inherit;
   position: absolute;
   pointer-events: none;
   color: $dark-grey;
 
-  .arrow {
-    top: 50%;
-  }
+
+
+
+
   .popover-header {
     text-align: center;
   }
@@ -103,6 +122,8 @@ svg.scatterplot {
 }
 
 #plot-legend {
+  @include padding-for-footer();
+
   .legend-row {
     padding: 0 30px;
     width: 100%;
@@ -123,11 +144,13 @@ svg.scatterplot {
 
     .legend-items {
       display: flex;
+      flex-wrap: wrap;
       flex-direction: row;
       justify-content: space-between;
     }
 
     .legend-item {
+      flex-grow: 1;
       .marker-border {
         border-radius: 50%;
         width: 20px;
