@@ -3,9 +3,9 @@ mixin overview-row
         .section-header
             | Overview
         .section-body
-            p NewDrugTargets.org is an interactive visualization tool for discovering interesting associations between diseases and potential drug targets.
+            p TIN-X is an interactive visualization tool for discovering interesting associations between diseases and potential drug targets.
             p.
-                span We used natural language processing to identify disease and protein mentions in the text
+                We used natural language processing to identify disease and protein mentions in the text
                 of <a href="http://www.ncbi.nlm.nih.gov/pubmed/" target="_blank">PubMed</a>
                 abstracts. Using this data, we derived two metrics: #[strong novelty] and #[strong importance]. Novelty measures the
                 relative scarcity of specific publications about a given concept (such as a target or a disease),
@@ -17,7 +17,7 @@ mixin overview-row
                 li A target that is mentioned in many abstracts that also mention a specific disease is likely to be of importance to that disease.
                 li A target or disease that is mentioned in fewer abstracts is more novel and less well understood.
                 li Abstracts which mention only a few targets and diseases are more specific and should be given greater weight than those which mention many.
-            p For more details about how these scores are computed, please see <a href="static/poster.pdf" target="_blank">this poster</a>.
+            p For more details about how these scores are computed, please see the paper cited below.
 
 mixin publications-row
     section.publications
@@ -37,7 +37,7 @@ mixin feedback-row
         .section-body
             p.
                 Please report any bugs you find and send us suggestions for new features using our
-                <a href="https://bitbucket.org/dccannon/tin-x" target="_blank">Bitbucket Issue Tracker</a>.
+                <a href="https://bitbucket.org/unmtid/tinx-ui" target="_blank">Bitbucket Issue Tracker</a>.
 
 mixin team-row
     section.team
@@ -45,13 +45,17 @@ mixin team-row
             | Our Team
         .section-body
             p.
-                NewDrugTargets.org was a collaborative effort involving many researchers from the University of New Mexico,
+                TIN-X was a collaborative effort involving many researchers from the University of New Mexico,
                 the University of Copenhagen, and the University of Miami. The main contributors are listed below:
             ul
                 li
                     a(href="https://www.researchgate.net/profile/Daniel_Cannon" target="_blank") Daniel Cannon
                 li
                     a(href="https://vivo.health.unm.edu/display/n853" target="_blank") Cristian Bologa
+                li
+                    a(href="https://vivo.health.unm.edu/display/n6723" target="_blank") Stephen Mathias
+                li
+                    a(href="https://vivo.health.unm.edu/display/n2515" target="_blank") Jeremy Yang
                 li
                     a(href="https://vivo.health.unm.edu/display/n7948" target="_blank") Tudor Oprea
                 li
@@ -65,7 +69,7 @@ mixin funding-row
             | Funding
         .section-body
             p.
-                NewDrugTargets.org was funded by the
+                TIN-X was funded by the
                 <a href="http://commonfund.nih.gov/idg/overview" target="_blank">Illuminating the Druggable Genome (IDG) Project</a>
                 (<a href="http://projectreporter.nih.gov/project_info_description.cfm?aid=8785271&icde=24069131&ddparam=&ddvalue=&ddsub=&cr=3&csb=default&cs=ASC" target="_blank">U54 CA189205-01</a>).
 
@@ -82,7 +86,7 @@ mixin about-modal
             .modal-content
                 .modal-header
                     #about-modal-title.modal-title
-                        | About NewDrugTargets.org
+                        | About TIN-X
                     button.close(type="button" data-dismiss="modal" aria-label="close")
                         span(aria-hidden="true") &times;
                 .modal-body
