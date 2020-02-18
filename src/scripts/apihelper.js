@@ -69,6 +69,23 @@ class ApiHelper {
   }
 
   /**
+   * Gets a single disease by DOID. If no disease matches that identifier (or
+   * multiple do, which shouldn't happen), returns null.
+   *
+   * @param doid The disease ontology ID (DOID) to look up.
+   * @returns {Promise<any | never>} A promise containing an object or null.
+   */
+  getDiseaseByDOID(doid) {
+    return this.makeRequest({
+      method: 'GET',
+      endpoint: '/diseases/',
+      data: { doid }
+    }).then(data => 'results' in data && data.results.length === 1
+      ? data.results[0]
+      : null);
+  }
+
+  /**
    * Searches for a disease.
    * @param query The search query to use to find a disease.
    * @returns {Promise<any>}
@@ -162,6 +179,10 @@ class ApiHelper {
   }
 
   getDTOParent(parentUrl) {
+    // Bit of a kludge. The API sometimes gives back HTTP URLS. In that case,
+    // we want to convert these to HTTPS (if we're talking to production).
+    if (config.API_ROOT.substr(0, 5) === 'https' && parentUrl.substr(0,5) === 'http:')
+      parentUrl = parentUrl.substr(0, 4) + 's' + parentUrl.substr(4);
     return this.makeSimpleRequest(parentUrl, 'GET');
   }
 

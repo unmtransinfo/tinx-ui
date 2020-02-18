@@ -16,6 +16,7 @@ const TreeViewModes = {
  * collapse, which reveals or hides the node's children.
  */
 class TreeView {
+
   /**
    *
    * @param {string} selector - A jQuery selector to use for finding the element to use as a TreeView
@@ -24,6 +25,7 @@ class TreeView {
   constructor(selector, initialMode = TreeViewModes.DISEASE) {
     this.$elem = $(selector);
     this.mode = initialMode;
+    this.rootNodeId = null;
   }
 
   /**
@@ -119,10 +121,16 @@ class TreeView {
    * Retrieve the ID of the root node for the current mode.
    * @private
    */
-  _rootNodeId() {
+  _getRootNodeId() {
+    if (this.rootNodeId !== null && typeof this.rootNodeId !== 'undefined')
+      return Promise.resolve(this.rootNodeId);
+
     switch (this.mode) {
-      case TreeViewModes.DISEASE: return 5688;  // TODO: We can't hardcode this
-      case TreeViewModes.TARGET: return 0;
+      case TreeViewModes.DISEASE:
+        return ApiHelper.getDiseaseByDOID('DOID:4')
+          .then(disease => this.rootNodeId = disease.id); // Assign and return
+      case TreeViewModes.TARGET:
+        return Promise.resolve(0);
       default: throw `Unknown TreeViewMode: ${this.mode}`;
     }
   }
@@ -130,9 +138,9 @@ class TreeView {
   _getRootNodes() {
     switch (this.mode) {
       case TreeViewModes.DISEASE:
-        return ApiHelper.getDiseaseChildren(this._rootNodeId());
+        return this._getRootNodeId().then(id => ApiHelper.getDiseaseChildren(id));
       case TreeViewModes.TARGET:
-        return ApiHelper.getDTOs(3);
+        return ApiHelper.getDTOChildren('PR_000000001');
       default: throw `Unknown TreeViewMode: ${this.mode}`;
     }
   }
@@ -212,8 +220,10 @@ class TreeView {
       ls.unshift(id);
       return ApiHelper.getDiseaseParent(id).then(parent => {
         const { id } = parent;
-        if (id && id !== this._rootNodeId()) return addParents(id, ls);
-        return ls;
+        return this._getRootNodeId().then(rootNodeId => {
+          if (id && id !== rootNodeId) return addParents(id, ls);
+          return ls;
+        });
       });
     };
 

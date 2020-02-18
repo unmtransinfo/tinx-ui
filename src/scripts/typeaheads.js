@@ -34,6 +34,7 @@ class Typeaheads {
       afterSelect: (x) => {
         // start loading plot for selection
         this.scatterplot.loadPlot(this.mode, x.id, x);
+        this.treeViewSearch.val('');
         // expand the tree view to selected node
         if (this.mode === TreeViewModes.DISEASE) treeView.expandToNode(x.id, true);
         else ApiHelper.getDTO(x.dtoid).then(data => treeView.expandToNode(data, true));
