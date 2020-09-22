@@ -51,7 +51,7 @@ $(window).on("load", () => {
 
     if (nodeId && mode) {
       shareChart.close();
-      shareChart.setUrl(nodeId, mode);
+      shareChart.setUrl(nodeId, mode, treeView.getWasBackPressed());
     }
 
     // update plot title only if selected node is not a root
@@ -113,6 +113,8 @@ $(window).on("load", () => {
 
   $('.nav-item').click(function() {
     const elem = $(this);
+    treeView.setWasBackPressed(false);
+
     $('.nav-item').removeClass('active');
     elem.addClass('active');
 
@@ -138,9 +140,11 @@ $(window).on("load", () => {
    * Check for URL params and populate the chart with appropriate
    * data if any are present
    */
-  function checkUrlParams() {
+  function checkUrlParams(wasBackPressed = false) {
     const diseaseParam = Helpers.getUrlParam('disease');
     const targetParam = Helpers.getUrlParam('target');
+
+    treeView.setWasBackPressed(wasBackPressed);
 
     if (diseaseParam) {
       onModeUpdate(TreeViewModes.DISEASE);
@@ -174,6 +178,12 @@ $(window).on("load", () => {
     exporter.setMode(value);
     shareChart.close();
   }
+
+  window.onpopstate = (e) => {
+    if(e.state){
+      checkUrlParams(true);
+    }
+  };
 });
 
 // Google analytics

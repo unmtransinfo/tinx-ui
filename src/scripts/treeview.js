@@ -26,6 +26,7 @@ class TreeView {
     this.$elem = $(selector);
     this.mode = initialMode;
     this.rootNodeId = null;
+    this.wasBackPressed = false;
   }
 
   /**
@@ -50,6 +51,19 @@ class TreeView {
   setMode(mode) {
     this.mode = mode;
     this.init();
+  }
+
+  /**
+   * Informs the tree view of whether the back button was pressed since the last
+   * URL change.
+   * @param b
+   */
+  setWasBackPressed(b) {
+    this.wasBackPressed = b;
+  }
+
+  getWasBackPressed() {
+    return this.wasBackPressed;
   }
 
   /**
@@ -167,9 +181,11 @@ class TreeView {
    * @private
    */
   _makeListItem(obj, itemClass = null) {
+    const that = this;
     const onClick = (event) => {
       event.stopPropagation();
       const $target = $(event.currentTarget);
+      that.setWasBackPressed(false);
       this._toggleNodeCollapse($target);
       this.$elem.find('li.tree-node.selected').removeClass('selected');
       this._select($target);
