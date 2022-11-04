@@ -35,10 +35,12 @@ $(window).on("load", () => {
 
   // User selects something from the treeview
   treeView.onSelectionChange((data, node, plotLoaded = false) => {
-    const { mode, nodeId, details } = data;
+    const { mode, nodeId, nodeDOID, details } = data;
+
     $thresholdSlider.attr('max', 2000).val(defaultThreshold).attr('disabled', false);
 
-    if (!plotLoaded && !node.hasClass(ROOT_NODE)) {
+    if (/*!plotLoaded &&*/ !node.hasClass(ROOT_NODE)) {
+
       if (data.mode === TreeViewModes.DISEASE) scatterplot.loadPlot(data.mode, data.nodeId, data.details, defaultThreshold);
       else {
         const { details = {} } = data;
@@ -51,7 +53,7 @@ $(window).on("load", () => {
 
     if (nodeId && mode) {
       shareChart.close();
-      shareChart.setUrl(nodeId, mode, treeView.getWasBackPressed());
+      shareChart.setUrl(data.mode === TreeViewModes.DISEASE ? nodeDOID : nodeId, mode, treeView.getWasBackPressed());
     }
 
     // update plot title only if selected node is not a root
@@ -148,7 +150,7 @@ $(window).on("load", () => {
 
     if (diseaseParam) {
       onModeUpdate(TreeViewModes.DISEASE);
-      ApiHelper.getDisease(parseInt(diseaseParam)).then(data => {
+      ApiHelper.getDisease(diseaseParam).then(data => {
         scatterplot.loadPlot(TreeViewModes.DISEASE, data.id, data, defaultThreshold);
         treeView.expandToNode(data.id);
       });

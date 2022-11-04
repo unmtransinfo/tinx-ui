@@ -79,10 +79,11 @@ class ApiHelper {
     return this.makeRequest({
       method: 'GET',
       endpoint: '/diseases/',
-      data: { doid }
+      data: {doid}
     }).then(data => 'results' in data && data.results.length === 1
-      ? data.results[0]
-      : null);
+          ? data.results[0]
+          : null
+    );
   }
 
   /**
@@ -101,7 +102,7 @@ class ApiHelper {
   /**
    * Retrieves the specified disease
    *
-   * @param {number} diseaseId:   target disease ID
+   * @param {string} diseaseId:   target disease ID
    * @returns {Promise<any>}
    */
   getDisease(diseaseId) {
@@ -125,13 +126,16 @@ class ApiHelper {
     });
   }
 
-  getDiseaseTargets(diseaseId, limit = 100, offset = 0) {
-    return this.makeRequest({
-      method: 'GET',
-      endpoint: '/diseases/:diseaseId/targets/',
-      params: { diseaseId },
-      data: { limit, offset }
-    });
+  getDiseaseTargets(disease, limit = 100, offset = 0) {
+    if ('id' in disease)
+      return this.makeRequest({
+        method: 'GET',
+        endpoint: '/diseases/:diseaseId/targets/',
+        params: { diseaseId: disease.id },
+        data: { limit, offset }
+      });
+    else if ('targets' in disease)
+      return this.makeSimpleRequest('GET', disease.targets);
   }
 
   getDiseaseTargetArticles(diseaseId, targetId, offset = 0, limit=5) {
@@ -183,13 +187,13 @@ class ApiHelper {
     // we want to convert these to HTTPS (if we're talking to production).
     if (config.API_ROOT.substr(0, 5) === 'https' && parentUrl.substr(0,5) === 'http:')
       parentUrl = parentUrl.substr(0, 4) + 's' + parentUrl.substr(4);
+
     return this.makeSimpleRequest(parentUrl, 'GET');
   }
 
   findTarget(query, inDto) {
     const data = {search: query};
     if (inDto) data['in_dto'] = 2;
-
     return this.makeRequest({
       method: 'GET',
       endpoint: '/targets/',

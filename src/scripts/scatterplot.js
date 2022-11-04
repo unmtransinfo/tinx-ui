@@ -131,14 +131,14 @@ class Scatterplot {
    */
   loadPlot(mode, id, details, limit = 300) {
     this.currentMode = mode;
-    this.subjectId = id;
+    this.subjectId = details.doid;
     this.subjectDetails = details;
 
     this.startSpinner();
     this.svg.selectAll('.datapoint').remove();
 
     if (mode === TreeViewModes.DISEASE) {
-      ApiHelper.getDiseaseTargets(id, limit).then((data) => {
+      ApiHelper.getDiseaseTargets(details, limit).then((data) => {
         this.datapoints = data.results .map((d) =>
           ({
             x: parseFloat(d.target.novelty),
@@ -214,7 +214,6 @@ class Scatterplot {
     const point = this.svg.selectAll('g .datapoint').filter(function(d) {
       if (!d) return false;
       const { target, disease } = d;
-      // const { id: pointId } = target;
       const pointId = that.currentMode === TreeViewModes.DISEASE ? target.id : disease.id;
       return pointId && selectedId === pointId;
     }).filter((d, i) => i === 0);
@@ -225,7 +224,6 @@ class Scatterplot {
       that.plot.transition()
         .duration(750)
         .call(that.zoom.transform, d3.zoomIdentity.translate(that.width / 2 - pointRect.x, that.height / 2 - pointRect.y));
-      console.log(pointRect);
       that.showTooltip(selected, d3.select(this), true);
     });
 

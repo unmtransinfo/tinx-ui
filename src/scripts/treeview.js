@@ -37,7 +37,6 @@ class TreeView {
 
     return this._getRootNodes().then(data => {
       if (data && Array.isArray(data)) return this.appendTreeItems(data, ROOT_NODE);
-
       const { results = [] } = data;
       this.appendTreeItems(results, ROOT_NODE);
     });
@@ -86,13 +85,17 @@ class TreeView {
   expandToNode(nodeData, plotLoaded = false) {
     this.collapseAll();
     this.$elem.find('li.tree-node.selected').removeClass('selected');
-
+    const idVal = this.mode === TreeViewModes.DISEASE ? 'nodeDOID' : 'nodeId';
     const getAncestors = this.mode === TreeViewModes.DISEASE ?
-      this._getDiseaseAncestorIds.bind(this) :
+      this._getDiseaseAncestorIds.bind(this):
       this._getDtoAncestorIds.bind(this);
 
+    const nodeId = this.mode === TreeViewModes.DISEASE ?
+        nodeData.doid :
+        nodeData;
+
     // Get the list of ancestors for this node. Then expand each one
-    getAncestors(nodeData).then((ids) => {
+    getAncestors(nodeId).then((ids) => {
       // We're going to continually add new tasks to the end of this promise
       let promise = Promise.resolve();
 
@@ -100,12 +103,12 @@ class TreeView {
         promise = promise.then( () => {
           // Find the node for this node ID
           const $node = this.$elem.find('li.tree-node').filter(function() {
-            return $(this).data('nodeId') === id;
+            return $(this).data(idVal) === id;
           });
-
           // If it's the node to which we're expanding, mark it selected
-          const nodeId = this.mode === TreeViewModes.DISEASE ? nodeData : nodeData.id;
-          if ($node.data('nodeId') === nodeId)
+          const nodeId = this.mode === TreeViewModes.DISEASE ? nodeData.doid : nodeData.id;
+
+          if ($node.data(idVal) === nodeId)
             this._select($node, plotLoaded);
 
           // Expand the node
@@ -142,7 +145,7 @@ class TreeView {
     switch (this.mode) {
       case TreeViewModes.DISEASE:
         return ApiHelper.getDiseaseByDOID('DOID:4')
-          .then(disease => this.rootNodeId = disease.id); // Assign and return
+          .then(disease => this.rootNodeId = disease.doid); // Assign and return
       case TreeViewModes.TARGET:
         return Promise.resolve(0);
       default: throw `Unknown TreeViewMode: ${this.mode}`;
@@ -152,9 +155,9 @@ class TreeView {
   _getRootNodes() {
     switch (this.mode) {
       case TreeViewModes.DISEASE:
-        return this._getRootNodeId().then(id => ApiHelper.getDiseaseChildren(id));
+        return this._getRootNodeId().then(id => ApiHelper.getDiseaseChildren(id).then(res => res) );
       case TreeViewModes.TARGET:
-        return ApiHelper.getDTOChildren('PR_000000001');
+        return ApiHelper.getDTOChildren('PR:000000001');
       default: throw `Unknown TreeViewMode: ${this.mode}`;
     }
   }
@@ -181,6 +184,8 @@ class TreeView {
    * @private
    */
   _makeListItem(obj, itemClass = null) {
+    if(!obj.id) return;
+
     const that = this;
     const onClick = (event) => {
       event.stopPropagation();
@@ -205,7 +210,7 @@ class TreeView {
 
     const listItem = $("<li>")
       .addClass(`expandable tree-node`)
-      .data({ nodeId: obj.id, mode: this.mode, details: obj })
+      .data({ nodeId: obj.id, nodeDOID: obj.doid, mode: this.mode, details: obj })
       .click(onClick.bind(this))
       .append(
         $("<span>").addClass("btn").text(capitalName)
@@ -235,9 +240,9 @@ class TreeView {
     const addParents = (id, ls) => {
       ls.unshift(id);
       return ApiHelper.getDiseaseParent(id).then(parent => {
-        const { id } = parent;
+        const { parent_id } = parent;
         return this._getRootNodeId().then(rootNodeId => {
-          if (id && id !== rootNodeId) return addParents(id, ls);
+          if (parent_id && parent_id !== rootNodeId) return addParents(parent_id, ls);
           return ls;
         });
       });
@@ -257,6 +262,7 @@ class TreeView {
    * @private
    */
   _getDtoAncestorIds(dto) {
+
     const addParents = (data, ls) => {
       const { id, parent: parentUrl } = data;
       ls.unshift(id);
@@ -281,7 +287,7 @@ class TreeView {
    * @private
    */
   _toggleNodeCollapse($target) {
-    const id = $target.data('nodeId');
+    const id = this.mode === TreeViewModes.DISEASE ? $target.data('nodeDOID') : $target.data('nodeId');
 
     if ($target.hasClass('expandable')) {
       $target.removeClass('expandable').addClass('collapsible');
