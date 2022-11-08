@@ -39,8 +39,7 @@ $(window).on("load", () => {
 
     $thresholdSlider.attr('max', 2000).val(defaultThreshold).attr('disabled', false);
 
-    if (/*!plotLoaded &&*/ !node.hasClass(ROOT_NODE)) {
-
+    if (!plotLoaded && !node.hasClass(ROOT_NODE)) {
       if (data.mode === TreeViewModes.DISEASE) scatterplot.loadPlot(data.mode, data.nodeId, data.details, defaultThreshold);
       else {
         const { details = {} } = data;
@@ -151,8 +150,8 @@ $(window).on("load", () => {
     if (diseaseParam) {
       onModeUpdate(TreeViewModes.DISEASE);
       ApiHelper.getDisease(diseaseParam).then(data => {
-        scatterplot.loadPlot(TreeViewModes.DISEASE, data.id, data, defaultThreshold);
-        treeView.expandToNode(data.id);
+        scatterplot.loadPlot(TreeViewModes.DISEASE, data.doid, data, defaultThreshold);
+        treeView.expandToNode(data);
       });
     }
     else if (targetParam) {

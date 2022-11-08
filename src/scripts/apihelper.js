@@ -138,6 +138,14 @@ class ApiHelper {
       return this.makeSimpleRequest('GET', disease.targets);
   }
 
+  getSearchResults(query, type) {
+    return this.makeRequest({
+      method: 'GET',
+      endpoint: '/search/?type=:type&q=:query',
+      params: {type, query}
+    });
+  }
+
   getDiseaseTargetArticles(diseaseId, targetId, offset = 0, limit=5) {
     return this.makeRequest({
       method: 'GET',

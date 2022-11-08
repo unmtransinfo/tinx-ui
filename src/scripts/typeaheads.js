@@ -20,23 +20,20 @@ class Typeaheads {
     this.treeViewSearch.typeahead({
       source: (query, callback) => {
         if (this.mode === TreeViewModes.DISEASE) {
-          ApiHelper.findDisease(query)
-            .then((x) => x.results)
+          ApiHelper.getSearchResults(query, TreeViewModes.DISEASE)
+            .then(data => data)
             .then(callback);
         }
         else if (this.mode === TreeViewModes.TARGET) {
-          ApiHelper.findTarget(query, true)
-            .then(data => data.results)
+          ApiHelper.getSearchResults(query, TreeViewModes.TARGET)
+            .then(data => data)
             .then(callback);
         }
       },
+      matcher: () => true,
+      items: 15,
       displayText: (x) => `${x.name.charAt(0).toLocaleUpperCase() + x.name.slice(1)}`,
       afterSelect: (x) => {
-        // start loading plot for selection
-        if ('doid' in x)
-          this.scatterplot.loadPlot(this.mode, x.doid, x);
-        else
-          this.scatterplot.loadPlot(this.mode, x.id, x);
         this.treeViewSearch.val('');
         treeView.setWasBackPressed(false);
         // expand the tree view to selected node

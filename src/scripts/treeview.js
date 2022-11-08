@@ -91,7 +91,7 @@ class TreeView {
       this._getDtoAncestorIds.bind(this);
 
     const nodeId = this.mode === TreeViewModes.DISEASE ?
-        nodeData.doid :
+        nodeData ? nodeData.doid : nodeData :
         nodeData;
 
     // Get the list of ancestors for this node. Then expand each one
@@ -106,8 +106,6 @@ class TreeView {
             return $(this).data(idVal) === id;
           });
           // If it's the node to which we're expanding, mark it selected
-          const nodeId = this.mode === TreeViewModes.DISEASE ? nodeData.doid : nodeData.id;
-
           if ($node.data(idVal) === nodeId)
             this._select($node, plotLoaded);
 
