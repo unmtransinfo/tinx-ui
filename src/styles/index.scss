@@ -84,7 +84,7 @@ body {
     padding: 10px 0;
 
     .section-header {
-      font-size: 16px;
+      font-size: 1.5rem;
       font-weight: 600;
       margin-bottom: 10px;
     }
@@ -292,7 +292,7 @@ body {
 
   #plot-header {
     width: 100%;
-    padding-left: 40px;
+    padding-left: 20px;
     margin-top: 10px;
 
     h2 {
@@ -382,3 +382,59 @@ body {
   }
 }
 
+
+
+.tabcontainer {
+   margin: 0;
+   width: 150px;
+}
+
+.tabs-btn {
+  display: flex;
+  justify-content: left;
+}
+
+.tab-btn {
+  flex: 1;
+  color: #333;
+  text-align: center;
+  padding: 0px;
+  background-color: #EEF5F8;
+  border: 1px solid #000;
+  border-radius: 10px 10px 0 0;
+  cursor: pointer;
+}
+
+.tab-btn:not(:last-of-type) {
+  border-right: 0;
+}
+
+.tab-content {
+  display: none;
+  padding: 1em;
+  border: 1px solid #000;
+  border-top: 0;
+  background-color: #fff;
+}
+
+/* tab open */
+.tab-btn.tab-open {
+  font-weight: bold;
+  background-color: #fff;
+  border-bottom: 0;
+
+  transition: 0.3s;
+}
+
+.wide-anchor {
+  display: block;
+  padding: 5px 5px;
+}
+
+#table-container {
+margin-left: 20px;
+}
+
+#plot-container {
+/* padding-left: 10px; */
+}

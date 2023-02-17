@@ -102,6 +102,15 @@ svg.scatterplot {
 
   .popover-header {
     text-align: center;
+    font-size: 1.5rem !important;
+  }
+
+  .popover-sub-header {
+    text-align: center;
+    padding-left: 5px;
+    padding-right: 5px;
+    font-size: 14px;
+    font-weight: bold;
   }
 
   .popover-body {

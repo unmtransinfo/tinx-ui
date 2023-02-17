@@ -23,10 +23,11 @@
         font-weight: bold;
         padding-right: 0;
         padding-left: 0;
+        white-space: nowrap;
       }
 
       .value {
-        padding-left: 5px;
+        padding-left: 8px;
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
@@ -72,6 +73,13 @@
       &[data-idgfam="NR"] { background-color: $color-NR; }
       &[data-idgfam="ION"] { background-color: $color-ION; }
       &[data-idgfam="KINASE"] { background-color: $color-KINASE; }
+      &[data-idgfam="Kinase"] { background-color: $color-KINASE; }
+      &[data-idgfam="Enzyme"] { background-color: white; color: black !important; }
+      &[data-idgfam="TF"] { background-color: white; color: black !important; }
+      &[data-idgfam="TF; Epigenetic"] { background-color: white; color: black !important; }
+      &[data-idgfam="Epigenetic"] { background-color: white; color: black !important; }
+      &[data-idgfam="Transporter"] { background-color: white; color: black !important; }
+      &[data-idgfam="IC"] { background-color: white; color: black !important; }
       &[data-idgfam=""] {
         background-color: $bolder-grey;
         span { color: white; }

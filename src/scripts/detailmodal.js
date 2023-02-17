@@ -120,7 +120,7 @@ class DetailModal {
     const requestTime = new Date().getTime();
     this.lastPageRequestTime = requestTime;
 
-    return ApiHelper.getDiseaseTargetArticles(this.disease.id, this.target.id, start, this.perPage)
+    return ApiHelper.getDiseaseTargetArticles(this.disease.doid, this.target.id, start, this.perPage)
       .then((data) => {
         if (requestTime === this.lastPageRequestTime) {
           const $articleStats = this.$elem.find('.pagination .article-stats');
@@ -184,6 +184,7 @@ class DetailModal {
       $card.find('.article-title').text(article.title);
       $card.find('.article-authors').text(article.authors);
       $card.find('.article-journal').text(article.journal);
+      $card.find('.article-date').text(article.date);
 
       const abstractDivId = `pubmed-article-${xss(article.id)}`;
 

@@ -50,7 +50,6 @@
           background: $turquoise;
           border-color: $turquoise;
           color: white;
-
           .badge {
             color: white;
           }
@@ -67,12 +66,10 @@
       overflow: hidden;
       -ms-text-overflow: ellipsis;
       text-overflow: ellipsis;
-
       background: $faint-blue;
       border: 1px solid $turquoise;
       color: $turquoise;
       padding-right: 0;
-
       position: relative;
 
       &:hover {
@@ -109,3 +106,4 @@
   }
 
 }
+

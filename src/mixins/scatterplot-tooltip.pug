@@ -1,25 +1,31 @@
+mixin detail-row-subheader(classname)
+  .row
+    .col-12.value(class=classname)
+    
 mixin detail-row(label, classname)
   .row
     .col-3.label
       =label+":"
     .col-9.value(class=classname)
 
+mixin article-paginator
+  .value(class=classname)
+
 mixin scatterplot-tooltip
   #scatterplot-tooltip.popover.bs-popover-right(style="opacity: 0;")
     .arrow
-    .popover-header
+    .popover-header(style="font-size: 1rem;")
       | My Header
+    .popover-sub-header
+      +detail-row-subheader("full-name")
     .popover-body
       .container
         .row.main-row
           .col-8.details-col
-            +detail-row("Full name", "full-name")
             +detail-row("Family", "family")
             +detail-row("Pharos", "pharos")
             +detail-row("DrugCentral", "drug-central")
             +detail-row("DTO ID", "dto-id")
-
-
           .col-4.badge-col
             .badge.badge-tdl(role="alert")
               span Test
@@ -31,5 +37,5 @@ mixin scatterplot-tooltip
           .col-12
             button.btn.btn-primary#view-details-button View Details
             button.btn.btn-danger#close-modal-button Close
-
-
+        .row.hover-actions-row(style="display: none;")
+          .col-12(style="text-align: center; font-style: italic;") click on a data point for details

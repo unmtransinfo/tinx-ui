@@ -211,7 +211,7 @@ class TreeView {
       .data({ nodeId: obj.id, nodeDOID: obj.doid, mode: this.mode, details: obj })
       .click(onClick.bind(this))
       .append(
-        $("<span>").addClass("btn").text(capitalName)
+        $("<span>").addClass("btn").text(capitalName).prop('title', capitalName)
       );
 
     // add child count to node if it is not a root node

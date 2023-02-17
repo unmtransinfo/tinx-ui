@@ -1,0 +1,19 @@
+mixin tutorials-overview-row
+    section.overview
+        .section-header
+            | Tutorials
+        .section-body
+            p This is where we will post TIN-X Tutorials and other important educational and training material related to TIN-X
+
+    #tutorials-modal.modal.fade(role="dialog" aria-labeledby="tutorials-modal-title" aria-hidden="true")
+        .modal-dialog(role="document").modal-lg
+            .modal-content
+                .modal-header
+                    #tutorials-modal-title.modal-title
+                        | TIN-X Tutorials
+                    button.close(type="button" data-dismiss="modal" aria-label="close")
+                        span(aria-hidden="true") &times;
+                .modal-body
+                    +tutorials-overview-row
+                .modal-footer
+                    button.btn.btn-secondary(type="button" data-dismiss="modal") Close

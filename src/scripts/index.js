@@ -1,6 +1,8 @@
 import '../styles/index.scss';
 import $ from 'jquery';
+//import $ from 'jQuery';
 window.jQuery = $;
+import 'datatables.net';
 import 'bootstrap';
 import 'bootstrap-3-typeahead';
 import Typeaheads from "./typeaheads";
@@ -15,6 +17,7 @@ import Exporter from "./exporter";
 import { ROOT_NODE } from "./constants";
 
 $(window).on("load", () => {
+
   const defaultThreshold = 300;
   const shareChart = new ShareChart();
   const scatterplot = new Scatterplot('#plot-container');
@@ -22,13 +25,17 @@ $(window).on("load", () => {
   const detailmodal = new DetailModal('#detail-modal');
   const exporter = new Exporter(TreeViewModes.DISEASE);
   const aboutModal = $('#about-modal');
+  const tableModal = $('#table-modal');
+  //const tutorialsModal = $('#tutorials-modal');
   const $thresholdSlider = $('#threshold-slider');
+
 
   treeView.init();
   Typeaheads.init(treeView, scatterplot);
 
   const filters = new Filters(TreeViewModes.DISEASE, filters => {
     scatterplot.filterData(filters);
+    exporter.filterData(filters);
   });
 
   checkUrlParams();
@@ -60,7 +67,7 @@ $(window).on("load", () => {
 
     if (mode === TreeViewModes.DISEASE) {
       $('#plot-title span.title').text('Targets associated with ');
-      $('#plot-title a').text(details.name)
+      $('#plot-title a').text(details.name).prop('title', details.name)
         .attr('href',
           `http://disease-ontology.org/term/${encodeURIComponent(details.doid)}`);
     }
@@ -70,14 +77,13 @@ $(window).on("load", () => {
 
       const [ target ] = details.target;
       $('#plot-title span.title').text('Diseases associated with ');
-      $('#plot-title a').text(details.name)
+      $('#plot-title a').text(details.name).prop('title', details.name)
         .attr('href',
           `//pharos.nih.gov/idg/targets/${encodeURIComponent(target.uniprot)}`);
     }
   });
 
-  // User clicks a datapoint
-  scatterplot.onPointClick((d, subjectDetails) => {
+  const detailModal = (d, subjectDetails) => {
     // Immediately hide any tooltips that are open
     $('#scatterplot-tooltip,#general-tooltip').css('opacity', '0');
 
@@ -88,6 +94,16 @@ $(window).on("load", () => {
     if ("disease" in d) {
       detailmodal.show(subjectDetails, d.disease);
     }
+  };
+
+  // User clicks on a row
+  exporter.onRowClick((d, subjectDetails) => {
+    detailModal(d, subjectDetails);
+  });
+
+  // User clicks a datapoint
+  scatterplot.onPointClick((d, subjectDetails) => {
+    detailModal(d, subjectDetails);
   });
 
   // The plot finishes loading
@@ -112,6 +128,13 @@ $(window).on("load", () => {
       scatterplot.clearTooltip(false);
     });
 
+
+// is this still used?
+   $('#viewTableButton').click(function() {
+    return tableModal.modal({ show: true });
+   });
+
+
   $('.nav-item').click(function() {
     const elem = $(this);
     treeView.setWasBackPressed(false);
@@ -124,6 +147,17 @@ $(window).on("load", () => {
     if (value === 'about') {
       return aboutModal.modal({ show: true });
     }
+
+    if (value === 'tutorials') {
+      return aboutModal.modal({ show: true });
+    }
+
+    // Here we are updating the data-mode attribute on the body tag to reflect User actions such as clicking on the navigation links
+    if (value === 'disease' || value === 'target') {
+      $('body').attr('data-mode', value);
+    }
+
+
 
     $('body').attr('data-mode', value);
     scatterplot.clear();
@@ -156,6 +190,9 @@ $(window).on("load", () => {
     }
     else if (targetParam) {
       onModeUpdate(TreeViewModes.TARGET);
+      $('body').attr('data-mode', 'target');
+      $('#disease-nav-item').removeClass('active');
+      $('#target-nav-item').addClass('active');
       ApiHelper.getDTO(targetParam).then(data => {
         const { target } = data;
         if (target && Array.isArray(target) && target.length) {
@@ -180,12 +217,54 @@ $(window).on("load", () => {
     shareChart.close();
   }
 
+  /**
+   * Switch between Table and the default Plot view modes
+   * using Click event handler
+   *
+   */
+
+    $('#clicktable').click(function()  {
+      $('#plot-container').hide();
+      $('#table-container').show();
+      $('#plot-legend').hide();
+    });
+
+    $('#clickplot').click(function()  {
+      checkUrlParams();
+        $('#table-container').hide();
+        $('#plot-container').show();
+        $('#plot-legend').show();
+    });
+
+const tab = document.querySelectorAll(".tabcontainer");
+const toggleTab = function (element) {
+  const tabBtn = element.querySelectorAll(".tab-btn");
+
+  tabBtn[0].classList.add("tab-open");
+
+
+  const removeTab = function (element) {
+    for (const i of element) {
+      i.classList.remove("tab-open");
+    }
+  };
+  const openTab = function (index) {
+    removeTab(tabBtn);
+    tabBtn[index].classList.add("tab-open");
+  };
+  tabBtn.forEach((el, i) => (el.onclick = () => openTab(i)));
+};
+[...tab].forEach((el) => toggleTab(el));
+
+
+
   window.onpopstate = (e) => {
     if(e.state){
       checkUrlParams(true);
     }
   };
 });
+
 
 // Google analytics
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

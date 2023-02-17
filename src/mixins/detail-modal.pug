@@ -68,7 +68,7 @@ mixin detail-modal
     .modal-dialog(role="document").modal-lg
       .modal-content
         .modal-header
-          #detail-modal-title.modal-title
+          #detail-modal-title.modal-title(style="font-size: 1.5rem; font-style: italic; font-weight: 600")
             | Hello, world!
           button.close(type="button" data-dismiss="modal" aria-label="close")
             span(aria-hidden="true") &times;
@@ -88,6 +88,7 @@ mixin detail-modal
                 h3.article-title The title
                 p.article-authors Stiewe, Thorsten T and Haran, Tali E TE..
                 p.article-journal The journal
+                span.article-date.badge.rounded-pill.bg-secondary 1999
             .abstract.collapse(data-parent="#article-list")
               .card-body
                 p

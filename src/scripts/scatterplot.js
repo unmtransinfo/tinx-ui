@@ -39,10 +39,12 @@ function updateTargetDetails(div, target) {
   updateLink('.value.pharos', target.uniprot, `https://pharos.nih.gov/idg/targets/${encodeURIComponent(target.uniprot)}`);
   updateLink('.value.drug-central', target.uniprot, `http://drugcentral.org/?q=${encodeURIComponent(target.uniprot)}`);
 
+// replace the semi-colon with an underscore
   const dtoid = target.dtoid
-    ? target.dtoid.replace(/_/g, ':')
+    ? target.dtoid.replace(/_/gi, ':')
     : null;
 
+// Note that updateLink() uses the newdrugtargets.org domain name here, and that for dev instances, the User will end up getting redirected from localhost to newdrugtargets.org/?target= 
   updateLink('.value.dto-id', dtoid || "", `https://newdrugtargets.org/?target=${encodeURIComponent(dtoid)}`);
 
   // Update tdl badge
@@ -85,9 +87,6 @@ class Scatterplot {
       name: 'a given disease'
     };
     this.datapoints = [];
-    this.subjectDetails = {
-      name: 'a given disease'
-    };
     this.pointClickHandler = null;
     this.plotLoadedHandler = null;
     this.hoverTooltipEnabled = true;
@@ -395,6 +394,7 @@ class Scatterplot {
       .attr('class', (d) => 'datapoint ' + className(d) )
       .attr('d', (d) => d3.symbol().size([60]).type(this._pointShape(d))())
       .attr('transform', (d) => `translate(${x(d.x)}, ${y(d.y)})`)
+//This is not working: .append(function(d){return d.target.uniprot})
       .on('mouseover', function(d) {
         if (that.hoverTooltipEnabled) that.showTooltip(d, d3.select(this));
       })
@@ -518,10 +518,12 @@ class Scatterplot {
       .style('opacity', 1.0);
 
     const tooltipActions = tooltipDiv.select('.actions-row');
+    const tooltipHoverActions = tooltipDiv.select('.hover-actions-row');
 
     if (forSearchItem) {
       tooltipDiv.style('pointer-events', 'auto');
       tooltipActions.style('display', null);
+      tooltipHoverActions.style('display', 'none');
       const detailsButton = tooltipActions.select('#view-details-button');
       const closeButton = tooltipActions.select('#close-modal-button');
 
@@ -537,6 +539,7 @@ class Scatterplot {
     }
     else {
       tooltipDiv.style('pointer-events', 'none');
+      tooltipHoverActions.style('display', null);
       tooltipActions.style('display', 'none');
     }
   }
