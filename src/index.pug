@@ -67,6 +67,7 @@ html(lang='en')
                 .icon-container
                   i.fa.fa-search
                 input#search-input(type="text" autocomplete="off")
+                input.hide#table-search-input(type="text" autocomplete="off")
               +filters
               button.btn.btn-secondary#share-chart-btn Share
               a.btn.btn-secondary#export-chart-btn Export
@@ -77,10 +78,7 @@ html(lang='en')
               input#threshold-slider(max="2000" value="300" type="range" disabled="true" data-placement="left")
               i.fa.fa-plus
         #table-container(style='display:none;')
-          div
-            input#filter-value(type='text', placeholder='value to filter')
-            button#filter-clear Clear Filter
-          #example-table(style='width:100%; height:100%;')
+          #table-view(style='width:100%; height:100%;')
 
         #plot-legend
           +target-legend

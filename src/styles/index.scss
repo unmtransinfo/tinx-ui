@@ -338,10 +338,14 @@ body {
         flex: 1;
       }
 
-      input#search-input {
+      input#search-input, input#table-search-input {
         font-size: 16px;
         border-radius: 8px;
         padding: 6px 10px;
+      }
+
+      input#table-search-input {
+        min-width: 11em;
       }
     }
   }
