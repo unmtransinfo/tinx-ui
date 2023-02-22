@@ -8,6 +8,7 @@ import 'bootstrap-3-typeahead';
 import Typeaheads from "./typeaheads";
 import { TreeView, TreeViewModes } from "./treeview";
 import { Scatterplot } from './scatterplot';
+import { TableView } from './tableview';
 import DetailModal from './detailmodal';
 import Filters from './filters';
 import Helpers from './helpers';
@@ -24,9 +25,9 @@ $(window).on("load", () => {
   const treeView = new TreeView('#tree-view', TreeViewModes.DISEASE);
   const detailmodal = new DetailModal('#detail-modal');
   const exporter = new Exporter(TreeViewModes.DISEASE);
+  const tableview = new TableView(TreeViewModes.DISEASE, '#table-view', '#table-search-input');
   const aboutModal = $('#about-modal');
   const tableModal = $('#table-modal');
-  //const tutorialsModal = $('#tutorials-modal');
   const $thresholdSlider = $('#threshold-slider');
 
 
@@ -35,7 +36,7 @@ $(window).on("load", () => {
 
   const filters = new Filters(TreeViewModes.DISEASE, filters => {
     scatterplot.filterData(filters);
-    exporter.filterData(filters);
+    tableview.filterData(filters);
   });
 
   checkUrlParams();
@@ -45,6 +46,8 @@ $(window).on("load", () => {
     const { mode, nodeId, nodeDOID, details } = data;
 
     $thresholdSlider.attr('max', 2000).val(defaultThreshold).attr('disabled', false);
+
+    tableview.clear();
 
     if (!plotLoaded && !node.hasClass(ROOT_NODE)) {
       if (data.mode === TreeViewModes.DISEASE) scatterplot.loadPlot(data.mode, data.nodeId, data.details, defaultThreshold);
@@ -97,7 +100,7 @@ $(window).on("load", () => {
   };
 
   // User clicks on a row
-  exporter.onRowClick((d, subjectDetails) => {
+  tableview.onRowClick((d, subjectDetails) => {
     detailModal(d, subjectDetails);
   });
 
@@ -109,6 +112,7 @@ $(window).on("load", () => {
   // The plot finishes loading
   scatterplot.onPlotLoaded((datapoints, totalCount, subjectDetails) => {
     exporter.setData(datapoints, subjectDetails);
+    tableview.setData(datapoints, subjectDetails);
     $thresholdSlider.attr('max', totalCount < 2000 ? totalCount : 2000);
     filters.reset();
     Typeaheads.initDataSearch(datapoints, (selected) => {
@@ -214,6 +218,7 @@ $(window).on("load", () => {
     treeView.setMode(value);
     filters.setMode(value);
     exporter.setMode(value);
+    tableview.setMode(value);
     shareChart.close();
   }
 
@@ -222,39 +227,45 @@ $(window).on("load", () => {
    * using Click event handler
    *
    */
-
     $('#clicktable').click(function()  {
       $('#plot-container').hide();
       $('#table-container').show();
       $('#plot-legend').hide();
+      $('#table-search-input').removeClass('hide');
+      $('#table-search-input').attr('placeholder', `Search for a ${treeView.mode === TreeViewModes.DISEASE ? 'target' : 'disease'}...`);
+      $('#search-input').addClass('hide');
+
     });
 
-    $('#clickplot').click(function()  {
-      checkUrlParams();
-        $('#table-container').hide();
-        $('#plot-container').show();
-        $('#plot-legend').show();
-    });
+  $('#clickplot').click(function()  {
+    $('#table-container').hide();
+    $('#plot-container').show();
+    $('#plot-legend').show();
+    $('#table-search-input').addClass('hide');
+    $('#search-input').removeClass('hide');
 
-const tab = document.querySelectorAll(".tabcontainer");
-const toggleTab = function (element) {
-  const tabBtn = element.querySelectorAll(".tab-btn");
+    scatterplot.redraw();
+  });
 
-  tabBtn[0].classList.add("tab-open");
+  const tab = document.querySelectorAll(".tabcontainer");
+  const toggleTab = function (element) {
+    const tabBtn = element.querySelectorAll(".tab-btn");
+
+    tabBtn[0].classList.add("tab-open");
 
 
-  const removeTab = function (element) {
-    for (const i of element) {
-      i.classList.remove("tab-open");
-    }
+    const removeTab = function (element) {
+      for (const i of element) {
+        i.classList.remove("tab-open");
+      }
+    };
+    const openTab = function (index) {
+      removeTab(tabBtn);
+      tabBtn[index].classList.add("tab-open");
+    };
+    tabBtn.forEach((el, i) => (el.onclick = () => openTab(i)));
   };
-  const openTab = function (index) {
-    removeTab(tabBtn);
-    tabBtn[index].classList.add("tab-open");
-  };
-  tabBtn.forEach((el, i) => (el.onclick = () => openTab(i)));
-};
-[...tab].forEach((el) => toggleTab(el));
+  [...tab].forEach((el) => toggleTab(el));
 
 
 
@@ -264,7 +275,6 @@ const toggleTab = function (element) {
     }
   };
 });
-
 
 // Google analytics
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

@@ -12,15 +12,7 @@ class Exporter {
     this.mode = mode;
     this.subjectDetails = null;
     this.data = null;
-    this.table = null;
     this.filters = {text: null, tags: {idg: null, tdl: null}};
-    this.rowClickHandler = null;
-  }
-
-  onRowClick(clickHandler) {
-    if (this.rowClickHandler !== null)
-      throw new Error("A handler for the pointClick event has already been registered.");
-    this.rowClickHandler = clickHandler;
   }
 
   /**
@@ -48,28 +40,6 @@ class Exporter {
     });
 
     return res;
-  }
-
-  _applyFilters() {
-    this.table.clearFilter();
-    if(this.filters.tags.tdl)
-      this.table.addFilter(...Object.values(this.filters.tags.tdl));
-    if(this.filters.tags.idg)
-      this.table.addFilter(...Object.values(this.filters.tags.idg));
-    if(this.filters.text)
-      this.table.addFilter(...Object.values(this.filters.text));
-  }
-
-  /**
-   * Hides/shows datapoints based on filter status
-   *
-   * @param {Object} filters:   filter data
-   */
-  filterData(filters) {
-    if(!this.table) return;
-    this.filters.tags.idg = {field: 'family', type: 'keywords', value: filters.idg.join(' ')};
-    this.filters.tags.tdl = {field: 'tdl', type: 'keywords', value: filters.tdl.join(' ')};
-    this._applyFilters();
   }
 
   /**
@@ -126,7 +96,6 @@ class Exporter {
    */
   updateLink() {
     if (!this.subjectDetails || !this.data || !this.data.length) return;
-    const that = this;
     let csv = this.convertToCSV();
     if (!csv || !csv.length) return;
 
@@ -138,119 +107,6 @@ class Exporter {
     const data = encodeURI(csvForExport);
 
     this.exportChartBtn.attr({href: data, download: filename, target: '_blank'});
-
-    //Tabulator Table search
-var fieldEl = "name";
-var typeEl = "like";
-var valueEl = document.getElementById("search-input");
-
-//Custom filter applied to the Name field based on the typed User input
-function customFilter(data){
-    return data.name < 3;
-}
-
-//Trigger setFilter function with correct parameters
-function updateFilter(){
-    var filterValues = table.getColumns();
-    var typeVal = "like";
-    // Sub array for OR comparison
-    var filters = [[]];
-
-    filterValues.forEach(val => {
-        filters[0].push({
-          field: val.getDefinition().field,
-          type: typeVal,
-          value: valueEl.value
-        });
-    });
-
-    if(filters.length){
-        table.setFilter(filters, typeVal, valueEl.value);
-    }
-}
-
-//Update filters on value change
-document.getElementById("search-input").addEventListener("keyup", updateFilter);
-
-//Clear filters on "Clear Filters" button click
-document.getElementById("filter-clear").addEventListener("click", function(){
-  table.clearFilter();
-});
-
-  const removeHeader = (header, csv) => {
-    const searchString = header.map(val => val.field).join(',');
-    // Have to remove the trailing \n in addition to the headers
-    const headlessCsv = csv.slice(searchString.length + 1);
-    return headlessCsv;
-  };
-
-// initiate Tabulator table, depending on the mode (disease or target)
-// first check the mode (disease or target)
-
-const height = $(window).height() * 0.75;
-
-if (this.mode == "disease") {
-  const columns = [
-    {title:"Name", field:"name"},
-    {title:"Sym", field:"sym"},
-    {title:"Family", field:"family"},
-    {title:"Detailed Family", field:"detailed_family"},
-    {title:"TDL", field:"tdl"},
-    {title:"Uniprot", field:"uniprot"},
-    {title:"dtoID", field:"dtoid"},
-    {title:"Novelty Score", field:"novelty_score"},
-    {title:"Importance Score", field:"importance_score"},
-  ];
-var csvData = removeHeader(columns, csv);;
-var table = new Tabulator("#example-table", {
-        maxHeight:height,
-        data:csvData,
-        layout:"fitColumns",
-        importFormat:"csv",
-        columns,
-});
-}
-
-if (this.mode == "target") {
-  const columns = [
-    {title:"Name", field:"name"},
-    {title:"DOID", field:"doid"},
-    {title:"Summary", field:"summary"},
-    {title:"Novelty Score", field:"novelty_score"},
-    {title:"Importance Score", field:"importance_score"},
-  ];
-var csvData = removeHeader(columns, csv);
-var table = new Tabulator("#example-table", {
-        maxHeight:height,
-        data:csvData,
-        layout:"fitColumns",
-        importFormat:"csv",
-        columns,
-});
-
-    if (this.mode == "target") {
-      var csvData = csv;
-      var table = new Tabulator("#example-table", {
-              height:405,
-              data:csvData,
-              layout:"fitDataFill",
-              importFormat:"csv",
-              columns:[
-                {title:"Name", field:"name"},
-                {title:"DOID", field:"doid"},
-                {title:"Summary", field:"summary"},
-                {title:"Novelty Score", field:"novelty_score"},
-                {title:"Importance Score", field:"importance_score"},
-               ],
-      });
-    }
-    this.table = table;
-
-
-    table.on(
-        "rowClick",
-        (e, row) =>
-            this.rowClickHandler({[(this.mode === 'target' ? 'disease' : 'target')] : row.getData()},this.subjectDetails));
   }
 
   /**

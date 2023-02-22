@@ -305,6 +305,7 @@ class Scatterplot {
    */
   redraw() {
     const that = this;
+
     const width = this.container.node().clientWidth - margin.left - margin.right;
     const height = this.container.node().clientHeight - margin.top - margin.bottom;
     this.width = width;

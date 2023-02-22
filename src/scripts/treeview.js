@@ -35,7 +35,11 @@ class TreeView {
   init() {
     this.$elem.empty();
 
+    const spinner = this.$elem.prepend(
+      '<span class="loading-spinner" style="background: transparent;"><i class="fas fa-sync refresh-animation"></i><span>&nbsp;Loading ...</span></span>');
+
     return this._getRootNodes().then(data => {
+      spinner.find('.loading-spinner').remove();
       if (data && Array.isArray(data)) return this.appendTreeItems(data, ROOT_NODE);
       const { results = [] } = data;
       this.appendTreeItems(results, ROOT_NODE);
