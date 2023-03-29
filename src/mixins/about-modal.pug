@@ -1,3 +1,19 @@
+mixin newtinx-row
+    section.newtinx-row
+        .section-header
+            | NEW TIN-X Version 3.0
+        .section-body
+            p April 2023: We are excited to announce the release of TIN-X Version 3.0!  This new version of TIN-X includes new features, addresses bugs, and features an expanded dataset.  A few of the most significant changes are:
+            ul
+                li Adoption of Amazon RDS, replacing mySQL as the deployed relational database
+                li Approximately 9-fold more target/disease associations due to JensenLab DISEASES resource version 2.0 indexing full-text articles from PubMed when available instead of only titles and abstracts
+                li API upgraded from Python2 to Python3
+                li Improved the performance of the API to support the expanded dataset
+                li Added new table view mode for both Browse Targets and Browse Diseases.  Users can toggle between plot-view and the new table-view mode, and they can also sort and/or filter-search for results in either viewing mode.
+                li Improvements to formatting and alignment issues are implemented in the new UI
+                li The Browse Diseases filters for IDG Family and Target Development Level (TDL) have been fixed so that each item can be checked and unchecked with immediate filtering applied to either the plot or the table view.
+                li The multiple-article view now includes a publication date for each article displayed
+
 mixin overview-row
     section.overview
         .section-header
@@ -7,7 +23,7 @@ mixin overview-row
             p.
                 We used natural language processing to identify disease and protein mentions in the text
                 of <a href="http://www.ncbi.nlm.nih.gov/pubmed/" target="_blank">PubMed</a>
-                abstracts. Using this data, we derived two metrics: #[strong novelty] and #[strong importance]. Novelty measures the
+                content. Using this data, we derived two metrics: #[strong novelty] and #[strong importance]. Novelty measures the
                 relative scarcity of specific publications about a given concept (such as a target or a disease),
                 while importance measures the relative strength of the association between two concepts. We then built
                 this web tool, which enables users to explore the relationships between the novelty of potential drug targets
@@ -19,12 +35,16 @@ mixin overview-row
                 li Abstracts which mention only a few targets and diseases are more specific and should be given greater weight than those which mention many.
             p For more details about how these scores are computed, please see the paper cited below.
 
+
 mixin publications-row
     section.publications
         .section-header
             | Publications
         .section-body
             ul
+                li.
+                    Vincent T. Metzger, Daniel C. Cannon, Jeremy J. Yang, Stephen L. Mathias, Cristian G. Bologa, Anna Waller, Stephan C. Schürer, Dušica Vidović, Lars Juhl Jensen, 		Christophe G. Lambert, Tudor I. Oprea, and Jeremy S. Edwards.  TIN-X Version 3: Update with expanded dataset and modernized architecture. Poster presented March 2023. DOI: 10.5281/zenodo.7735662
+
                 li.
                     Cannon, D.C., Yang, J.J., Mathias, S.L., Ursu, O., Mani, S., Waller, A., Schürer, S.C., Jensen, L.J.,
                     Sklar, L.A., Bologa, C.G. and Oprea, T.I., 2017. <a title="TIN-X: target importance and novelty explorer"
@@ -36,9 +56,7 @@ mixin feedback-row
             | Feedback
         .section-body
             p.
-                Please report any bugs you find and send us suggestions for new features using our
-                <a href="https://bitbucket.org/unmtid/tinx-ui" target="_blank">Bitbucket Issue Tracker</a>.
-
+                Please report any bugs you find and send us suggestions for new features by emailing VTMetzger (at) salud (dot) unm (dot) edu.
 mixin team-row
     section.team
         .section-header
@@ -48,22 +66,20 @@ mixin team-row
                 TIN-X was a collaborative effort involving many researchers from the University of New Mexico,
                 the University of Copenhagen, and the University of Miami. The main contributors are listed below:
             ul
-                li
-                    a(href="https://www.researchgate.net/profile/Daniel_Cannon" target="_blank") Daniel Cannon
-                li
-                    a(href="https://vivo.health.unm.edu/display/n853" target="_blank") Cristian Bologa
-                li
-                    a(href="https://vivo.health.unm.edu/display/n6723" target="_blank") Stephen Mathias
-                li
-                    a(href="https://vivo.health.unm.edu/display/n2515" target="_blank") Jeremy Yang
-                li
-                    a(href="https://vivo.health.unm.edu/display/n7948" target="_blank") Tudor Oprea
-                li
-                    a(href="http://jensenlab.org" target="_blank") Lars Jensen
-                li
-                    a(href="https://www.researchgate.net/profile/Stephan_Schurer" target="_blank") Stephan Schürer
-                li
-                    a(href="#" target="_blank") Vincent T. Metzger
+                li Vincent T. Metzger
+                li Daniel C. Cannon
+                li Jeremy J. Yang
+                li Stephen L. Mathias
+                li Cristian G. Bologa
+                li Anna Waller
+                li Stephan C. Schürer
+                li Dušica Vidović
+                li Timothy K Sheils
+                li Keith J. Kelleher
+                li Lars Juhl Jensen
+                li Christophe G. Lambert
+                li Tudor I. Oprea
+                li Jeremy S. Edwards
 
 mixin funding-row
     section.funding
@@ -78,12 +94,11 @@ mixin funding-row
 mixin update-row
     section.update
         .section-header
-            | Last Update
+            | Last Updated
         .section-body
-            p The data in this application was last updated:
-            p IDG-KMC Target Central Resource Database, version 6.11.0
-            p DISEASES timestamp from TCRD (unknown)
-            p TIN-X Version 3, last updated <strong>October 21, 2021
+            p TIN-X Version 3.0 last updated March 28, 2023
+            p IDG-KMC Target Central Resource Database, version 6.12.4 released 10/21/2021
+            p JensenLab DISEASES 2.0 resource downloaded 10/21/2021
 mixin about-modal
     #about-modal.modal.fade(role="dialog" aria-labeledby="about-modal-title" aria-hidden="true")
         .modal-dialog(role="document").modal-lg
@@ -94,6 +109,7 @@ mixin about-modal
                     button.close(type="button" data-dismiss="modal" aria-label="close")
                         span(aria-hidden="true") &times;
                 .modal-body
+                    +newtinx-row
                     +overview-row
                     +publications-row
                     +feedback-row
