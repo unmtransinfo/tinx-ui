@@ -1,6 +1,6 @@
-# Webpack Frontend Starterkit
+# TIN-X UI
 
-A lightweight foundation for your next webpack based frontend project.
+This is the frontend application for TIN-X.
 
 
 ### Installation
