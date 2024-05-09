@@ -2,15 +2,15 @@ const config = {};
 
 config.development = {
   //API_ROOT: 'localhost:8000'
-  API_ROOT: 'https://api-staging.newdrugtargets.org'
+  API_ROOT: process.env.API_ROOT ? process.env.API_ROOT : 'https://api-staging.newdrugtargets.org'
 };
 
 config.staging = {
-  API_ROOT: 'https://api-staging.newdrugtargets.org'
+  API_ROOT: process.env.API_ROOT ? process.env.API_ROOT : 'https://api-staging.newdrugtargets.org'
 };
 
 config.production = {
-  API_ROOT: 'https://api.newdrugtargets.org'
+  API_ROOT: process.env.API_ROOT ? process.env.API_ROOT : 'https://api.newdrugtargets.org'
 };
 
 export default config[process.env.NODE_ENV];
