@@ -8,7 +8,7 @@ config.development = {
 };
 
 config.staging = {
-  API_ROOT: process.env.API_ROOT ? process.env.API_ROOT : 'https://api-staging.newdrugtargets.org'
+  API_ROOT: process.env.API_ROOT ? process.env.API_ROOT : 'https://chiltepin.health.unm.edu/tinx'
 };
 
 config.production = {
