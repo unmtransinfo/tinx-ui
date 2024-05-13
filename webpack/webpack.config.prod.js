@@ -4,6 +4,9 @@ const merge = require('webpack-merge');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const common = require('./webpack.common.js');
 
+const node_env = process.env.NODE_ENV;
+const api_root = process.env.API_ROOT;
+
 module.exports = merge(common, {
   mode: 'production',
   devtool: 'source-map',
@@ -13,7 +16,8 @@ module.exports = merge(common, {
   },
   plugins: [
     new Webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('production')
+      'process.env.NODE_ENV': node_env,
+      'process.env.API_ROOT': api_root,
     }),
     new Webpack.optimize.ModuleConcatenationPlugin(),
     new MiniCssExtractPlugin({
