@@ -6,7 +6,7 @@ config.development = {
 };
 
 config.staging = {
-  API_ROOT: 'https://api-staging.newdrugtargets.org'
+  API_ROOT: 'https://chiltepin.health.unm.edu/tinx'
 };
 
 config.production = {

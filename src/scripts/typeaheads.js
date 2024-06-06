@@ -36,9 +36,13 @@ class Typeaheads {
       afterSelect: (x) => {
         this.treeViewSearch.val('');
         treeView.setWasBackPressed(false);
-        // expand the tree view to selected node
-        if (this.mode === TreeViewModes.DISEASE) treeView.expandToNode(x, true);
-        else ApiHelper.getDTO(x.dtoid).then(data => treeView.expandToNode(data, true));
+        this.scatterplot.clear();
+        this.scatterplot.startSpinner();
+
+        // TODO For some reason, the code that loads the chart right away got deleted ...
+        // What we should do is load the chart, then pass plotLoaded as true.
+        if (this.mode === TreeViewModes.DISEASE) treeView.expandToNode(x, false);
+        else ApiHelper.getDTO(x.dtoid).then(data => treeView.expandToNode(data, false));
       }
     });
 
