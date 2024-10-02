@@ -22,7 +22,16 @@ class Typeaheads {
         if (this.mode === TreeViewModes.DISEASE) {
           ApiHelper.getSearchResults(query, TreeViewModes.DISEASE)
             .then((data) => {
-              console.log(data);
+              const converted_data = [];
+              data.forEach(element => {
+                converted_data.push({
+                  text: element.text.replace('[\'', '').replace('\']', ''),
+                  doid: element.doid.replace('[\'', '').replace('\']', ''),
+                  doid_exact: element.doid_exact.replace('[\'', '').replace('\']', ''),
+                  name: element.name.replace('[\'', '').replace('\']', ''),
+                  summary: element.summary.replace('[\'', '').replace('\']', ''),
+                })
+              });
               return data
             })
             .then(callback);
