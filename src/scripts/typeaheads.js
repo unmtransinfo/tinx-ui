@@ -57,12 +57,12 @@ class Typeaheads {
    */
   updateInputs() {
     if (this.mode === TreeViewModes.DISEASE) {
-      this.setAttrs(this.treeViewSearch, 'Search for a disease...??');
-      this.setAttrs(this.dataSearch, 'Search for a target...??');
+      this.setAttrs(this.treeViewSearch, 'Search for a disease...');
+      this.setAttrs(this.dataSearch, 'Search for a target...');
     }
     else if (this.mode === TreeViewModes.TARGET) {
-      this.setAttrs(this.treeViewSearch, 'Search for a target...??');
-      this.setAttrs(this.dataSearch, 'Search for a disease...??');
+      this.setAttrs(this.treeViewSearch, 'Search for a target...');
+      this.setAttrs(this.dataSearch, 'Search for a disease...');
     }
   }
 
