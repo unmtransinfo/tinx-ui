@@ -21,7 +21,10 @@ class Typeaheads {
       source: (query, callback) => {
         if (this.mode === TreeViewModes.DISEASE) {
           ApiHelper.getSearchResults(query, TreeViewModes.DISEASE)
-            .then(data => data)
+            .then((data) => {
+              console.log(data);
+              return data
+            })
             .then(callback);
         }
         else if (this.mode === TreeViewModes.TARGET) {
@@ -54,12 +57,12 @@ class Typeaheads {
    */
   updateInputs() {
     if (this.mode === TreeViewModes.DISEASE) {
-      this.setAttrs(this.treeViewSearch, 'Search for a disease...');
-      this.setAttrs(this.dataSearch, 'Search for a target...');
+      this.setAttrs(this.treeViewSearch, 'Search for a disease...??');
+      this.setAttrs(this.dataSearch, 'Search for a target...??');
     }
     else if (this.mode === TreeViewModes.TARGET) {
-      this.setAttrs(this.treeViewSearch, 'Search for a target...');
-      this.setAttrs(this.dataSearch, 'Search for a disease...');
+      this.setAttrs(this.treeViewSearch, 'Search for a target...??');
+      this.setAttrs(this.dataSearch, 'Search for a disease...??');
     }
   }
 
