@@ -30,9 +30,9 @@ class Typeaheads {
                   doid_exact: element.doid_exact.replace('[\'', '').replace('\']', ''),
                   name: element.name.replace('[\'', '').replace('\']', ''),
                   summary: element.summary.replace('[\'', '').replace('\']', ''),
-                })
+                });
               });
-              return data
+              return converted_data;
             })
             .then(callback);
         }
