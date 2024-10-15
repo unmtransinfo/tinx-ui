@@ -42,11 +42,16 @@ class Typeaheads {
               const converted_data = [];
               data.forEach(element => {
                 converted_data.push({
-                  text: element.text.replace('[\'', '').replace('\']', ''),
-                  doid: element.doid.replace('[\'', '').replace('\']', ''),
-                  doid_exact: element.doid_exact.replace('[\'', '').replace('\']', ''),
-                  name: element.name.replace('[\'', '').replace('\']', ''),
-                  summary: element.summary.replace('[\'', '').replace('\']', ''),
+                  fam: element.fam?.replace('[\'', '')?.replace('\']', ''),
+                  family: element.family?.replace('[\'', '')?.replace('\']', ''),
+                  name: element.name?.replace('[\'', '')?.replace('\']', ''),
+                  protein: element.protein?.replace('[\'', '')?.replace('\']', ''),
+                  sym: element.sym?.replace('[\'', '')?.replace('\']', ''),
+                  target: element.target?.replace('[\'', '')?.replace('\']', ''),
+                  tdl: element.tdl?.replace('[\'', '')?.replace('\']', ''),
+                  text: element.text?.replace('[\'', '')?.replace('\']', ''),
+                  tinx_id: element.tinx_id?.replace('[\'', '')?.replace('\']', ''),
+                  uniprot: element.uniprot?.replace('[\'', '')?.replace('\']', ''),
                 });
               });
               return converted_data;
