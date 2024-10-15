@@ -42,16 +42,16 @@ class Typeaheads {
               const converted_data = [];
               data.forEach(element => {
                 converted_data.push({
-                  fam: element.fam?.replace('[\'', '')?.replace('\']', ''),
-                  family: element.family?.replace('[\'', '')?.replace('\']', ''),
-                  name: element.name?.replace('[\'', '')?.replace('\']', ''),
-                  protein: element.protein?.replace('[\'', '')?.replace('\']', ''),
-                  sym: element.sym?.replace('[\'', '')?.replace('\']', ''),
-                  target: element.target?.replace('[\'', '')?.replace('\']', ''),
-                  tdl: element.tdl?.replace('[\'', '')?.replace('\']', ''),
-                  text: element.text?.replace('[\'', '')?.replace('\']', ''),
-                  tinx_id: element.tinx_id?.replace('[\'', '')?.replace('\']', ''),
-                  uniprot: element.uniprot?.replace('[\'', '')?.replace('\']', ''),
+                  fam: element.fam ? element.fam.replace('[\'', '').replace('\']', '') : '',
+                  family: element.family ? element.family.replace('[\'', '').replace('\']', '') : '',
+                  name: element.name ? element.name.replace('[\'', '').replace('\']', '') : '',
+                  protein: element.protein ? element.protein.replace('[\'', '').replace('\']', '') : '',
+                  sym: element.sym ? element.sym.replace('[\'', '').replace('\']', '') : '',
+                  target: element.target ? element.target?.replace('[\'', '')?.replace('\']', '') : '',
+                  tdl: element.tdl ? element.tdl?.replace('[\'', '')?.replace('\']', '') : '',
+                  text: element.text ? element.text?.replace('[\'', '')?.replace('\']', '') : '',
+                  tinx_id: element.tinx_id ? element.tinx_id?.replace('[\'', '')?.replace('\']', '') : '',
+                  uniprot: element.uniprot ? element.uniprot?.replace('[\'', '')?.replace('\']', '') : '',
                 });
               });
               return converted_data;
