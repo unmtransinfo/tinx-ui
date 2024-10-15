@@ -38,7 +38,19 @@ class Typeaheads {
         }
         else if (this.mode === TreeViewModes.TARGET) {
           ApiHelper.getSearchResults(query, TreeViewModes.TARGET)
-            .then(data => data)
+            .then(data => {
+              const converted_data = [];
+              data.forEach(element => {
+                converted_data.push({
+                  text: element.text.replace('[\'', '').replace('\']', ''),
+                  doid: element.doid.replace('[\'', '').replace('\']', ''),
+                  doid_exact: element.doid_exact.replace('[\'', '').replace('\']', ''),
+                  name: element.name.replace('[\'', '').replace('\']', ''),
+                  summary: element.summary.replace('[\'', '').replace('\']', ''),
+                });
+              });
+              return converted_data;
+            })
             .then(callback);
         }
       },
