@@ -47,11 +47,11 @@ class Typeaheads {
                   name: element.name ? element.name.replace('[\'', '').replace('\']', '') : '',
                   protein: element.protein ? element.protein.replace('[\'', '').replace('\']', '') : '',
                   sym: element.sym ? element.sym.replace('[\'', '').replace('\']', '') : '',
-                  target: element.target ? element.target?.replace('[\'', '')?.replace('\']', '') : '',
-                  tdl: element.tdl ? element.tdl?.replace('[\'', '')?.replace('\']', '') : '',
-                  text: element.text ? element.text?.replace('[\'', '')?.replace('\']', '') : '',
-                  tinx_id: element.tinx_id ? element.tinx_id?.replace('[\'', '')?.replace('\']', '') : '',
-                  uniprot: element.uniprot ? element.uniprot?.replace('[\'', '')?.replace('\']', '') : '',
+                  target: element.target ? element.target.replace('[\'', '').replace('\']', '') : '',
+                  tdl: element.tdl ? element.tdl.replace('[\'', '').replace('\']', '') : '',
+                  text: element.text ? element.text.replace('[\'', '').replace('\']', '') : '',
+                  tinx_id: element.tinx_id ? element.tinx_id.replace('[\'', '').replace('\']', '') : '',
+                  uniprot: element.uniprot ? element.uniprot.replace('[\'', '').replace('\']', '') : '',
                 });
               });
               return converted_data;
