@@ -21,41 +21,12 @@ class Typeaheads {
       source: (query, callback) => {
         if (this.mode === TreeViewModes.DISEASE) {
           ApiHelper.getSearchResults(query, TreeViewModes.DISEASE)
-            .then((data) => {
-              const converted_data = [];
-              data.forEach(element => {
-                converted_data.push({
-                  text: element.text.replace('[\'', '').replace('\']', ''),
-                  doid: element.doid.replace('[\'', '').replace('\']', ''),
-                  doid_exact: element.doid_exact.replace('[\'', '').replace('\']', ''),
-                  name: element.name.replace('[\'', '').replace('\']', ''),
-                  summary: element.summary.replace('[\'', '').replace('\']', ''),
-                });
-              });
-              return converted_data;
-            })
+            .then(data => data)
             .then(callback);
         }
         else if (this.mode === TreeViewModes.TARGET) {
           ApiHelper.getSearchResults(query, TreeViewModes.TARGET)
-            .then(data => {
-              const converted_data = [];
-              data.forEach(element => {
-                converted_data.push({
-                  fam: element.fam ? element.fam.replace('[\'', '').replace('\']', '') : '',
-                  family: element.family ? element.family.replace('[\'', '').replace('\']', '') : '',
-                  name: element.name ? element.name.replace('[\'', '').replace('\']', '') : '',
-                  protein: element.protein ? element.protein.replace('[\'', '').replace('\']', '') : '',
-                  sym: element.sym ? element.sym.replace('[\'', '').replace('\']', '') : '',
-                  target: element.target ? element.target.replace('[\'', '').replace('\']', '') : '',
-                  tdl: element.tdl ? element.tdl.replace('[\'', '').replace('\']', '') : '',
-                  text: element.text ? element.text.replace('[\'', '').replace('\']', '') : '',
-                  tinx_id: element.tinx_id ? element.tinx_id.replace('[\'', '').replace('\']', '') : '',
-                  uniprot: element.uniprot ? element.uniprot.replace('[\'', '').replace('\']', '') : '',
-                });
-              });
-              return converted_data;
-            })
+            .then(data => data)
             .then(callback);
         }
       },
@@ -67,7 +38,6 @@ class Typeaheads {
         treeView.setWasBackPressed(false);
         this.scatterplot.clear();
         this.scatterplot.startSpinner();
-
         // TODO For some reason, the code that loads the chart right away got deleted ...
         // What we should do is load the chart, then pass plotLoaded as true.
         if (this.mode === TreeViewModes.DISEASE) treeView.expandToNode(x, false);
