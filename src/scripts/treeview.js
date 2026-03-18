@@ -98,6 +98,7 @@ class TreeView {
         nodeData ? nodeData.doid : nodeData :
         nodeData;
 
+
     // Get the list of ancestors for this node. Then expand each one
     getAncestors(nodeId).then((ids) => {
       // We're going to continually add new tasks to the end of this promise
@@ -109,8 +110,11 @@ class TreeView {
           const $node = this.$elem.find('li.tree-node').filter(function() {
             return $(this).data(idVal) === id;
           });
+
+          const curId = $node.data(idVal);
+
           // If it's the node to which we're expanding, mark it selected
-          if ($node.data(idVal) === nodeId)
+          if (curId === nodeId || curId === nodeId.id)
             this._select($node, plotLoaded);
 
           // Expand the node
