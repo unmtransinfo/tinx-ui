@@ -15,7 +15,7 @@ module.exports = {
   output: {
     path: dest,
     filename: 'bundle.[hash].js',
-    publicPath: env.ASSET_URL ? env.ASSET_URL : 'auto'
+    publicPath: env.ASSET_URL ? env.ASSET_URL : '/'
   },
   plugins: [
     new CleanWebpackPlugin([dest], { root: Path.resolve(__dirname, '..') }),
