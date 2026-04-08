@@ -53,7 +53,10 @@ module.exports = {
       },
       {
         test: /\.(pug)$/i,
-        use:  ['html-loader?attrs=false', 'pug-html-loader']
+        use: [
+          { loader: 'html-loader', options: { attrs: false } },
+          { loader: 'pug-html-loader', options: {} }
+        ]
       }
     ]
   }
