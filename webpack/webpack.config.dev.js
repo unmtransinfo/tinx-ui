@@ -10,7 +10,8 @@ module.exports = merge(common, {
   devtool: 'cheap-eval-source-map',
   devServer: {
     contentBase: dest,
-    inline: true
+    inline: true,
+    host: '0.0.0.0'   // allow connection from outside the docker container
   },
   plugins: [
     new Webpack.DefinePlugin({
