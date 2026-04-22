@@ -5,7 +5,8 @@ const merge = require("webpack-merge");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const common = require("./webpack.common.js");
 
-// Load .env.staging into process.env
+// Load .env.staging into process.env (only for keys not already set,
+// so Docker Compose / shell env vars always take precedence).
 try {
   Fs.readFileSync(Path.resolve(__dirname, "../.env.staging"), "utf8")
     .split("\n")
@@ -13,10 +14,9 @@ try {
       const trimmed = line.trim();
       if (trimmed && !trimmed.startsWith("#")) {
         const eqIdx = trimmed.indexOf("=");
-        if (eqIdx > 0)
-          process.env[trimmed.slice(0, eqIdx).trim()] = trimmed
-            .slice(eqIdx + 1)
-            .trim();
+        const key = trimmed.slice(0, eqIdx).trim();
+        if (eqIdx > 0 && !(key in process.env))
+          process.env[key] = trimmed.slice(eqIdx + 1).trim();
       }
     });
 } catch (_) {}
