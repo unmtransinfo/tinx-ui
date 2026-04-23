@@ -29,6 +29,7 @@ module.exports = merge(common, {
     contentBase: dest,
     inline: true,
     host: "0.0.0.0", // allow connection from outside the docker container
+    public: "localhost:${process.env.TINX_UI_HTTP_PORT || 8080}",
   },
   plugins: [
     new Webpack.DefinePlugin({
