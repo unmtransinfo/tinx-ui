@@ -60,7 +60,7 @@ class ShareChart {
    */
   setUrl(id, mode, wasBackPressed) {
     const origin = window.location.origin;
-    const url = `${origin}?${mode}=${id}`;
+    const url = `${origin}?${encodeURIComponent(mode)}=${encodeURIComponent(id)}`;
     this.shareChartBtn.attr('data-url', url);
 
     if (!wasBackPressed) {
