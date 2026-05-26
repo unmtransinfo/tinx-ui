@@ -190,7 +190,7 @@ class TreeView {
    * @private
    */
   _makeListItem(obj, itemClass = null) {
-    if(!obj.id) return;
+    if(!obj.id && !obj.doid) return;
 
     const that = this;
     const onClick = (event) => {
