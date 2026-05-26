@@ -5,7 +5,8 @@
   "scripts": {
     "build": "webpack --config webpack/webpack.config.prod.js  --colors",
     "build-staging": "webpack --config webpack/webpack.config.staging.js  --colors",
-    "dev": "webpack-dev-server --config webpack/webpack.config.dev.js"
+    "dev": "webpack-dev-server --config webpack/webpack.config.dev.js",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
@@ -55,7 +56,10 @@
     "file-loader": "^2.0.0",
     "html-webpack-plugin": "^3.2.0",
     "html-webpack-pug-plugin": "^0.3.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
     "mini-css-extract-plugin": "^0.4.2",
+    "prettier": "^3.8.3",
     "pug-html-loader": "^1.1.5",
     "sass": "^1.55.0",
     "sass-loader": "^7.1.0",
@@ -78,5 +82,11 @@
     "pug-html-loader": "^1.1.5",
     "tabulator-tables": "^5.4.1",
     "xss": "^1.0.3"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,css,md}": [
+      "prettier --write --ignore-unknown",
+      "git add"
+    ]
   }
 }

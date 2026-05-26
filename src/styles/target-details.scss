@@ -4,7 +4,7 @@
   }
 
   .details-col {
-    display:flex;
+    display: flex;
     flex-direction: column;
     align-items: center;
     min-height: 130px;
@@ -13,8 +13,8 @@
       flex: 1 1 0;
       width: 100%;
 
-
-      .label, .value {
+      .label,
+      .value {
         margin-top: auto;
         margin-bottom: auto;
       }
@@ -60,32 +60,68 @@
     &.badge-tdl {
       &[data-tdl="Tdark"] {
         background-color: $color-Tdark;
-        span { color: white; }
+        span {
+          color: white;
+        }
       }
-      &[data-tdl="Tbio"] { background-color: $color-Tbio; }
-      &[data-tdl="Tchem"] { background-color: $color-Tchem; }
-      &[data-tdl="Tclin"] { background-color: $color-Tclin; }
+      &[data-tdl="Tbio"] {
+        background-color: $color-Tbio;
+      }
+      &[data-tdl="Tchem"] {
+        background-color: $color-Tchem;
+      }
+      &[data-tdl="Tclin"] {
+        background-color: $color-Tclin;
+      }
     }
 
     /* IDG Family badges. TODO: Centralize this. */
     &.badge-idgfam {
-      &[data-idgfam="GPCR"] { background-color: $color-GPCR; }
-      &[data-idgfam="NR"] { background-color: $color-NR; }
-      &[data-idgfam="ION"] { background-color: $color-ION; }
-      &[data-idgfam="KINASE"] { background-color: $color-KINASE; }
-      &[data-idgfam="Kinase"] { background-color: $color-KINASE; }
-      &[data-idgfam="Enzyme"] { background-color: white; color: black !important; }
-      &[data-idgfam="TF"] { background-color: white; color: black !important; }
-      &[data-idgfam="TF; Epigenetic"] { background-color: white; color: black !important; }
-      &[data-idgfam="Epigenetic"] { background-color: white; color: black !important; }
-      &[data-idgfam="Transporter"] { background-color: white; color: black !important; }
-      &[data-idgfam="IC"] { background-color: white; color: black !important; }
+      &[data-idgfam="GPCR"] {
+        background-color: $color-GPCR;
+      }
+      &[data-idgfam="NR"] {
+        background-color: $color-NR;
+      }
+      &[data-idgfam="ION"] {
+        background-color: $color-ION;
+      }
+      &[data-idgfam="KINASE"] {
+        background-color: $color-KINASE;
+      }
+      &[data-idgfam="Kinase"] {
+        background-color: $color-KINASE;
+      }
+      &[data-idgfam="Enzyme"] {
+        background-color: white;
+        color: black !important;
+      }
+      &[data-idgfam="TF"] {
+        background-color: white;
+        color: black !important;
+      }
+      &[data-idgfam="TF; Epigenetic"] {
+        background-color: white;
+        color: black !important;
+      }
+      &[data-idgfam="Epigenetic"] {
+        background-color: white;
+        color: black !important;
+      }
+      &[data-idgfam="Transporter"] {
+        background-color: white;
+        color: black !important;
+      }
+      &[data-idgfam="IC"] {
+        background-color: white;
+        color: black !important;
+      }
       &[data-idgfam=""] {
         background-color: $bolder-grey;
-        span { color: white; }
+        span {
+          color: white;
+        }
       }
-
     }
   }
-
 }

@@ -1,5 +1,5 @@
-@import 'colors';
-@import 'target-details';
+@import "colors";
+@import "target-details";
 
 #detail-modal {
   .disabled {
@@ -54,7 +54,8 @@
       border-radius: 5px;
       border: 1px solid $turquoise;
 
-      &:hover, &:hover .card-header {
+      &:hover,
+      &:hover .card-header {
         background: $alto-grey;
         border-top-left-radius: 5px;
         border-top-right-radius: 5px;
@@ -74,7 +75,7 @@
       .article-title {
         font-size: 16px;
         color: $turquoise;
-	margin-bottom: 0px;
+        margin-bottom: 0px;
       }
 
       .article-authors {
@@ -85,12 +86,11 @@
 
       .article-journal {
         font-size: 14px;
-	font-style: italic;
-	font-weight: 900;
+        font-style: italic;
+        font-weight: 900;
         margin-bottom: 0px;
         color: $bolder-grey;
       }
-
 
       .abstract {
         padding: 12px 20px 12px 20px;
@@ -100,16 +100,18 @@
         border-bottom-left-radius: 5px;
         border-bottom-right-radius: 5px;
 
-        .card-body { padding: 0; }
+        .card-body {
+          padding: 0;
+        }
 
-        p { text-align: left; }
+        p {
+          text-align: left;
+        }
 
         .pubmed-link {
           padding: 5px 30px 5px 30px;
         }
       }
-
     }
   }
-
 }

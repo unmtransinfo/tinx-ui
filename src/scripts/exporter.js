@@ -1,18 +1,18 @@
-import $ from 'jquery';
-import {TreeViewModes} from "./treeview";
+import $ from "jquery";
+import { TreeViewModes } from "./treeview";
 
 // new imports for Tabulator Tables below
-import {TabulatorFull as Tabulator} from 'tabulator-tables';
-import  "../../node_modules/tabulator-tables/dist/css/tabulator.min.css";
+import { TabulatorFull as Tabulator } from "tabulator-tables";
+import "../../node_modules/tabulator-tables/dist/css/tabulator.min.css";
 
 class Exporter {
   constructor(mode) {
-    this.exportChartBtn = $('#export-chart-btn');
-    this.exportChartBtn.addClass('disabled');
+    this.exportChartBtn = $("#export-chart-btn");
+    this.exportChartBtn.addClass("disabled");
     this.mode = mode;
     this.subjectDetails = null;
     this.data = null;
-    this.filters = {text: null, tags: {idg: null, tdl: null}};
+    this.filters = { text: null, tags: { idg: null, tdl: null } };
   }
 
   /**
@@ -21,16 +21,19 @@ class Exporter {
    * @returns {string} String used in CSV export
    */
   convertToCSV() {
-    const colDelim = ',';
-    const lineDelim = '\n';
-    const parsedData = this.mode === TreeViewModes.DISEASE ? this.parseDiseaseData() : this.parseTargetData();
+    const colDelim = ",";
+    const lineDelim = "\n";
+    const parsedData =
+      this.mode === TreeViewModes.DISEASE
+        ? this.parseDiseaseData()
+        : this.parseTargetData();
     const keys = Object.keys(parsedData[0]);
 
     let res = keys.join(colDelim) + lineDelim;
 
-    parsedData.forEach(x => {
+    parsedData.forEach((x) => {
       let ctr = 0;
-      keys.forEach(key => {
+      keys.forEach((key) => {
         if (ctr > 0) res += colDelim;
 
         res += x[key];
@@ -47,19 +50,19 @@ class Exporter {
    * used to create CSV column headers, and the values are prepared for insert as a CSV row
    */
   parseDiseaseData() {
-    return this.data.map(x => {
+    return this.data.map((x) => {
       const { x: novelty, y: importance, target } = x;
       return {
         id: target.id,
-        name: `"${target.name}"` || '',
-        sym: target.sym || '',
-        fam: target.fam ? `"${target.fam}"` : '',
-        famext: target.famext ? `"${target.famext}"` : '',
-        tdl: target.tdl || '',
-        uniprot: target.uniprot || '',
-        dtoid: target.dtoid || '',
-        'novelty_score': novelty,
-        'importance_score': importance
+        name: `"${target.name}"` || "",
+        sym: target.sym || "",
+        fam: target.fam ? `"${target.fam}"` : "",
+        famext: target.famext ? `"${target.famext}"` : "",
+        tdl: target.tdl || "",
+        uniprot: target.uniprot || "",
+        dtoid: target.dtoid || "",
+        novelty_score: novelty,
+        importance_score: importance,
       };
     });
   }
@@ -69,14 +72,14 @@ class Exporter {
    * used to create CSV column headers, and the values are prepared for insert as a CSV row
    */
   parseTargetData() {
-    return this.data.map(x => {
+    return this.data.map((x) => {
       const { x: novelty, y: importance, disease } = x;
       return {
-        name: disease.name ? `"${disease.name}"` : '',
+        name: disease.name ? `"${disease.name}"` : "",
         doid: disease.doid,
-        summary: disease.summary ? `"${disease.summary}"` : '',
-        'novelty_score': novelty,
-        'importance_score': importance
+        summary: disease.summary ? `"${disease.summary}"` : "",
+        novelty_score: novelty,
+        importance_score: importance,
       };
     });
   }
@@ -88,7 +91,7 @@ class Exporter {
    */
   setMode(mode) {
     this.mode = mode;
-    this.exportChartBtn.addClass('disabled');
+    this.exportChartBtn.addClass("disabled");
   }
 
   /**
@@ -101,12 +104,16 @@ class Exporter {
 
     const filename = this.filename();
     if (!csv.match(/^data:text\/csv/i)) {
-      var csvForExport = 'data:text/csv;charset=utf-8,' + csv;
+      var csvForExport = "data:text/csv;charset=utf-8," + csv;
     }
 
     const data = encodeURI(csvForExport);
 
-    this.exportChartBtn.attr({href: data, download: filename, target: '_blank'});
+    this.exportChartBtn.attr({
+      href: data,
+      download: filename,
+      target: "_blank",
+    });
   }
 
   /**
@@ -119,7 +126,7 @@ class Exporter {
     this.subjectDetails = subjectDetails;
     this.data = data;
     this.updateLink();
-    this.exportChartBtn.removeClass('disabled');
+    this.exportChartBtn.removeClass("disabled");
   }
 
   /**
@@ -129,9 +136,9 @@ class Exporter {
    */
   filename() {
     const { name } = this.subjectDetails;
-    if (!name || !name.length) return 'export.csv';
+    if (!name || !name.length) return "export.csv";
 
-    return `${name.replace(/\s+/g, '_').toLowerCase()}.csv`;
+    return `${name.replace(/\s+/g, "_").toLowerCase()}.csv`;
   }
 }
 

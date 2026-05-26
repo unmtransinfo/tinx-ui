@@ -1,4 +1,4 @@
-import ApiHelper from './apihelper';
+import ApiHelper from "./apihelper";
 import { ROOT_NODE } from "./constants";
 
 /**
@@ -7,8 +7,8 @@ import { ROOT_NODE } from "./constants";
  * @type {{DISEASE: string, TARGET: string}}
  */
 const TreeViewModes = {
-  DISEASE: 'disease',
-  TARGET: 'target'
+  DISEASE: "disease",
+  TARGET: "target",
 };
 
 /**
@@ -16,7 +16,6 @@ const TreeViewModes = {
  * collapse, which reveals or hides the node's children.
  */
 class TreeView {
-
   /**
    *
    * @param {string} selector - A jQuery selector to use for finding the element to use as a TreeView
@@ -36,11 +35,13 @@ class TreeView {
     this.$elem.empty();
 
     const spinner = this.$elem.prepend(
-      '<span class="loading-spinner" style="background: transparent;"><i class="fas fa-sync refresh-animation"></i><span>&nbsp;Loading ...</span></span>');
+      '<span class="loading-spinner" style="background: transparent;"><i class="fas fa-sync refresh-animation"></i><span>&nbsp;Loading ...</span></span>',
+    );
 
-    return this._getRootNodes().then(data => {
-      spinner.find('.loading-spinner').remove();
-      if (data && Array.isArray(data)) return this.appendTreeItems(data, ROOT_NODE);
+    return this._getRootNodes().then((data) => {
+      spinner.find(".loading-spinner").remove();
+      if (data && Array.isArray(data))
+        return this.appendTreeItems(data, ROOT_NODE);
       const { results = [] } = data;
       this.appendTreeItems(results, ROOT_NODE);
     });
@@ -74,8 +75,9 @@ class TreeView {
    */
   collapseAll() {
     const that = this;
-    this.$elem.find('li.tree-node.collapsible')
-      .each(function() { that._toggleNodeCollapse($(this)); });
+    this.$elem.find("li.tree-node.collapsible").each(function () {
+      that._toggleNodeCollapse($(this));
+    });
   }
 
   /**
@@ -88,16 +90,19 @@ class TreeView {
    */
   expandToNode(nodeData, plotLoaded = false) {
     this.collapseAll();
-    this.$elem.find('li.tree-node.selected').removeClass('selected');
-    const idVal = this.mode === TreeViewModes.DISEASE ? 'nodeDOID' : 'nodeId';
-    const getAncestors = this.mode === TreeViewModes.DISEASE ?
-      this._getDiseaseAncestorIds.bind(this):
-      this._getDtoAncestorIds.bind(this);
+    this.$elem.find("li.tree-node.selected").removeClass("selected");
+    const idVal = this.mode === TreeViewModes.DISEASE ? "nodeDOID" : "nodeId";
+    const getAncestors =
+      this.mode === TreeViewModes.DISEASE
+        ? this._getDiseaseAncestorIds.bind(this)
+        : this._getDtoAncestorIds.bind(this);
 
-    const nodeId = this.mode === TreeViewModes.DISEASE ?
-        nodeData ? nodeData.doid : nodeData :
-        nodeData;
-
+    const nodeId =
+      this.mode === TreeViewModes.DISEASE
+        ? nodeData
+          ? nodeData.doid
+          : nodeData
+        : nodeData;
 
     // Get the list of ancestors for this node. Then expand each one
     getAncestors(nodeId).then((ids) => {
@@ -105,9 +110,9 @@ class TreeView {
       let promise = Promise.resolve();
 
       ids.forEach((id) => {
-        promise = promise.then( () => {
+        promise = promise.then(() => {
           // Find the node for this node ID
-          const $node = this.$elem.find('li.tree-node').filter(function() {
+          const $node = this.$elem.find("li.tree-node").filter(function () {
             return $(this).data(idVal) === id;
           });
 
@@ -135,7 +140,7 @@ class TreeView {
   }
 
   appendTreeItems(data, itemClass = null) {
-    data.forEach(item => {
+    data.forEach((item) => {
       this.$elem.append(this._makeListItem(item, itemClass));
     });
   }
@@ -145,26 +150,31 @@ class TreeView {
    * @private
    */
   _getRootNodeId() {
-    if (this.rootNodeId !== null && typeof this.rootNodeId !== 'undefined')
+    if (this.rootNodeId !== null && typeof this.rootNodeId !== "undefined")
       return Promise.resolve(this.rootNodeId);
 
     switch (this.mode) {
       case TreeViewModes.DISEASE:
-        return ApiHelper.getDiseaseByDOID('DOID:4')
-          .then(disease => this.rootNodeId = disease.doid); // Assign and return
+        return ApiHelper.getDiseaseByDOID("DOID:4").then(
+          (disease) => (this.rootNodeId = disease.doid),
+        ); // Assign and return
       case TreeViewModes.TARGET:
         return Promise.resolve(0);
-      default: throw `Unknown TreeViewMode: ${this.mode}`;
+      default:
+        throw `Unknown TreeViewMode: ${this.mode}`;
     }
   }
 
   _getRootNodes() {
     switch (this.mode) {
       case TreeViewModes.DISEASE:
-        return this._getRootNodeId().then(id => ApiHelper.getDiseaseChildren(id).then(res => res) );
+        return this._getRootNodeId().then((id) =>
+          ApiHelper.getDiseaseChildren(id).then((res) => res),
+        );
       case TreeViewModes.TARGET:
-        return ApiHelper.getDTOChildren('PR:000000001');
-      default: throw `Unknown TreeViewMode: ${this.mode}`;
+        return ApiHelper.getDTOChildren("PR:000000001");
+      default:
+        throw `Unknown TreeViewMode: ${this.mode}`;
     }
   }
 
@@ -174,9 +184,12 @@ class TreeView {
    */
   _getChildren(id) {
     switch (this.mode) {
-      case TreeViewModes.DISEASE: return ApiHelper.getDiseaseChildren(id);
-      case TreeViewModes.TARGET: return ApiHelper.getDTOChildren(id);
-      default: throw `Unknown TreeViewMode: ${this.mode}`;
+      case TreeViewModes.DISEASE:
+        return ApiHelper.getDiseaseChildren(id);
+      case TreeViewModes.TARGET:
+        return ApiHelper.getDTOChildren(id);
+      default:
+        throw `Unknown TreeViewMode: ${this.mode}`;
     }
   }
 
@@ -190,7 +203,7 @@ class TreeView {
    * @private
    */
   _makeListItem(obj, itemClass = null) {
-    if(!obj.id && !obj.doid) return;
+    if (!obj.id && !obj.doid) return;
 
     const that = this;
     const onClick = (event) => {
@@ -198,7 +211,7 @@ class TreeView {
       const $target = $(event.currentTarget);
       that.setWasBackPressed(false);
       this._toggleNodeCollapse($target);
-      this.$elem.find('li.tree-node.selected').removeClass('selected');
+      this.$elem.find("li.tree-node.selected").removeClass("selected");
       this._select($target);
     };
 
@@ -210,25 +223,33 @@ class TreeView {
     let childCount = null;
     if (this.mode === TreeViewModes.DISEASE) {
       childCount = obj.num_important_targets;
-    }
-    else if (this.mode === TreeViewModes.TARGET) {
+    } else if (this.mode === TreeViewModes.TARGET) {
       const { target } = obj;
-      if (target && Array.isArray(target) && target.length) childCount = target[0].num_important_diseases;
+      if (target && Array.isArray(target) && target.length)
+        childCount = target[0].num_important_diseases;
     }
 
     const listItem = $("<li>")
       .addClass(`expandable tree-node`)
-      .data({ nodeId: obj.id, nodeDOID: obj.doid, mode: this.mode, details: obj })
+      .data({
+        nodeId: obj.id,
+        nodeDOID: obj.doid,
+        mode: this.mode,
+        details: obj,
+      })
       .click(onClick.bind(this))
       .append(
-        $("<span>").addClass("btn").text(capitalName).prop('title', capitalName)
+        $("<span>")
+          .addClass("btn")
+          .text(capitalName)
+          .prop("title", capitalName),
       );
 
     // add child count to node if it is not a root node
     if (itemClass !== ROOT_NODE) {
-      listItem.find('span.btn').append(
-        $("<span>").addClass("badge badge-light").text(childCount)
-      );
+      listItem
+        .find("span.btn")
+        .append($("<span>").addClass("badge badge-light").text(childCount));
     }
 
     if (itemClass && itemClass.length) listItem.addClass(itemClass);
@@ -247,10 +268,11 @@ class TreeView {
   _getDiseaseAncestorIds(id) {
     const addParents = (id, ls) => {
       ls.unshift(id);
-      return ApiHelper.getDiseaseParent(id).then(parent => {
+      return ApiHelper.getDiseaseParent(id).then((parent) => {
         const { parent_id } = parent;
-        return this._getRootNodeId().then(rootNodeId => {
-          if (parent_id && parent_id !== rootNodeId) return addParents(parent_id, ls);
+        return this._getRootNodeId().then((rootNodeId) => {
+          if (parent_id && parent_id !== rootNodeId)
+            return addParents(parent_id, ls);
           return ls;
         });
       });
@@ -270,14 +292,14 @@ class TreeView {
    * @private
    */
   _getDtoAncestorIds(dto) {
-
     const addParents = (data, ls) => {
       const { id, parent: parentUrl } = data;
       ls.unshift(id);
 
-      return ApiHelper.getDTOParent(parentUrl).then(parentDto => {
+      return ApiHelper.getDTOParent(parentUrl).then((parentDto) => {
         const { parent: newParentUrl } = parentDto;
-        if (newParentUrl && newParentUrl.length) return addParents(parentDto, ls);
+        if (newParentUrl && newParentUrl.length)
+          return addParents(parentDto, ls);
 
         ls.unshift(parentDto.id);
         return ls;
@@ -295,36 +317,42 @@ class TreeView {
    * @private
    */
   _toggleNodeCollapse($target) {
-    const id = this.mode === TreeViewModes.DISEASE ? $target.data('nodeDOID') : $target.data('nodeId');
+    const id =
+      this.mode === TreeViewModes.DISEASE
+        ? $target.data("nodeDOID")
+        : $target.data("nodeId");
 
-    if ($target.hasClass('expandable')) {
-      $target.removeClass('expandable').addClass('collapsible');
+    if ($target.hasClass("expandable")) {
+      $target.removeClass("expandable").addClass("collapsible");
       // If the children have been loaded, make them visible.
-      $target.find('ul').removeClass('hide');
+      $target.find("ul").removeClass("hide");
 
       // If the children haven't been loaded, load them
-      if (!$target.find('ul').length) {
+      if (!$target.find("ul").length) {
         $target.append(
-          $('<ul class="spinner-container">')
-            .append($('<li class="tree-node">')
-              .append($('.loading-spinner').first().clone().removeClass('hide'))
-            )
+          $('<ul class="spinner-container">').append(
+            $('<li class="tree-node">').append(
+              $(".loading-spinner").first().clone().removeClass("hide"),
+            ),
+          ),
         );
         return this._getChildren(id).then((data) => {
-          $target.append($("<ul>").append(data.map(this._makeListItem.bind(this))));
-          $target.find('ul.spinner-container').remove();
+          $target.append(
+            $("<ul>").append(data.map(this._makeListItem.bind(this))),
+          );
+          $target.find("ul.spinner-container").remove();
         });
       }
-    } else if ($target.hasClass('collapsible')) {
-      $target.removeClass('collapsible').addClass('expandable');
-      $target.find('ul').addClass('hide');
+    } else if ($target.hasClass("collapsible")) {
+      $target.removeClass("collapsible").addClass("expandable");
+      $target.find("ul").addClass("hide");
     }
 
     return Promise.resolve();
   }
 
   _select($node, plotLoaded = false) {
-    $node.addClass('selected');
+    $node.addClass("selected");
     this.selectionChangeHandler($node.data(), $node, plotLoaded);
   }
 }
