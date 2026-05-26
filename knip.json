@@ -1,0 +1,26 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "tags": ["-lintignore"],
+  "entry": [
+    "src/scripts/index.js",
+    "webpack/polyfills.js",
+    "webpack/webpack.config.dev.js",
+    "webpack/webpack.config.prod.js",
+    "webpack/webpack.config.staging.js"
+  ],
+  "project": ["src/**/*.{js,pug,scss,css}", "webpack/**/*.js"],
+  "webpack": {
+    "config": [
+      "webpack/webpack.common.js",
+      "webpack/webpack.config.dev.js",
+      "webpack/webpack.config.prod.js",
+      "webpack/webpack.config.staging.js"
+    ]
+  },
+  "ignoreDependencies": [
+    "lint-staged",
+    "pug-html-loader",
+    "sass",
+    "babel-preset-es2015"
+  ]
+}
