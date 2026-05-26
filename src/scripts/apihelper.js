@@ -127,11 +127,11 @@ class ApiHelper {
   }
 
   getDiseaseTargets(disease, limit = 100, offset = 0) {
-    if ('id' in disease)
+    if ('doid' in disease)
       return this.makeRequest({
         method: 'GET',
         endpoint: '/diseases/:diseaseId/targets/',
-        params: { diseaseId: disease.id },
+        params: { diseaseId: disease.doid },
         data: { limit, offset }
       });
     else if ('targets' in disease)
