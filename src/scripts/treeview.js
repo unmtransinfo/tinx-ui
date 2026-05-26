@@ -203,7 +203,9 @@ class TreeView {
     };
 
     // Capitalize the first letter of the object's name
-    const capitalName = obj.name[0].toLocaleUpperCase() + obj.name.slice(1);
+    const capitalName = obj.name
+      ? obj.name[0].toLocaleUpperCase() + obj.name.slice(1)
+      : obj.doid || obj.id;
 
     let childCount = null;
     if (this.mode === TreeViewModes.DISEASE) {
