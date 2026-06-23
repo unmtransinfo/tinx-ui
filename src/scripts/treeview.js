@@ -204,6 +204,8 @@ class TreeView {
    */
   _makeListItem(obj, itemClass = null) {
     if (!obj.id && !obj.doid) return;
+    // if disease has no name then it should not be shown - it seems some diseases are in the "do" table but not "tinx_disease"
+    if (!obj.name) return;
 
     const that = this;
     const onClick = (event) => {
