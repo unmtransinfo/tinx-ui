@@ -29,7 +29,7 @@ mixin target-details
       | Panel heading
     .section-body
       .row.main-row
-        .col-xs-12.col-lg-8.details-col
+        .col-12.col-lg-8.details-col
           +detail-row("Full name", "full-name")
           +detail-row("Family", "family")
           +detail-row-link("Pharos", "pharos")
@@ -37,7 +37,7 @@ mixin target-details
           +detail-row-link("DTO ID", "dto-id")
 
 
-        .col-xs-12.col-lg-4.badge-col
+        .col-12.col-lg-4.badge-col
           .badge.badge-tdl(role="alert")
             span Test
           .badge.badge-idgfam(role="alert")
@@ -70,8 +70,7 @@ mixin detail-modal
         .modal-header
           #detail-modal-title.modal-title(style="font-size: 1.5rem; font-style: italic; font-weight: 600")
             | Hello, world!
-          button.close(type="button" data-dismiss="modal" aria-label="close")
-            span(aria-hidden="true") &times;
+          button.btn-close(type="button" data-bs-dismiss="modal" aria-label="close")
         .modal-body
           +disease-details
           +target-details
@@ -83,13 +82,13 @@ mixin detail-modal
           +article-paginator
 
           .card.pubmed-article-template.hide
-            a.collapse-toggle.collapsed(data-toggle="collapse" data-target="#pubmed-abstract-1" href="#")
+            a.collapse-toggle.collapsed(data-bs-toggle="collapse" data-bs-target="#pubmed-abstract-1" href="#")
               .card-header.bg-transparent
                 h3.article-title The title
                 p.article-authors Stiewe, Thorsten T and Haran, Tali E TE..
                 p.article-journal The journal
                 span.article-date.badge.rounded-pill.bg-secondary 1999
-            .abstract.collapse(data-parent="#article-list")
+            .abstract.collapse
               .card-body
                 p
                   | Here is the very long text that I have to offer to you.

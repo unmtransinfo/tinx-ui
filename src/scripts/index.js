@@ -161,7 +161,7 @@ $(window).on("load", () => {
 
   // is this still used?
   $("#viewTableButton").click(function () {
-    return tableModal.modal({ show: true });
+    return Modal.getOrCreateInstance(tableModal[0]).show();
   });
 
   $(".nav-item").click(function () {

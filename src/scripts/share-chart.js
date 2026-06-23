@@ -1,4 +1,5 @@
 import $ from "jquery";
+import { Popover } from "bootstrap";
 import { TreeViewModes } from "./treeview";
 
 class ShareChart {
@@ -6,37 +7,35 @@ class ShareChart {
     this.shareChartBtn = $("#share-chart-btn");
     const that = this;
 
-    this.shareChartBtn
-      .popover({
-        container: "body",
-        placement: "bottom",
-        content: this.popoverContent(),
-        title:
-          '<span>Share this chart</span><i class="fa fa-times" id="close-btn"></i>',
-        template:
-          '<div class="popover share-chart-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
-        html: true,
-      })
-      .on("shown.bs.popover", function () {
-        const $popover = $(".share-chart-popover");
-        const $input = $popover.find("input");
-        const url = that.shareChartBtn.data("url");
+    this._popover = new Popover(this.shareChartBtn[0], {
+      container: "body",
+      placement: "bottom",
+      content: this.popoverContent(),
+      title:
+        '<span>Share this chart</span><i class="fa fa-times" id="close-btn"></i>',
+      template:
+        '<div class="popover share-chart-popover" role="tooltip"><div class="popover-arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
+      html: true,
+      trigger: "click",
+    });
 
-        $input.val(url);
+    this.shareChartBtn[0].addEventListener("shown.bs.popover", function () {
+      const $popover = $(".share-chart-popover");
+      const $input = $popover.find("input");
+      const url = that.shareChartBtn.data("url");
 
-        // close button handler
-        const elem = $(this);
-        const closeBtn = $popover.find("#close-btn");
-        closeBtn.on("click", null);
-        closeBtn.on("click", () => elem.popover("hide"));
+      $input.val(url);
 
-        const copyBtn = $popover.find('button[id="copy-link"]');
-        copyBtn.on("click", null);
-        copyBtn.on("click", () => {
-          $input.select();
-          document.execCommand("copy");
-        });
+      // close button handler
+      const closeBtn = $popover.find("#close-btn");
+      closeBtn.off("click").on("click", () => that._popover.hide());
+
+      const copyBtn = $popover.find('button[id="copy-link"]');
+      copyBtn.off("click").on("click", () => {
+        $input.select();
+        document.execCommand("copy");
       });
+    });
   }
 
   /**
@@ -84,7 +83,7 @@ class ShareChart {
   }
 
   close() {
-    this.shareChartBtn.popover("hide");
+    this._popover.hide();
   }
 }
 
