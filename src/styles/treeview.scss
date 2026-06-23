@@ -1,4 +1,4 @@
-@import 'colors';
+@import "colors";
 
 #tree-view {
   list-style: none;
@@ -6,7 +6,6 @@
 
   & > li.tree-node {
     padding-left: 0 !important;
-
   }
 
   li.tree-node {
@@ -28,7 +27,6 @@
     }
 
     & > ul > li.tree-node {
-
       &.selected > span.btn {
         background: $turquoise;
         color: white;
@@ -90,7 +88,6 @@
         font-weight: 300;
         letter-spacing: 0.2px;
       }
-
     }
 
     .loading-spinner {
@@ -104,6 +101,4 @@
     list-style: none;
     padding-left: 0px;
   }
-
 }
-

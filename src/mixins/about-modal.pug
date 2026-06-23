@@ -106,8 +106,7 @@ mixin about-modal
                 .modal-header
                     #about-modal-title.modal-title
                         | About TIN-X
-                    button.close(type="button" data-dismiss="modal" aria-label="close")
-                        span(aria-hidden="true") &times;
+                    button.btn-close(type="button" data-bs-dismiss="modal" aria-label="close")
                 .modal-body
                     +newtinx-row
                     +overview-row
@@ -117,4 +116,4 @@ mixin about-modal
                     +funding-row
                     +update-row
                 .modal-footer
-                    button.btn.btn-secondary(type="button" data-dismiss="modal") Close
+                    button.btn.btn-secondary(type="button" data-bs-dismiss="modal") Close

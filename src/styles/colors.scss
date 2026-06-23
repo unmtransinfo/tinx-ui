@@ -1,23 +1,22 @@
-$bolder-grey:  #777;
-$light-grey:   #FFFFFF;
-$med-grey:     #6D7883;
-$alto-grey:    #DDD;
-$faint-blue:   #EEF5F8;
-$turquoise:    #008C99;
-$dark-grey:    #212529;
+$bolder-grey: #777;
+$light-grey: #ffffff;
+$med-grey: #6d7883;
+$alto-grey: #ddd;
+$faint-blue: #eef5f8;
+$turquoise: #008c99;
+$dark-grey: #212529;
 
 $color-legend-shape: #7e7ee5;
 
-
 $color-Tdark: black;
-$color-Tbio:  #D7140C;
-$color-Tchem: #4DA84D;
-$color-Tclin: #25A4FF;
+$color-Tbio: #d7140c;
+$color-Tchem: #4da84d;
+$color-Tclin: #25a4ff;
 
-$color-GPCR:   #EDC240;
-$color-NR:     #AFD8F8;
-$color-ION:    #CB4B4B;
-$color-KINASE: #4FA74D;
+$color-GPCR: #edc240;
+$color-NR: #afd8f8;
+$color-ION: #cb4b4b;
+$color-KINASE: #4fa74d;
 
 $color-disease-by-infectious-agent: #d73027;
 $color-disease-of-anatomical-entity: #f46d43;
@@ -28,7 +27,6 @@ $color-genetic-disease: #abd9e9;
 $color-physical-disorder: #74add1;
 $color-syndrome: #4575b4;
 $color-unknown: black;
-
 
 @mixin stroke-and-fill($color) {
   stroke: $color;

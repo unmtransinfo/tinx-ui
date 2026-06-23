@@ -1,40 +1,54 @@
-const Path = require('path');
-const Webpack = require('webpack');
-const merge = require('webpack-merge');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const common = require('./webpack.common.js');
+const Path = require("path");
+const Fs = require("fs");
+const Webpack = require("webpack");
+const merge = require("webpack-merge");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const common = require("./webpack.common.js");
+
+// Load .env.production into process.env (only for keys not already set,
+// so Docker Compose / shell env vars always take precedence).
+try {
+  Fs.readFileSync(Path.resolve(__dirname, "../.env.production"), "utf8")
+    .split("\n")
+    .forEach((line) => {
+      const trimmed = line.trim();
+      if (trimmed && !trimmed.startsWith("#")) {
+        const eqIdx = trimmed.indexOf("=");
+        const key = trimmed.slice(0, eqIdx).trim();
+        if (eqIdx > 0 && !(key in process.env))
+          process.env[key] = trimmed.slice(eqIdx + 1).trim();
+      }
+    });
+} catch (_) {}
 
 module.exports = merge(common, {
-  mode: 'production',
-  devtool: 'source-map',
-  stats: 'errors-only',
+  mode: "production",
+  devtool: "source-map",
+  stats: "errors-only",
   optimization: {
-    minimize: true
+    minimize: true,
   },
   plugins: [
     new Webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('production')
+      "process.env.NODE_ENV": JSON.stringify("production"),
+      "process.env.API_ROOT": JSON.stringify(process.env.API_ROOT),
     }),
     new Webpack.optimize.ModuleConcatenationPlugin(),
     new MiniCssExtractPlugin({
-      filename: 'bundle.css'
-    })
+      filename: "bundle.css",
+    }),
   ],
   module: {
     rules: [
       {
         test: /\.(js)$/,
         exclude: /(node_modules|bower_components)/,
-        use: 'babel-loader'
+        use: "babel-loader",
       },
       {
         test: /\.s?css/i,
-        use : [
-          MiniCssExtractPlugin.loader,
-          'css-loader',
-          'sass-loader'
-        ]
-      }
-    ]
-  }
+        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+      },
+    ],
+  },
 });

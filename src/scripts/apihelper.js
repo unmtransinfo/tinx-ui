@@ -1,4 +1,4 @@
-import config from '../config';
+import config from "../config";
 
 /**
  * A helper to facilitate requests to the TIN-X API.
@@ -22,10 +22,11 @@ class ApiHelper {
 
     // Substitute any url params in endpoint
     let endpointWithParams = endpoint;
-    Object.keys(params).forEach((k) =>
-      endpointWithParams = endpointWithParams
-        .split(`:${k}`)
-        .join(encodeURIComponent(params[k]))
+    Object.keys(params).forEach(
+      (k) =>
+        (endpointWithParams = endpointWithParams
+          .split(`:${k}`)
+          .join(encodeURIComponent(params[k]))),
     );
 
     // Create the final URL to request
@@ -49,8 +50,8 @@ class ApiHelper {
         method: method,
         data: data,
         success: resolve,
-        error: reject
-      })
+        error: reject,
+      }),
     );
   }
 
@@ -62,9 +63,9 @@ class ApiHelper {
    */
   getDiseaseChildren(diseaseId) {
     return this.makeRequest({
-      method: 'GET',
-      endpoint: '/diseases/:diseaseId/children/',
-      params: { diseaseId }
+      method: "GET",
+      endpoint: "/diseases/:diseaseId/children/",
+      params: { diseaseId },
     });
   }
 
@@ -77,12 +78,11 @@ class ApiHelper {
    */
   getDiseaseByDOID(doid) {
     return this.makeRequest({
-      method: 'GET',
-      endpoint: '/diseases/',
-      data: {doid}
-    }).then(data => 'results' in data && data.results.length === 1
-          ? data.results[0]
-          : null
+      method: "GET",
+      endpoint: "/diseases/",
+      data: { doid },
+    }).then((data) =>
+      "results" in data && data.results.length === 1 ? data.results[0] : null,
     );
   }
 
@@ -93,9 +93,9 @@ class ApiHelper {
    */
   findDisease(query) {
     return this.makeRequest({
-      method: 'GET',
-      endpoint: '/diseases/',
-      data: {search: query}
+      method: "GET",
+      endpoint: "/diseases/",
+      data: { search: query },
     });
   }
 
@@ -107,9 +107,9 @@ class ApiHelper {
    */
   getDisease(diseaseId) {
     return this.makeRequest({
-      method: 'GET',
-      endpoint: '/diseases/:diseaseId',
-      params: { diseaseId }
+      method: "GET",
+      endpoint: "/diseases/:diseaseId",
+      params: { diseaseId },
     });
   }
 
@@ -120,92 +120,94 @@ class ApiHelper {
    */
   getDiseaseParent(diseaseId) {
     return this.makeRequest({
-      method: 'GET',
-      endpoint: '/diseases/:diseaseId/parent/',
-      params: { diseaseId }
+      method: "GET",
+      endpoint: "/diseases/:diseaseId/parent/",
+      params: { diseaseId },
     });
   }
 
   getDiseaseTargets(disease, limit = 100, offset = 0) {
-    if ('id' in disease)
+    if ("doid" in disease)
       return this.makeRequest({
-        method: 'GET',
-        endpoint: '/diseases/:diseaseId/targets/',
-        params: { diseaseId: disease.id },
-        data: { limit, offset }
+        method: "GET",
+        endpoint: "/diseases/:diseaseId/targets/",
+        params: { diseaseId: disease.doid },
+        data: { limit, offset },
       });
-    else if ('targets' in disease)
-      return this.makeSimpleRequest('GET', disease.targets);
+    else if ("targets" in disease)
+      return this.makeSimpleRequest("GET", disease.targets);
   }
 
   getSearchResults(query, type) {
     return this.makeRequest({
-      method: 'GET',
-      endpoint: '/search/?type=:type&q=:query',
-      params: {type, query}
+      method: "GET",
+      endpoint: "/search/?type=:type&q=:query",
+      params: { type, query },
     });
   }
 
-  getDiseaseTargetArticles(diseaseId, targetId, offset = 0, limit=5) {
+  getDiseaseTargetArticles(diseaseId, targetId, offset = 0, limit = 5) {
     return this.makeRequest({
-      method: 'GET',
-      endpoint: '/diseases/:diseaseId/targets/:targetId/articles',
+      method: "GET",
+      endpoint: "/diseases/:diseaseId/targets/:targetId/articles",
       params: { diseaseId, targetId },
-      data: {limit, offset}
+      data: { limit, offset },
     });
-
   }
 
   getDTOs(hasParent = null) {
-    const data = hasParent ? {'has_parent': hasParent} : {};
+    const data = hasParent ? { has_parent: hasParent } : {};
     return this.makeRequest({
-      method: 'GET',
-      endpoint: '/dto/',
-      data
+      method: "GET",
+      endpoint: "/dto/",
+      data,
     });
   }
 
   getDTO(dtoId) {
     return this.makeRequest({
-      method: 'GET',
-      endpoint: '/dto/:dtoId/',
-      params: { dtoId }
+      method: "GET",
+      endpoint: "/dto/:dtoId/",
+      params: { dtoId },
     });
   }
 
   getDTOChildren(dtoId) {
     return this.makeRequest({
-      method: 'GET',
-      endpoint: '/dto/:dtoId/children/',
-      params: { dtoId }
+      method: "GET",
+      endpoint: "/dto/:dtoId/children/",
+      params: { dtoId },
     });
   }
 
   getTargetDiseases(targetId, limit = 100, offset = 0) {
     return this.makeRequest({
-      method: 'GET',
-      endpoint: '/targets/:targetId/diseases/',
+      method: "GET",
+      endpoint: "/targets/:targetId/diseases/",
       params: { targetId },
-      data: { limit, offset }
+      data: { limit, offset },
     });
   }
 
   getDTOParent(parentUrl) {
     // Bit of a kludge. The API sometimes gives back HTTP URLS. In that case,
     // we want to convert these to HTTPS (if we're talking to production).
-    if (config.API_ROOT.substr(0, 5) === 'https' && parentUrl.substr(0,5) === 'http:')
-      parentUrl = parentUrl.substr(0, 4) + 's' + parentUrl.substr(4);
+    if (
+      config.API_ROOT.substr(0, 5) === "https" &&
+      parentUrl.substr(0, 5) === "http:"
+    )
+      parentUrl = parentUrl.substr(0, 4) + "s" + parentUrl.substr(4);
 
-    return this.makeSimpleRequest(parentUrl, 'GET');
+    return this.makeSimpleRequest(parentUrl, "GET");
   }
 
   findTarget(query, inDto) {
-    const data = {search: query};
-    if (inDto) data['in_dto'] = 2;
+    const data = { search: query };
+    if (inDto) data["in_dto"] = 2;
     return this.makeRequest({
-      method: 'GET',
-      endpoint: '/targets/',
-      data
+      method: "GET",
+      endpoint: "/targets/",
+      data,
     });
   }
 }

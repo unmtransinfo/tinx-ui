@@ -1,5 +1,7 @@
 .npm
 *.log
+.env
+.env.*
 npm-debug.log*
 dist
 node_modules

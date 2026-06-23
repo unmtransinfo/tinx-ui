@@ -1,5 +1,5 @@
-import ApiHelper from './apihelper';
-import xss from 'xss';
+import ApiHelper from "./apihelper";
+import xss from "xss";
 import { updateTargetDetails } from "./scatterplot";
 
 /**
@@ -37,8 +37,10 @@ class DetailModal {
     this.lastPageRequestTime = 0;
 
     // Attach click handlers to pagination
-    this.$elem.find('.pagination .next').click(this.nextPage.bind(this));
-    this.$elem.find('.pagination .previous').click(this.previousPage.bind(this));
+    this.$elem.find(".pagination .next").click(this.nextPage.bind(this));
+    this.$elem
+      .find(".pagination .previous")
+      .click(this.previousPage.bind(this));
   }
 
   /**
@@ -55,20 +57,22 @@ class DetailModal {
 
     const { doid } = disease;
     if (doid && doid.length) {
-      this.$elem.find('.disease-details a.read-more').attr('href', `http://disease-ontology.org/term/${encodeURI(doid)}`);
+      this.$elem
+        .find(".disease-details a.read-more")
+        .attr("href", `http://disease-ontology.org/term/${encodeURI(doid)}`);
     }
 
-    this.$elem.find('.modal-title').text(`${target.sym} and ${disease.name}`);
+    this.$elem.find(".modal-title").text(`${target.sym} and ${disease.name}`);
 
     // Update disease fields
-    this.$elem.find('.disease-name').text(this._upperFirst(disease.name));
-    this.$elem.find('.disease-summary').text(disease.summary);
+    this.$elem.find(".disease-name").text(this._upperFirst(disease.name));
+    this.$elem.find(".disease-summary").text(disease.summary);
 
     // Update target fields
-    this.$elem.find('.target-name').text(target.sym);
+    this.$elem.find(".target-name").text(target.sym);
 
     // Hide pagination while we wait to find out how many articles there are
-    this.$elem.find('.pagination .article-stats').addClass('hide');
+    this.$elem.find(".pagination .article-stats").addClass("hide");
 
     updateTargetDetails(this.selector, target);
 
@@ -81,16 +85,16 @@ class DetailModal {
    * Loads the next page of articles.
    */
   nextPage() {
-    this.loadPage(this.pageEnd)
-      .then(this._updatePrevNextState.bind(this));
+    this.loadPage(this.pageEnd).then(this._updatePrevNextState.bind(this));
   }
 
   /**
    * Loads the previous page of articles.
    */
   previousPage() {
-    this.loadPage(this.pageStart - this.perPage)
-      .then(this._updatePrevNextState.bind(this));
+    this.loadPage(this.pageStart - this.perPage).then(
+      this._updatePrevNextState.bind(this),
+    );
   }
 
   /**
@@ -99,14 +103,14 @@ class DetailModal {
    * @private
    */
   _updatePrevNextState() {
-    const $previous = this.$elem.find('.pagination .previous');
-    const $next = this.$elem.find('.pagination .next');
+    const $previous = this.$elem.find(".pagination .previous");
+    const $next = this.$elem.find(".pagination .next");
 
-    if (this.pageStart > 0 ) $previous.removeClass('disabled');
-    else $previous.addClass('disabled');
+    if (this.pageStart > 0) $previous.removeClass("disabled");
+    else $previous.addClass("disabled");
 
-    if (this.hasNext) $next.removeClass('disabled');
-    else $next.addClass('disabled');
+    if (this.hasNext) $next.removeClass("disabled");
+    else $next.addClass("disabled");
   }
 
   /**
@@ -120,40 +124,44 @@ class DetailModal {
     const requestTime = new Date().getTime();
     this.lastPageRequestTime = requestTime;
 
-    return ApiHelper.getDiseaseTargetArticles(this.disease.doid, this.target.id, start, this.perPage)
-      .then((data) => {
-        if (requestTime === this.lastPageRequestTime) {
-          const $articleStats = this.$elem.find('.pagination .article-stats');
-          $articleStats.find('.first-in-page').text(start + 1);
-          $articleStats.find('.last-in-page').text(start + data.results.length);
-          $articleStats.find('.total-count').text(data.count);
-          $articleStats.removeClass('hide');
+    return ApiHelper.getDiseaseTargetArticles(
+      this.disease.doid,
+      this.target.id,
+      start,
+      this.perPage,
+    ).then((data) => {
+      if (requestTime === this.lastPageRequestTime) {
+        const $articleStats = this.$elem.find(".pagination .article-stats");
+        $articleStats.find(".first-in-page").text(start + 1);
+        $articleStats.find(".last-in-page").text(start + data.results.length);
+        $articleStats.find(".total-count").text(data.count);
+        $articleStats.removeClass("hide");
 
-          this._populateArticleList(data.results);
+        this._populateArticleList(data.results);
 
-          this.pageStart = start;
-          this.pageEnd = start + data.results.length;
-          this.hasNext = !!data.next;
+        this.pageStart = start;
+        this.pageEnd = start + data.results.length;
+        this.hasNext = !!data.next;
 
-          this.stopSpinner();
-        }
-      });
+        this.stopSpinner();
+      }
+    });
   }
 
   /**
    * Starts the "Loading..." spinner.
    */
   startSpinner() {
-    this.$elem.find('.loading-spinner').removeClass('hide');
-    this.$elem.find('#article-list').addClass('hide');
+    this.$elem.find(".loading-spinner").removeClass("hide");
+    this.$elem.find("#article-list").addClass("hide");
   }
 
   /**
    * Hides the "Loading..." spinner.
    */
   stopSpinner() {
-    this.$elem.find('.loading-spinner').addClass('hide');
-    this.$elem.find('#article-list').removeClass('hide');
+    this.$elem.find(".loading-spinner").addClass("hide");
+    this.$elem.find("#article-list").removeClass("hide");
   }
 
   /**
@@ -173,33 +181,37 @@ class DetailModal {
    * @private
    */
   _populateArticleList(results) {
-    const $template = this.$elem.find('.pubmed-article-template').first();
-    const $articleList = this.$elem.find('#article-list');
+    const $template = this.$elem.find(".pubmed-article-template").first();
+    const $articleList = this.$elem.find("#article-list");
     $articleList.empty();
 
     const $cards = results.map((article) => {
       const $card = $template.clone();
-      $card.removeClass('.pubmed-article-template');
+      $card.removeClass(".pubmed-article-template");
 
-      $card.find('.article-title').text(article.title);
-      $card.find('.article-authors').text(article.authors);
-      $card.find('.article-journal').text(article.journal);
-      $card.find('.article-date').text(article.date);
+      $card.find(".article-title").text(article.title);
+      $card.find(".article-authors").text(article.authors);
+      $card.find(".article-journal").text(article.journal);
+      $card.find(".article-date").text(article.date);
 
       const abstractDivId = `pubmed-article-${xss(article.id)}`;
 
-      $card.find('.abstract')
-        .attr('id',abstractDivId)
-        .find('p')
+      $card
+        .find(".abstract")
+        .attr("id", abstractDivId)
+        .find("p")
         .text(article.abstract);
 
-      $card.find('a.collapse-toggle')
-        .attr('data-target', `#${abstractDivId}`);
+      $card.find("a.collapse-toggle").attr("data-target", `#${abstractDivId}`);
 
-      $card.find('.pubmed-link')
-        .attr('href', `https://www.ncbi.nlm.nih.gov/pubmed/${encodeURIComponent(article.id)}/`);
+      $card
+        .find(".pubmed-link")
+        .attr(
+          "href",
+          `https://www.ncbi.nlm.nih.gov/pubmed/${encodeURIComponent(article.id)}/`,
+        );
 
-      $card.removeClass('hide');
+      $card.removeClass("hide");
 
       return $card;
     });

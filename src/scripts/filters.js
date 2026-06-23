@@ -1,5 +1,5 @@
-import {TreeViewModes} from "./treeview";
-import $ from 'jquery';
+import { TreeViewModes } from "./treeview";
+import $ from "jquery";
 
 class Filters {
   constructor(mode, onUpdate) {
@@ -7,43 +7,58 @@ class Filters {
     this.init();
     this.onUpdate = onUpdate;
     this.mode = mode;
-    this.filterDropdown = $('#filter-dropdown');
+    this.filterDropdown = $("#filter-dropdown");
   }
 
   init() {
     const that = this;
 
-    $('.dropdown-menu a').click(function(event) {
+    $(".dropdown-menu a").click(function (event) {
       const $target = $(event.currentTarget),
-        value = $target.data('value'),
-        type = $target.data('type'),
-        $inp = $target.find('input');
+        value = $target.data("value"),
+        type = $target.data("type"),
+        $inp = $target.find("input");
 
       const selectedIdx = that.selected[type].indexOf(value);
       if (selectedIdx >= 0) {
         that.selected[type].splice(selectedIdx, 1);
-        setTimeout(() => { $inp.prop('checked', false); }, 0);
-      }
-      else {
+        setTimeout(() => {
+          $inp.prop("checked", false);
+        }, 0);
+      } else {
         that.selected[type].push(value);
-        setTimeout(() => { $inp.prop('checked', true); }, 0);
+        setTimeout(() => {
+          $inp.prop("checked", true);
+        }, 0);
       }
 
       if (that.onUpdate) that.onUpdate(that.selected);
 
-      $( event.target ).blur();
+      $(event.target).blur();
       return false;
     });
   }
 
   reset() {
     this.selected = {
-      tdl: ['tclin', 'tbio', 'tdark', 'tchem'],
-      idg: ['gpcr', 'ogpcr', 'ion', 'kinase', 'nr', 'enzyme', 'epigenetic', 'tf', 'tf; epigenetic', 'transporter', 'uncategorized']
+      tdl: ["tclin", "tbio", "tdark", "tchem"],
+      idg: [
+        "gpcr",
+        "ogpcr",
+        "ion",
+        "kinase",
+        "nr",
+        "enzyme",
+        "epigenetic",
+        "tf",
+        "tf; epigenetic",
+        "transporter",
+        "uncategorized",
+      ],
     };
 
-    $.each($('#filter-menu').find('input'), function(idx, val) {
-      $(val).prop('checked', true);
+    $.each($("#filter-menu").find("input"), function (idx, val) {
+      $(val).prop("checked", true);
     });
   }
 
