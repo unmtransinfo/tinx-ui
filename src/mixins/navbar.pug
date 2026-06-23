@@ -1,18 +1,19 @@
 mixin navbar
   nav.navbar.navbar-expand-lg.navbar-light.bg-light.fixed-top
-    a.navbar-brand TIN-X
+    .container-fluid
+      a.navbar-brand TIN-X
 
-    button.navbar-toggler( type="button", data-toggle="collapse", data-target="#navbarSupportedContent", aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation")
-      span.navbar-toggler-icon
+      button.navbar-toggler( type="button", data-bs-toggle="collapse", data-bs-target="#navbarSupportedContent", aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation")
+        span.navbar-toggler-icon
 
-    #navbarSupportedContent.collapse.navbar-collapse
-      ul.navbar-nav.mr-auto
-        li#disease-nav-item.nav-item.active
-          a.nav-link(href="#" data-value="disease" id="clickdiseases") Browse Diseases
-        li#target-nav-item.nav-item
-          a.nav-link(href="#" data-value="target" id="clicktargets") Browse Targets
-        li.nav-item
-          a.nav-link(href="#" data-value="about") About
+      #navbarSupportedContent.collapse.navbar-collapse
+        ul.navbar-nav.me-auto
+          li#disease-nav-item.nav-item.active
+            a.nav-link(href="#" data-value="disease" id="clickdiseases") Browse Diseases
+          li#target-nav-item.nav-item
+            a.nav-link(href="#" data-value="target" id="clicktargets") Browse Targets
+          li.nav-item
+            a.nav-link(href="#" data-value="about") About
 
-      a(target="_blank", href="http://medicine.unm.edu/academic-divisions/translational-informatics/index.html")
-        img(src="./public/som-logo2.png", height="30px")
+        a(target="_blank", href="http://medicine.unm.edu/academic-divisions/translational-informatics/index.html")
+          img(src="./public/som-logo2.png", height="30px")

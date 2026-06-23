@@ -3,7 +3,7 @@ import $ from "jquery";
 //import $ from 'jQuery';
 window.jQuery = $;
 import "datatables.net";
-import "bootstrap";
+import { Modal } from "bootstrap";
 import "bootstrap-3-typeahead";
 import Typeaheads from "./typeaheads";
 import { TreeView, TreeViewModes } from "./treeview";
@@ -174,11 +174,11 @@ $(window).on("load", () => {
     const value = elem.find(".nav-link").data("value");
 
     if (value === "about") {
-      return aboutModal.modal({ show: true });
+      return Modal.getOrCreateInstance(aboutModal[0]).show();
     }
 
     if (value === "tutorials") {
-      return aboutModal.modal({ show: true });
+      return Modal.getOrCreateInstance(aboutModal[0]).show();
     }
 
     // Here we are updating the data-mode attribute on the body tag to reflect User actions such as clicking on the navigation links
