@@ -50,7 +50,10 @@ module.exports = merge(common, {
       },
       {
         test: /\.(js)$/,
-        include: Path.resolve(__dirname, "../src"),
+        include: [
+          Path.resolve(__dirname, "../src"),
+          Path.resolve(__dirname, "../node_modules/tom-select"),
+        ],
         loader: "babel-loader",
       },
       {

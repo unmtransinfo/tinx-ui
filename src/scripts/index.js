@@ -4,7 +4,7 @@ import $ from "jquery";
 window.jQuery = $;
 import "datatables.net";
 import { Modal } from "bootstrap";
-import "bootstrap-3-typeahead";
+
 import Typeaheads from "./typeaheads";
 import { TreeView, TreeViewModes } from "./treeview";
 import { Scatterplot } from "./scatterplot";

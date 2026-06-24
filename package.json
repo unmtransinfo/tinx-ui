@@ -41,12 +41,16 @@
   "babel": {
     "presets": [
       "env"
+    ],
+    "plugins": [
+      "transform-class-properties"
     ]
   },
   "homepage": "https://github.com/wbkd/webpack-starter#readme",
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-env": "^1.7.0",
     "clean-webpack-plugin": "^0.1.19",
     "copy-webpack-plugin": "^4.5.2",
@@ -71,13 +75,13 @@
   "dependencies": {
     "babel-polyfill": "^6.26.0",
     "bootstrap": "^5.3.8",
-    "bootstrap-3-typeahead": "^4.0.2",
     "d3v4": "^4.2.2",
     "datatables.net": "^1.11.5",
     "html-loader": "^0.5.5",
     "jquery": "^3.3.1",
     "pug-html-loader": "^1.1.5",
     "tabulator-tables": "^5.4.1",
+    "tom-select": "^2.6.1",
     "xss": "^1.0.3"
   },
   "lint-staged": {

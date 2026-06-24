@@ -1,3 +1,4 @@
+import TomSelect from "tom-select";
 import ApiHelper from "./apihelper";
 import { TreeViewModes } from "./treeview";
 
@@ -6,8 +7,8 @@ class Typeaheads {
   init(treeView, scatterplot) {
     this.mode = treeView.mode;
     this.scatterplot = scatterplot;
-    this.treeViewSearch = $("#tree-view-search");
-    this.dataSearch = $("#search-input");
+    this._treeSearch = null;
+    this._dataSearch = null;
     this.initTreeViewSearch(treeView);
   }
 
@@ -17,35 +18,55 @@ class Typeaheads {
   }
 
   initTreeViewSearch(treeView) {
-    this.treeViewSearch.typeahead({
-      source: (query, callback) => {
-        if (this.mode === TreeViewModes.DISEASE) {
-          ApiHelper.getSearchResults(query, TreeViewModes.DISEASE)
-            .then((data) => data)
-            .then(callback);
-        } else if (this.mode === TreeViewModes.TARGET) {
-          ApiHelper.getSearchResults(query, TreeViewModes.TARGET)
-            .then((data) => data)
-            .then(callback);
-        }
+    const el = document.getElementById("tree-view-search");
+
+    this._treeSearch = new TomSelect(el, {
+      valueField: "_tsId",
+      labelField: "name",
+      searchField: ["name"],
+      maxOptions: 15,
+      // Only fire the remote load once the user has typed something
+      shouldLoad: (query) => query.length > 0,
+      load: (query, callback) => {
+        ApiHelper.getSearchResults(query, this.mode)
+          .then((data) => {
+            // Attach a stable unique key so Tom Select can track options
+            const tagged = data.map((item, i) =>
+              Object.assign({}, item, {
+                _tsId: `${item.doid || item.dtoid || item.name || i}`,
+              }),
+            );
+            callback(tagged);
+          })
+          .catch(() => callback([]));
       },
-      matcher: () => true,
-      items: 15,
-      displayText: (x) =>
-        `${x.name.charAt(0).toLocaleUpperCase() + x.name.slice(1)}`,
-      afterSelect: (x) => {
-        this.treeViewSearch.val("");
+      render: {
+        option: (item) => {
+          const name = item.name
+            ? item.name.charAt(0).toLocaleUpperCase() + item.name.slice(1)
+            : item._tsId;
+          return `<div class="option">${name}</div>`;
+        },
+      },
+      onItemAdd: (value) => {
+        const item = this._treeSearch.options[value];
+        // Reset the input immediately so it is ready for the next search
+        this._treeSearch.clear(true);
+        this._treeSearch.clearOptions();
+        this._treeSearch.close();
+
         treeView.setWasBackPressed(false);
         this.scatterplot.clear();
         this.scatterplot.startSpinner();
         // TODO For some reason, the code that loads the chart right away got deleted ...
         // What we should do is load the chart, then pass plotLoaded as true.
-        if (this.mode === TreeViewModes.DISEASE)
-          treeView.expandToNode(x, false);
-        else
-          ApiHelper.getDTO(x.dtoid).then((data) =>
+        if (this.mode === TreeViewModes.DISEASE) {
+          treeView.expandToNode(item, false);
+        } else {
+          ApiHelper.getDTO(item.dtoid).then((data) =>
             treeView.expandToNode(data, false),
           );
+        }
       },
     });
 
@@ -53,56 +74,102 @@ class Typeaheads {
   }
 
   /**
-   * Updates placeholder and aria-label for typeahead inputs
+   * Updates placeholder and aria-label for both typeahead inputs.
    */
   updateInputs() {
-    if (this.mode === TreeViewModes.DISEASE) {
-      this.setAttrs(this.treeViewSearch, "Search for a disease...");
-      this.setAttrs(this.dataSearch, "Search for a target...");
-    } else if (this.mode === TreeViewModes.TARGET) {
-      this.setAttrs(this.treeViewSearch, "Search for a target...");
-      this.setAttrs(this.dataSearch, "Search for a disease...");
+    const [treePlaceholder, dataPlaceholder] =
+      this.mode === TreeViewModes.DISEASE
+        ? ["Search for a disease...", "Search for a target..."]
+        : ["Search for a target...", "Search for a disease..."];
+
+    if (this._treeSearch) {
+      this._setTsPlaceholder(this._treeSearch, treePlaceholder);
+    }
+
+    if (this._dataSearch) {
+      this._setTsPlaceholder(this._dataSearch, dataPlaceholder);
+    } else {
+      // initDataSearch hasn't been called yet — update the raw input directly
+      const rawInput = document.getElementById("search-input");
+      if (rawInput) {
+        rawInput.setAttribute("placeholder", dataPlaceholder);
+        rawInput.setAttribute("aria-label", dataPlaceholder);
+      }
     }
   }
 
   /**
-   * Sets placeholder and aria-label for provided input to the specified value
+   * Sets placeholder and aria-label on a TomSelect instance's visible input.
    *
-   * @param {Object} input:   input to update
-   * @param {string} value:   string to use as placeholder and aria-label
+   * @param {TomSelect} ts
+   * @param {string} value
    */
-  setAttrs(input, value) {
-    input.attr("placeholder", value);
-    input.attr("aria-label", value);
+  _setTsPlaceholder(ts, value) {
+    ts.control_input.setAttribute("placeholder", value);
+    ts.control_input.setAttribute("aria-label", value);
   }
 
   /**
-   * Initializes data search functionality
+   * Initializes (or refreshes) data search functionality.
+   * Safe to call multiple times — re-uses the existing Tom Select instance
+   * and simply swaps the option set.
    *
    * @param {Array<Object>} data:   datapoints
    * @param {Function} onSelect:    callback invoked on option select
    */
   initDataSearch(data, onSelect) {
-    const typeahead = this.dataSearch.data("typeahead");
+    const tagged = this._tagData(data);
 
-    if (typeahead) {
-      typeahead.source = data;
-    } else {
-      this.dataSearch.typeahead({
-        source: data,
-        displayText: (x) => {
-          const { target, disease } = x;
-          if (target) return target.name;
-          return disease.name;
-        },
-        afterSelect: (x) => {
-          if (onSelect) onSelect(x);
-          this.dataSearch.val("");
-        },
-      });
+    if (this._dataSearch) {
+      // Swap the option set without re-creating the widget
+      this._dataSearch.clearOptions();
+      this._dataSearch.addOptions(tagged);
+      this.updateInputs();
+      return;
     }
 
+    const el = document.getElementById("search-input");
+
+    this._dataSearch = new TomSelect(el, {
+      valueField: "_tsId",
+      labelField: "_displayName",
+      searchField: ["_displayName"],
+      maxOptions: 50,
+      options: tagged,
+      render: {
+        option: (item) => `<div class="option">${item._displayName}</div>`,
+      },
+      onItemAdd: (value) => {
+        const item = this._dataSearch.options[value];
+        this._dataSearch.clear(true);
+        if (onSelect) onSelect(item);
+      },
+    });
+
     this.updateInputs();
+  }
+
+  /**
+   * Annotates each datapoint with the fields Tom Select needs:
+   *   _tsId          — stable unique key (index-based)
+   *   _displayName   — the label shown in the dropdown
+   *
+   * @param {Array<Object>} data
+   * @returns {Array<Object>}
+   */
+  _tagData(data) {
+    return data.map((item, i) => {
+      const { target, disease } = item;
+      const displayName = target
+        ? target.name
+        : disease
+          ? disease.name
+          : `item-${i}`;
+      return Object.assign({}, item, {
+        _tsId: String(i),
+        _displayName: displayName,
+      });
+    });
   }
 }
 

@@ -1,4 +1,5 @@
 @import "~bootstrap/scss/bootstrap";
+@import "~tom-select/dist/scss/tom-select.bootstrap5";
 @import "treeview";
 @import "colors";
 @import "scatterplot";
@@ -133,6 +134,24 @@ body {
       outline: none;
     }
   }
+
+  // Tom Select wrapper — becomes the flex sibling of .icon-container
+  .ts-wrapper {
+    flex: 1;
+    min-width: 0;
+
+    .ts-control {
+      border: none !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+      min-height: unset;
+
+      input {
+        color: $med-grey;
+      }
+    }
+  }
 }
 
 #main {
@@ -167,10 +186,8 @@ body {
   .input-with-icon {
     margin-bottom: 20px;
 
-    input#tree-view-search {
-      flex: 1;
+    .ts-wrapper .ts-control input {
       font-size: 18px;
-      border-radius: 8px;
       padding: 8px 12px;
     }
   }
@@ -335,10 +352,16 @@ body {
         flex: 1;
       }
 
-      input#search-input,
+      // Plain input (table search — not wrapped by Tom Select)
       input#table-search-input {
         font-size: 16px;
         border-radius: 8px;
+        padding: 6px 10px;
+      }
+
+      // Tom Select-wrapped data search input
+      .input-with-icon .ts-wrapper .ts-control input {
+        font-size: 16px;
         padding: 6px 10px;
       }
 
