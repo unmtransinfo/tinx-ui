@@ -38,20 +38,12 @@
       "semi": 2
     }
   },
-  "babel": {
-    "presets": [
-      "env"
-    ],
-    "plugins": [
-      "transform-class-properties"
-    ]
-  },
   "homepage": "https://github.com/wbkd/webpack-starter#readme",
   "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.5",
-    "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-preset-env": "^1.7.0",
+    "@babel/core": "^7.29.7",
+    "@babel/plugin-transform-class-properties": "^7.29.7",
+    "@babel/preset-env": "^7.29.7",
+    "babel-loader": "^8.4.1",
     "clean-webpack-plugin": "^0.1.19",
     "copy-webpack-plugin": "^4.5.2",
     "css-loader": "^1.0.0",
@@ -73,7 +65,7 @@
     "webpack-merge": "^4.1.4"
   },
   "dependencies": {
-    "babel-polyfill": "^6.26.0",
+    "@babel/polyfill": "^7.12.1",
     "bootstrap": "^5.3.8",
     "d3v4": "^4.2.2",
     "datatables.net": "^1.11.5",
