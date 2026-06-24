@@ -1,7 +1,7 @@
 const Path = require("path");
 const Fs = require("fs");
 const Webpack = require("webpack");
-const merge = require("webpack-merge");
+const { merge } = require("webpack-merge");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const common = require("./webpack.common.js");
 
@@ -33,7 +33,6 @@ module.exports = merge(common, {
       "process.env.NODE_ENV": JSON.stringify("staging"),
       "process.env.API_ROOT": JSON.stringify(process.env.API_ROOT),
     }),
-    new Webpack.optimize.ModuleConcatenationPlugin(),
     new MiniCssExtractPlugin({
       filename: "bundle.css",
     }),
@@ -47,7 +46,18 @@ module.exports = merge(common, {
       },
       {
         test: /\.s?css/i,
-        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+        use: [
+          MiniCssExtractPlugin.loader,
+          "css-loader",
+          {
+            loader: "sass-loader",
+            options: {
+              sassOptions: {
+                loadPaths: [Path.resolve(__dirname, "../node_modules")],
+              },
+            },
+          },
+        ],
       },
     ],
   },
