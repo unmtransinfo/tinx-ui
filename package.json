@@ -67,7 +67,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.12.1",
     "bootstrap": "^5.3.8",
-    "d3v4": "^4.2.2",
+    "d3": "^7.9.0",
     "datatables.net": "^1.11.5",
     "html-loader": "^0.5.5",
     "jquery": "^3.3.1",
