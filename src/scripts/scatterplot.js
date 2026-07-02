@@ -1,4 +1,4 @@
-import * as d3 from "d3v4";
+import * as d3 from "d3";
 import { TreeViewModes } from "./treeview";
 import ApiHelper from "./apihelper";
 import xss from "xss";
@@ -391,7 +391,7 @@ class Scatterplot {
       .text("Novelty")
       .attr("data-placement", "left")
       .attr("title", this.axisTooltips.novelty)
-      .on("mouseover", function (d) {
+      .on("mouseover", function (event, d) {
         that.showAxisTooltip(d3.select(this));
       })
       .on("mouseout", () => that.clearTooltip(false));
@@ -413,7 +413,7 @@ class Scatterplot {
           this.subjectDetails.name,
         ),
       )
-      .on("mouseover", function (d) {
+      .on("mouseover", function (event, d) {
         that.showAxisTooltip(d3.select(this));
       })
       .on("mouseout", () => that.clearTooltip(false));
@@ -437,17 +437,18 @@ class Scatterplot {
       .enter()
       .append("path")
       .attr("class", (d) => "datapoint " + className(d))
-      .attr("d", (d) => d3.symbol().size([60]).type(this._pointShape(d))())
+      .attr("d", (d) => d3.symbol().size(60).type(this._pointShape(d))())
       .attr("transform", (d) => `translate(${x(d.x)}, ${y(d.y)})`)
       //This is not working: .append(function(d){return d.target.uniprot})
-      .on("mouseover", function (d) {
-        if (that.hoverTooltipEnabled) that.showTooltip(d, d3.select(this));
+      .on("mouseover", function (event, d) {
+        if (that.hoverTooltipEnabled)
+          that.showTooltip(d, d3.select(this), false, event);
       })
       .on("mouseout", function () {
         if (that.hoverTooltipEnabled) that.clearTooltip(false);
       })
-      .on("touchstart", () => {
-        const e = d3.event;
+      .on("touchstart", (event) => {
+        const e = event;
         const touch = e.touches[0] || e.changedTouches[0];
         const point = { x: touch.pageX, y: touch.pageY };
         that.touchpoints.push(point);
@@ -456,7 +457,7 @@ class Scatterplot {
           that.keepMs,
         );
       })
-      .on("click", function (d) {
+      .on("click", function (event, d) {
         if (that.pointClickHandler)
           that.pointClickHandler(d, that.subjectDetails);
       });
@@ -468,9 +469,9 @@ class Scatterplot {
         [0, 0],
         [width, height],
       ])
-      .on("zoom", () => {
-        const newX = d3.event.transform.rescaleX(x);
-        const newY = d3.event.transform.rescaleY(y);
+      .on("zoom", (event) => {
+        const newX = event.transform.rescaleX(x);
+        const newY = event.transform.rescaleY(y);
         gX.call(xAxis.scale(newX));
         gY.call(yAxis.scale(newY));
         points
@@ -522,9 +523,9 @@ class Scatterplot {
    * @param forSearchItem - Whether or not we are showing a tooltip for item selected from data
    * search typeahead
    */
-  showTooltip(d, elem, forSearchItem = false) {
+  showTooltip(d, elem, forSearchItem = false, event = null) {
     // determine if this mouseover event was triggered by a touchstart
-    const e = d3.event;
+    const e = event;
     if (e) {
       const { pageX, pageY } = e;
       for (let i in this.touchpoints) {
@@ -752,7 +753,7 @@ class Scatterplot {
         .attr("d", (d) =>
           d3
             .symbol()
-            .size([70])
+            .size(70)
             .type(that._pointShape(elem.attr("data-label")))(),
         )
         .attr("transform", `translate(8, 8.5)`);

@@ -1,6 +1,6 @@
 const webpack = require("webpack");
 const Path = require("path");
-const CleanWebpackPlugin = require("clean-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { env } = require("process");
@@ -14,14 +14,14 @@ module.exports = {
   ],
   output: {
     path: dest,
-    filename: "bundle.[hash].js",
+    filename: "bundle.[contenthash].js",
     publicPath: env.ASSET_URL ? env.ASSET_URL : "/",
   },
   plugins: [
-    new CleanWebpackPlugin([dest], { root: Path.resolve(__dirname, "..") }),
-    new CopyWebpackPlugin([
-      { from: Path.resolve(__dirname, "../public"), to: "public" },
-    ]),
+    new CleanWebpackPlugin(),
+    new CopyWebpackPlugin({
+      patterns: [{ from: Path.resolve(__dirname, "../public"), to: "public" }],
+    }),
     new HtmlWebpackPlugin({
       template: Path.resolve(__dirname, "../src/index.pug"),
     }),
@@ -38,23 +38,16 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.mjs$/,
-        include: /node_modules/,
-        type: "javascript/auto",
-      },
-      {
         test: /\.(ico|jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2)(\?.*)?$/,
-        use: {
-          loader: "file-loader",
-          options: {
-            name: "[path][name].[ext]",
-          },
+        type: "asset/resource",
+        generator: {
+          filename: "[path][name][ext]",
         },
       },
       {
         test: /\.(pug)$/i,
         use: [
-          { loader: "html-loader", options: { attrs: false } },
+          { loader: "html-loader", options: { sources: false } },
           { loader: "pug-html-loader", options: {} },
         ],
       },

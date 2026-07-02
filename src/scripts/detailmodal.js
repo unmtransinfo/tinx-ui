@@ -1,5 +1,6 @@
 import ApiHelper from "./apihelper";
 import xss from "xss";
+import { Modal } from "bootstrap";
 import { updateTargetDetails } from "./scatterplot";
 
 /**
@@ -78,7 +79,7 @@ class DetailModal {
 
     this.nextPage();
 
-    this.$elem.modal({ show: true });
+    Modal.getOrCreateInstance(this.$elem[0]).show();
   }
 
   /**
@@ -202,7 +203,9 @@ class DetailModal {
         .find("p")
         .text(article.abstract);
 
-      $card.find("a.collapse-toggle").attr("data-target", `#${abstractDivId}`);
+      $card
+        .find("a.collapse-toggle")
+        .attr("data-bs-target", `#${abstractDivId}`);
 
       $card
         .find(".pubmed-link")

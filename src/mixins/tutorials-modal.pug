@@ -12,9 +12,8 @@ mixin tutorials-overview-row
                 .modal-header
                     #tutorials-modal-title.modal-title
                         | TIN-X Tutorials
-                    button.close(type="button" data-dismiss="modal" aria-label="close")
-                        span(aria-hidden="true") &times;
+                    button.btn-close(type="button" data-bs-dismiss="modal" aria-label="close")
                 .modal-body
                     +tutorials-overview-row
                 .modal-footer
-                    button.btn.btn-secondary(type="button" data-dismiss="modal") Close
+                    button.btn.btn-secondary(type="button" data-bs-dismiss="modal") Close

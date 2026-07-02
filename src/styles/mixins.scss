@@ -5,7 +5,7 @@
 @mixin footer-height() {
   height: 20px;
 
-  @include media-breakpoint-down(xs) {
+  @include media-breakpoint-down(sm) {
     height: 40px;
   }
 }
@@ -13,7 +13,7 @@
 @mixin padding-for-footer() {
   margin-bottom: 20px;
 
-  @include media-breakpoint-down(xs) {
+  @include media-breakpoint-down(sm) {
     padding-bottom: 40px;
   }
 }

@@ -251,7 +251,7 @@ class TreeView {
     if (itemClass !== ROOT_NODE) {
       listItem
         .find("span.btn")
-        .append($("<span>").addClass("badge badge-light").text(childCount));
+        .append($("<span>").addClass("badge text-bg-light").text(childCount));
     }
 
     if (itemClass && itemClass.length) listItem.addClass(itemClass);
