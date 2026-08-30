@@ -34,7 +34,7 @@ module.exports = merge(common, {
       "process.env.API_ROOT": JSON.stringify(process.env.API_ROOT),
     }),
     new MiniCssExtractPlugin({
-      filename: "bundle.css",
+      filename: "bundle.[contenthash].css",
     }),
   ],
   module: {
