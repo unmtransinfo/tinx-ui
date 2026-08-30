@@ -1,7 +1,18 @@
+mixin newtinx31-row
+    section.newtinx31-row
+        .section-header
+            | NEW TIN-X Version 3.1
+        .section-body
+            p September 2026: We are pleased to announce the release of TIN-X Version 3.1!  This release updates to the latest available IDG-KMC Target Central Resource Database and includes a number of improvements to the site and API.  A few of the most significant changes are:
+            ul
+                li Updated to the most recently released version of the IDG-KMC Target Central Resource Database (v6.13.4)
+                li Upgraded UI and API dependencies and packages to their latest stable versions
+                li General backend code cleanup and refactoring to improve maintainability and performance
+
 mixin newtinx-row
     section.newtinx-row
         .section-header
-            | NEW TIN-X Version 3.0
+            | TIN-X Version 3.0
         .section-body
             p April 2023: We are excited to announce the release of TIN-X Version 3.0!  This new version of TIN-X includes new features, addresses bugs, and features an expanded dataset.  A few of the most significant changes are:
             ul
@@ -97,9 +108,9 @@ mixin update-row
         .section-header
             | Last Updated
         .section-body
-            p TIN-X Version 3.0 last updated June 22, 2026
+            p TIN-X Version 3.1 last updated June 22, 2026
             p IDG-KMC Target Central Resource Database, version 6.13.4 released 09/08/2022
-            p JensenLab DISEASES 2.0 resource downloaded 10/21/2021
+            p JensenLab DISEASES 2.0 resource downloaded 09/08/2022
 mixin about-modal
     #about-modal.modal.fade(role="dialog" aria-labeledby="about-modal-title" aria-hidden="true")
         .modal-dialog(role="document").modal-lg
@@ -109,6 +120,7 @@ mixin about-modal
                         | About TIN-X
                     button.btn-close(type="button" data-bs-dismiss="modal" aria-label="close")
                 .modal-body
+                    +newtinx31-row
                     +newtinx-row
                     +overview-row
                     +publications-row
