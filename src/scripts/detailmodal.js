@@ -60,7 +60,7 @@ class DetailModal {
     if (doid && doid.length) {
       this.$elem
         .find(".disease-details a.read-more")
-        .attr("href", `http://disease-ontology.org/term/${encodeURI(doid)}`);
+        .attr("href", `https://www.ebi.ac.uk/ols4/search?q=${encodeURI(doid)}`);
     }
 
     this.$elem.find(".modal-title").text(`${target.sym} and ${disease.name}`);
