@@ -33,6 +33,15 @@ $(window).on("load", () => {
   const tableModal = $("#table-modal");
   const $thresholdSlider = $("#threshold-slider");
 
+  // Bootstrap sets aria-hidden on a modal before moving focus away from it,
+  // which trips a Chrome a11y warning if a descendant (e.g. the close button)
+  // still has focus. Blur it ourselves first.
+  $(document).on("hide.bs.modal", ".modal", function () {
+    if (this.contains(document.activeElement)) {
+      document.activeElement.blur();
+    }
+  });
+
   treeView.init();
   Typeaheads.init(treeView, scatterplot);
 
