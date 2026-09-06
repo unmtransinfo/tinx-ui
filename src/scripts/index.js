@@ -32,6 +32,8 @@ $(window).on("load", () => {
   const aboutModal = $("#about-modal");
   const tableModal = $("#table-modal");
   const $thresholdSlider = $("#threshold-slider");
+  const $thresholdDecrement = $("#threshold-decrement");
+  const $thresholdIncrement = $("#threshold-increment");
 
   // Bootstrap sets aria-hidden on a modal before moving focus away from it,
   // which trips a Chrome a11y warning if a descendant (e.g. the close button)
@@ -167,6 +169,30 @@ $(window).on("load", () => {
     .mouseout(function () {
       scatterplot.clearTooltip(false);
     });
+
+  // Step the threshold slider by 1 via the +/- icons
+  function stepThreshold(delta) {
+    if ($thresholdSlider.is(":disabled")) return;
+
+    const min = parseInt($thresholdSlider.attr("min"), 10) || 0;
+    const max = parseInt($thresholdSlider.attr("max"), 10);
+    const current = parseInt($thresholdSlider.val(), 10);
+    const next = Math.min(max, Math.max(min, current + delta));
+
+    if (next === current) return;
+
+    $thresholdSlider.val(next).trigger("change");
+  }
+
+  $thresholdDecrement.on("click", () => stepThreshold(-1));
+  $thresholdIncrement.on("click", () => stepThreshold(1));
+
+  // Support activating the +/- icons via keyboard since they're not native buttons
+  $thresholdDecrement.add($thresholdIncrement).on("keydown", function (event) {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    $(this).trigger("click");
+  });
 
   // is this still used?
   $("#viewTableButton").click(function () {
@@ -308,6 +334,25 @@ $(window).on("load", () => {
     tabBtn.forEach((el, i) => (el.onclick = () => openTab(i)));
   };
   [...tab].forEach((el) => toggleTab(el));
+
+  // Chrome/Firefox have a long-standing rendering bug where elements near a
+  // `position: fixed` navbar / `overflow: hidden` ancestor (like the plot
+  // header buttons and the rotated threshold-slider controls) are left
+  // unpainted after the viewport size changes, e.g. via Ctrl+scroll browser
+  // zoom. Forcing a reflow on the affected regions once the resize settles
+  // works around it.
+  let repaintNudgeTimer;
+  $(window).on("resize", () => {
+    clearTimeout(repaintNudgeTimer);
+    repaintNudgeTimer = setTimeout(() => {
+      $("#plot-header, #threshold-slider-container").each(function () {
+        const previousDisplay = this.style.display;
+        this.style.display = "none";
+        void this.offsetHeight;
+        this.style.display = previousDisplay;
+      });
+    }, 200);
+  });
 
   window.onpopstate = (e) => {
     if (e.state) {

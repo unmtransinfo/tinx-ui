@@ -247,6 +247,10 @@ body {
         padding: 5px 0;
         height: 40px;
         transform: translate(40%, 0) rotate(270deg);
+        // Keeps this rotated element on its own compositor layer so Chrome/
+        // Firefox re-paint it correctly after the viewport size changes
+        // (e.g. Ctrl+scroll browser zoom) instead of leaving it blank.
+        will-change: transform;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -259,6 +263,12 @@ body {
 
         i {
           transform: rotate(90deg);
+          cursor: pointer;
+        }
+
+        &:has(input#threshold-slider[disabled="true"]) i {
+          cursor: default;
+          opacity: 0.3;
         }
 
         input#threshold-slider {
