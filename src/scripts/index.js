@@ -105,13 +105,11 @@ $(window).on("load", () => {
       }
     }
 
-    if (nodeId && mode) {
+    const shareId = mode === TreeViewModes.DISEASE ? nodeDOID : nodeId;
+
+    if (shareId && mode) {
       shareChart.close();
-      shareChart.setUrl(
-        data.mode === TreeViewModes.DISEASE ? nodeDOID : nodeId,
-        mode,
-        treeView.getWasBackPressed(),
-      );
+      shareChart.setUrl(shareId, mode, treeView.getWasBackPressed());
     }
 
     // update plot title only if selected node is not a root
