@@ -335,25 +335,6 @@ $(window).on("load", () => {
   };
   [...tab].forEach((el) => toggleTab(el));
 
-  // Chrome/Firefox have a long-standing rendering bug where elements near a
-  // `position: fixed` navbar / `overflow: hidden` ancestor (like the plot
-  // header buttons and the rotated threshold-slider controls) are left
-  // unpainted after the viewport size changes, e.g. via Ctrl+scroll browser
-  // zoom. Forcing a reflow on the affected regions once the resize settles
-  // works around it.
-  let repaintNudgeTimer;
-  $(window).on("resize", () => {
-    clearTimeout(repaintNudgeTimer);
-    repaintNudgeTimer = setTimeout(() => {
-      $("#plot-header, #threshold-slider-container").each(function () {
-        const previousDisplay = this.style.display;
-        this.style.display = "none";
-        void this.offsetHeight;
-        this.style.display = previousDisplay;
-      });
-    }, 200);
-  });
-
   window.onpopstate = (e) => {
     if (e.state) {
       checkUrlParams(true);

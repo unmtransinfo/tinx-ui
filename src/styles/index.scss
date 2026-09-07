@@ -229,6 +229,17 @@ body {
   // TODO: Lift to mixin
   height: calc(100vh - 56px - 50px);
   flex: 1;
+  // Flex items default to `min-width: auto`, which floors their size at
+  // their content's intrinsic width. The scatterplot's <svg> is given an
+  // explicit pixel `width` attribute in JS (see Scatterplot#redraw), so
+  // without this override the browser won't let this column shrink back
+  // down past whatever width the SVG last had. That's normally harmless,
+  // but it becomes a self-reinforcing bug with browser zoom: zooming out
+  // grows the SVG's width attribute, which then floors this column's width
+  // even after zooming back in, since redraw() re-reads the (still
+  // oversized) column width on every resize. That pushes the header
+  // buttons and the threshold slider off-screen until a full page reload.
+  min-width: 0;
 
   #plot-container {
     width: 100%;
@@ -247,10 +258,6 @@ body {
         padding: 5px 0;
         height: 40px;
         transform: translate(40%, 0) rotate(270deg);
-        // Keeps this rotated element on its own compositor layer so Chrome/
-        // Firefox re-paint it correctly after the viewport size changes
-        // (e.g. Ctrl+scroll browser zoom) instead of leaving it blank.
-        will-change: transform;
         display: flex;
         align-items: center;
         justify-content: center;
