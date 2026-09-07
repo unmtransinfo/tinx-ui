@@ -18,6 +18,24 @@ import Exporter from "./exporter";
 import { ROOT_NODE } from "./constants";
 
 $(window).on("load", () => {
+  // The navbar is `position: fixed`, so it's out of normal document flow
+  // and sibling elements can't size around it automatically the way they
+  // would around a normal in-flow element — CSS below assumes a fixed
+  // 56px navbar height. Bootstrap sizes the navbar's padding in `rem`,
+  // though, so a larger browser/OS font-size setting grows it past 56px,
+  // and the fixed navbar then overlaps the top of the page content
+  // (e.g. the search boxes) instead of sitting flush above it. Measuring
+  // the real height and exposing it as a custom property keeps everything
+  // below the navbar positioned correctly regardless of font size.
+  const navbarEl = document.querySelector("nav.navbar");
+  const navbarHeightObserver = new ResizeObserver(() => {
+    document.documentElement.style.setProperty(
+      "--navbar-height",
+      `${navbarEl.offsetHeight}px`,
+    );
+  });
+  navbarHeightObserver.observe(navbarEl);
+
   const defaultThreshold = 300;
   const shareChart = new ShareChart();
   const scatterplot = new Scatterplot("#plot-container");

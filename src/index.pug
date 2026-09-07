@@ -67,9 +67,10 @@ html(lang='en')
                   i.fa.fa-search
                 input#search-input(type="text" autocomplete="off")
                 input.hide#table-search-input(type="text" autocomplete="off")
-              +filters
-              button.btn.btn-secondary#share-chart-btn Share
-              a.btn.btn-secondary#export-chart-btn Export
+              .filter-actions
+                +filters
+                button.btn.btn-secondary#share-chart-btn Share
+                a.btn.btn-secondary#export-chart-btn Export
         #plot-container
           #threshold-slider-container
             form
