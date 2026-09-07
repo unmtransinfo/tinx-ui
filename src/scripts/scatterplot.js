@@ -3,6 +3,7 @@ import { TreeViewModes } from "./treeview";
 import ApiHelper from "./apihelper";
 import xss from "xss";
 import $ from "jquery";
+import config from "../config";
 
 /* Plot margins. */
 const margin = {
@@ -50,11 +51,11 @@ function updateTargetDetails(div, target) {
   // replace the semi-colon with an underscore
   const dtoid = target.dtoid ? target.dtoid.replace(/_/gi, ":") : null;
 
-  // Note that updateLink() uses the newdrugtargets.org domain name here, and that for dev instances, the User will end up getting redirected from localhost to newdrugtargets.org/?target=
+  // Note that updateLink() uses the SITE_URL env var here, and that for dev instances, the User will end up getting redirected from localhost to that domain's /?target= page
   updateLink(
     ".value.dto-id",
     dtoid || "",
-    `https://newdrugtargets.org/?target=${encodeURIComponent(dtoid)}`,
+    `${config.SITE_URL}/?target=${encodeURIComponent(dtoid)}`,
   );
 
   // Update tdl badge
