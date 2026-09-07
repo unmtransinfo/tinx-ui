@@ -225,7 +225,7 @@ class Scatterplot {
 
     const { target, disease } = selected;
     const selectedId =
-      this.currentMode === TreeViewModes.DISEASE ? target.id : disease.id;
+      this.currentMode === TreeViewModes.DISEASE ? target.id : disease.doid;
 
     if (!selectedId) {
       return;
@@ -237,7 +237,9 @@ class Scatterplot {
         if (!d) return false;
         const { target, disease } = d;
         const pointId =
-          that.currentMode === TreeViewModes.DISEASE ? target.id : disease.id;
+          that.currentMode === TreeViewModes.DISEASE
+            ? target.id
+            : disease.doid;
         return pointId && selectedId === pointId;
       })
       .filter((d, i) => i === 0);
