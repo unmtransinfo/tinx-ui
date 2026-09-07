@@ -153,6 +153,9 @@ svg.scatterplot {
 
 #plot-legend {
   @include padding-for-footer();
+  // #main-plot-area is a flex column now (see index.scss); keep this at its
+  // natural content height rather than letting it grow/shrink.
+  flex: 0 0 auto;
 
   .legend-row {
     padding: 0 30px;

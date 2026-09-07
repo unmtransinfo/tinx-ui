@@ -42,12 +42,14 @@ Create the file for the environment you're targeting, setting the variables belo
 | ------------------- | ----------------------------- | --------------------------------------------------------------------------- |
 | `API_ROOT`          | Yes, in every `.env` file     | Base URL of the TIN-X API                                                   |
 | `TINX_UI_HTTP_PORT` | No — dev only, default `8080` | Port the dev server listens on (has no effect on staging/production builds) |
+| `SITE_URL`          | Yes, in every `.env` file     | Base URL of the site hosting the UI                                         |
 
 Example `.env.development`:
 
 ```
 API_ROOT=http://localhost:8000
 TINX_UI_HTTP_PORT=8080
+SITE_URL=http://localhost:8080/
 ```
 
 ### 3. Run

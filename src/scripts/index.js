@@ -18,6 +18,24 @@ import Exporter from "./exporter";
 import { ROOT_NODE } from "./constants";
 
 $(window).on("load", () => {
+  // The navbar is `position: fixed`, so it's out of normal document flow
+  // and sibling elements can't size around it automatically the way they
+  // would around a normal in-flow element — CSS below assumes a fixed
+  // 56px navbar height. Bootstrap sizes the navbar's padding in `rem`,
+  // though, so a larger browser/OS font-size setting grows it past 56px,
+  // and the fixed navbar then overlaps the top of the page content
+  // (e.g. the search boxes) instead of sitting flush above it. Measuring
+  // the real height and exposing it as a custom property keeps everything
+  // below the navbar positioned correctly regardless of font size.
+  const navbarEl = document.querySelector("nav.navbar");
+  const navbarHeightObserver = new ResizeObserver(() => {
+    document.documentElement.style.setProperty(
+      "--navbar-height",
+      `${navbarEl.offsetHeight}px`,
+    );
+  });
+  navbarHeightObserver.observe(navbarEl);
+
   const defaultThreshold = 300;
   const shareChart = new ShareChart();
   const scatterplot = new Scatterplot("#plot-container");
@@ -32,6 +50,8 @@ $(window).on("load", () => {
   const aboutModal = $("#about-modal");
   const tableModal = $("#table-modal");
   const $thresholdSlider = $("#threshold-slider");
+  const $thresholdDecrement = $("#threshold-decrement");
+  const $thresholdIncrement = $("#threshold-increment");
 
   // Bootstrap sets aria-hidden on a modal before moving focus away from it,
   // which trips a Chrome a11y warning if a descendant (e.g. the close button)
@@ -85,13 +105,11 @@ $(window).on("load", () => {
       }
     }
 
-    if (nodeId && mode) {
+    const shareId = mode === TreeViewModes.DISEASE ? nodeDOID : nodeId;
+
+    if (shareId && mode) {
       shareChart.close();
-      shareChart.setUrl(
-        data.mode === TreeViewModes.DISEASE ? nodeDOID : nodeId,
-        mode,
-        treeView.getWasBackPressed(),
-      );
+      shareChart.setUrl(shareId, mode, treeView.getWasBackPressed());
     }
 
     // update plot title only if selected node is not a root
@@ -104,7 +122,7 @@ $(window).on("load", () => {
         .prop("title", details.name)
         .attr(
           "href",
-          `https://www.ebi.ac.uk/ols4/search?q=${encodeURIComponent(details.doid)}`,
+          `https://disease-ontology.org/term/${encodeURIComponent(details.doid)}`,
         );
     } else if (data.mode === TreeViewModes.TARGET) {
       const { details } = data;
@@ -167,6 +185,30 @@ $(window).on("load", () => {
     .mouseout(function () {
       scatterplot.clearTooltip(false);
     });
+
+  // Step the threshold slider by 1 via the +/- icons
+  function stepThreshold(delta) {
+    if ($thresholdSlider.is(":disabled")) return;
+
+    const min = parseInt($thresholdSlider.attr("min"), 10) || 0;
+    const max = parseInt($thresholdSlider.attr("max"), 10);
+    const current = parseInt($thresholdSlider.val(), 10);
+    const next = Math.min(max, Math.max(min, current + delta));
+
+    if (next === current) return;
+
+    $thresholdSlider.val(next).trigger("change");
+  }
+
+  $thresholdDecrement.on("click", () => stepThreshold(-1));
+  $thresholdIncrement.on("click", () => stepThreshold(1));
+
+  // Support activating the +/- icons via keyboard since they're not native buttons
+  $thresholdDecrement.add($thresholdIncrement).on("keydown", function (event) {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    $(this).trigger("click");
+  });
 
   // is this still used?
   $("#viewTableButton").click(function () {

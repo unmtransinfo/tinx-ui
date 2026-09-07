@@ -67,15 +67,16 @@ html(lang='en')
                   i.fa.fa-search
                 input#search-input(type="text" autocomplete="off")
                 input.hide#table-search-input(type="text" autocomplete="off")
-              +filters
-              button.btn.btn-secondary#share-chart-btn Share
-              a.btn.btn-secondary#export-chart-btn Export
+              .filter-actions
+                +filters
+                button.btn.btn-secondary#share-chart-btn Share
+                a.btn.btn-secondary#export-chart-btn Export
         #plot-container
           #threshold-slider-container
             form
-              i.fa.fa-minus
+              i.fa.fa-minus#threshold-decrement(role="button" aria-label="Decrease targets to display" tabindex="0")
               input#threshold-slider(max="2000" value="300" type="range" disabled="true" data-placement="left")
-              i.fa.fa-plus
+              i.fa.fa-plus#threshold-increment(role="button" aria-label="Increase targets to display" tabindex="0")
         #table-container(style='display:none;')
           #table-view(style='width:100%; height:100%;')
 

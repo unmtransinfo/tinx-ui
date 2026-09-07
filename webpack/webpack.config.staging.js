@@ -32,6 +32,7 @@ module.exports = merge(common, {
     new Webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify("staging"),
       "process.env.API_ROOT": JSON.stringify(process.env.API_ROOT),
+      "process.env.SITE_URL": JSON.stringify(process.env.SITE_URL),
     }),
     new MiniCssExtractPlugin({
       filename: "bundle.[contenthash].css",

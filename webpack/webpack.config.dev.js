@@ -39,6 +39,7 @@ module.exports = merge(common, {
     new Webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify("development"),
       "process.env.API_ROOT": JSON.stringify(process.env.API_ROOT),
+      "process.env.SITE_URL": JSON.stringify(process.env.SITE_URL),
     }),
     new ESLintPlugin({
       context: Path.resolve(__dirname, "../src"),

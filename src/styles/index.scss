@@ -27,7 +27,10 @@ html {
 
 body {
   // TODO: Lift to mixin
-  height: calc(100% - 56px);
+  // --navbar-height is measured in JS (see index.js) since the navbar is
+  // `position: fixed` and its real height depends on the user's font-size
+  // settings; 56px is only the fallback for before that measurement runs.
+  height: calc(100% - var(--navbar-height, 56px));
   width: 100%;
 
   &[data-mode="target"] {
@@ -156,7 +159,7 @@ body {
 #main {
   display: flex;
   flex-direction: row;
-  margin-top: 56px;
+  margin-top: var(--navbar-height, 56px);
   width: 100%;
   height: 100%;
 
@@ -227,12 +230,42 @@ body {
 
 #main-plot-area {
   // TODO: Lift to mixin
-  height: calc(100vh - 56px - 50px);
+  height: calc(100vh - var(--navbar-height, 56px) - 50px);
   flex: 1;
+  // Flex items default to `min-width: auto`, which floors their size at
+  // their content's intrinsic width. The scatterplot's <svg> is given an
+  // explicit pixel `width` attribute in JS (see Scatterplot#redraw), so
+  // without this override the browser won't let this column shrink back
+  // down past whatever width the SVG last had. That's normally harmless,
+  // but it becomes a self-reinforcing bug with browser zoom: zooming out
+  // grows the SVG's width attribute, which then floors this column's width
+  // even after zooming back in, since redraw() re-reads the (still
+  // oversized) column width on every resize. That pushes the header
+  // buttons and the threshold slider off-screen until a full page reload.
+  min-width: 0;
+  // Stack header / plot / legend vertically and size #plot-header and
+  // #plot-legend to their actual rendered height instead of assuming fixed
+  // pixel values (see #plot-container below). Font size, extension-injected
+  // UI, or a wrapped header row can all make the header taller than any
+  // single number we could hardcode here.
+  display: flex;
+  flex-direction: column;
+  // Safety net: if the header/legend still end up taller than expected (a
+  // browser's minimum font size setting, a translation bar, etc.) this lets
+  // the user scroll to reach the rest of the plot area instead of it being
+  // silently clipped by the outer page's `overflow-y: hidden`.
+  overflow-y: auto;
+
+  #plot-container,
+  #table-container {
+    // Fill whatever space #plot-header and #plot-legend don't use, rather
+    // than assuming they're exactly 72px and 60px tall.
+    flex: 1 1 auto;
+    min-height: 0;
+  }
 
   #plot-container {
     width: 100%;
-    height: calc(100% - 72px - 60px);
     position: relative;
 
     #threshold-slider-container {
@@ -259,6 +292,12 @@ body {
 
         i {
           transform: rotate(90deg);
+          cursor: pointer;
+        }
+
+        &:has(input#threshold-slider[disabled="true"]) i {
+          cursor: default;
+          opacity: 0.3;
         }
 
         input#threshold-slider {
@@ -302,9 +341,19 @@ body {
   }
 
   #plot-header {
+    flex: 0 0 auto;
     width: 100%;
     padding-left: 20px;
     margin-top: 10px;
+
+    // Prevents the search input's intrinsic content width from flooring
+    // this column past its intended 50/50 split with the title/tabs column
+    // (same `min-width: 0` pattern as #main-plot-area above) — without it,
+    // a wider default font size can push the search box and buttons past
+    // the right edge of the page, where `overflow-x: hidden` clips them.
+    & > [class*="col-"] {
+      min-width: 0;
+    }
 
     h2 {
       font-size: 20px;
@@ -347,8 +396,34 @@ body {
         }
       }
 
-      & > *:not(.input-with-icon) {
+      // Filters/Share/Export are grouped into one flex item so that, when
+      // there isn't room for them next to the search box, the whole group
+      // wraps to its own row together (and evenly divides that row) instead
+      // of flex-wrap peeling off just the last button onto a line by
+      // itself, where it would have nothing to share flex-grow with and so
+      // stretch to fill the entire row on its own — the visual bug we saw
+      // where "Export" ballooned into a full-width bar.
+      //
+      // Deliberately no `min-width: 0` on `.filter-actions` or its
+      // children: with `flex: 1` (a 0% flex-basis), adding it would make
+      // the browser treat them as weightless when deciding what fits on
+      // the current line, so instead of wrapping when space is tight, it
+      // crams everything onto one line and shrinks buttons past their own
+      // text. Leaving the default content-based minimum in place lets
+      // `flex-wrap: wrap` above do its job — a wrapped second row is a much
+      // more usable degradation than squished, unreadable buttons.
+      .filter-actions {
+        display: flex;
         flex: 1;
+
+        & > * {
+          flex: 1;
+          margin-right: 10px;
+
+          &:last-child {
+            margin-right: 0;
+          }
+        }
       }
 
       // Plain input (table search — not wrapped by Tom Select)
