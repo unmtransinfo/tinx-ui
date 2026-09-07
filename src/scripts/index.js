@@ -122,7 +122,7 @@ $(window).on("load", () => {
         .prop("title", details.name)
         .attr(
           "href",
-          `https://www.ebi.ac.uk/ols4/search?q=${encodeURIComponent(details.doid)}`,
+          `https://disease-ontology.org/term/${encodeURIComponent(details.doid)}`,
         );
     } else if (data.mode === TreeViewModes.TARGET) {
       const { details } = data;
